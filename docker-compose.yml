@@ -1,0 +1,37 @@
+version: "3.7"
+
+services:
+  backend:
+    image: "vidao1233/toeic-web:v1"
+    networks:
+      - toeic
+
+  frontend:
+    image: "tranngobichdu/toeic-learning-website:v1"
+    networks:
+      - toeic
+
+  api-gateway:
+    build:
+      context: ./.build/nginx
+    networks:
+      - toeic
+    ports:
+      - "10074:80"
+
+  sqlserver:
+    build:
+      context: ./.build/sqlserver
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: Password@1233
+    volumes:
+      - sql_data:/var/opt/mssql
+    networks:
+      - toeic
+
+networks:
+  toeic: {}
+
+volumes:
+  sql_data:
