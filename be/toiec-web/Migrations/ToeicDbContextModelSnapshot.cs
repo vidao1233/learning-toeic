@@ -3,19 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using toeic_web.Models;
 
 #nullable disable
 
-namespace toeic_web.Migrations
+namespace toiec_web.Migrations
 {
     [DbContext(typeof(ToeicDbContext))]
-    [Migration("20240325183606_add pronunciation")]
-    partial class addpronunciation
+    partial class ToeicDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

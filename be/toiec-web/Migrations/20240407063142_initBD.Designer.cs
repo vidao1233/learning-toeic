@@ -9,11 +9,11 @@ using toeic_web.Models;
 
 #nullable disable
 
-namespace toeic_web.Migrations
+namespace toiec_web.Migrations
 {
     [DbContext(typeof(ToeicDbContext))]
-    [Migration("20240225110712_changehost")]
-    partial class changehost
+    [Migration("20240407063142_initBD")]
+    partial class initBD
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -859,8 +859,10 @@ namespace toeic_web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("pronunciation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("wordType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("idVoc");
@@ -1012,7 +1014,6 @@ namespace toeic_web.Migrations
                     b.HasOne("toeic_web.Models.Professor", "Professor")
                         .WithMany("Courses")
                         .HasForeignKey("idProfessor")
-                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_CourseOfProfessor");
 
@@ -1024,7 +1025,7 @@ namespace toeic_web.Migrations
                     b.HasOne("toeic_web.Models.Course", "Course")
                         .WithMany("Lessons")
                         .HasForeignKey("idCourse")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_LessonOfCourse");
 
@@ -1096,6 +1097,7 @@ namespace toeic_web.Migrations
                     b.HasOne("toeic_web.Models.Quiz", "Quiz")
                         .WithMany("Questions")
                         .HasForeignKey("idQuiz")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_QuestionsOfQuiz");
 
                     b.HasOne("toeic_web.Models.TestQuestionUnit", "TestQuestionUnit")
@@ -1116,6 +1118,7 @@ namespace toeic_web.Migrations
                     b.HasOne("toeic_web.Models.Lesson", "Lesson")
                         .WithMany("Quizzes")
                         .HasForeignKey("idLesson")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_QuizzesOfLesson");
 
@@ -1185,6 +1188,7 @@ namespace toeic_web.Migrations
                     b.HasOne("toeic_web.Models.Test", "Test")
                         .WithMany("TestQuestionUnits")
                         .HasForeignKey("idTest")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_UnitsOfTest");
 
@@ -1283,6 +1287,7 @@ namespace toeic_web.Migrations
                     b.HasOne("toeic_web.Models.VocTopic", "VocTopic")
                         .WithMany("Vocabularies")
                         .HasForeignKey("idTopic")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_VocOfTopic");
 
