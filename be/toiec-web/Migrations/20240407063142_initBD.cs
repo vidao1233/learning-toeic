@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace toeic_web.Migrations
+namespace toiec_web.Migrations
 {
-    public partial class addupdate : Migration
+    public partial class initBD : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -395,8 +395,7 @@ namespace toeic_web.Migrations
                         name: "FK_CourseOfProfessor",
                         column: x => x.idProfessor,
                         principalTable: "Professors",
-                        principalColumn: "idProfessor",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "idProfessor");
                 });
 
             migrationBuilder.CreateTable(
@@ -514,7 +513,7 @@ namespace toeic_web.Migrations
                         column: x => x.idCourse,
                         principalTable: "Courses",
                         principalColumn: "idCourse",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -542,7 +541,8 @@ namespace toeic_web.Migrations
                         name: "FK_UnitsOfTest",
                         column: x => x.idTest,
                         principalTable: "Tests",
-                        principalColumn: "idTest");
+                        principalColumn: "idTest",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -553,7 +553,13 @@ namespace toeic_web.Migrations
                     idTest = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idStudent = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     createDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    score = table.Column<double>(type: "float", nullable: false)
+                    listenCorrect = table.Column<int>(type: "int", nullable: false),
+                    listenScore = table.Column<int>(type: "int", nullable: false),
+                    readingCorrect = table.Column<int>(type: "int", nullable: false),
+                    readScore = table.Column<int>(type: "int", nullable: false),
+                    correctAns = table.Column<int>(type: "int", nullable: false),
+                    wrongAns = table.Column<int>(type: "int", nullable: false),
+                    totalScore = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -579,7 +585,8 @@ namespace toeic_web.Migrations
                     idTopic = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idProfessor = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     engWord = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    wordType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    pronunciation = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    wordType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     meaning = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -594,7 +601,8 @@ namespace toeic_web.Migrations
                         name: "FK_VocOfTopic",
                         column: x => x.idTopic,
                         principalTable: "VocabularyTopics",
-                        principalColumn: "idVocTopic");
+                        principalColumn: "idVocTopic",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -612,7 +620,8 @@ namespace toeic_web.Migrations
                         name: "FK_QuizzesOfLesson",
                         column: x => x.idLesson,
                         principalTable: "Lessons",
-                        principalColumn: "idLesson");
+                        principalColumn: "idLesson",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -643,7 +652,8 @@ namespace toeic_web.Migrations
                         name: "FK_QuestionsOfQuiz",
                         column: x => x.idQuiz,
                         principalTable: "Quizs",
-                        principalColumn: "idQuiz");
+                        principalColumn: "idQuiz",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_QuestionsOfUnit",
                         column: x => x.idUnit,
@@ -704,40 +714,6 @@ namespace toeic_web.Migrations
                         principalTable: "TestRecords",
                         principalColumn: "idRecord",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[,]
-                {
-                    { "1257b8ad-564a-456f-81a1-d38f180ddd63", "2", "Student", "Student" },
-                    { "35564c0c-f6fc-4ce5-ad98-f3c362e90ed1", "3", "VipStudent", "VipStudent" },
-                    { "8111cfd6-214a-4694-a13c-c6ec3d7f56b2", "1", "Admin", "Admin" },
-                    { "9faf18a9-5a41-4b13-9db3-63246839aea9", "4", "Professor", "Professor" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "TestParts",
-                columns: new[] { "partId", "partName" },
-                values: new object[,]
-                {
-                    { new Guid("63152fce-ef3d-4873-91ea-06e799fba05a"), "Part 5" },
-                    { new Guid("a9986cb0-3e04-498c-b85f-d647dcad7760"), "Part 2" },
-                    { new Guid("aece01aa-4fe8-47a9-ba69-5a20ab0a67d6"), "Part 1" },
-                    { new Guid("bf3272a0-81d7-451c-a4ad-4803d2f8ff7f"), "Part 6" },
-                    { new Guid("c40fdf03-f171-472f-aecf-43141d5e25ee"), "Part 3" },
-                    { new Guid("f1a0073a-a0d8-4053-9176-3cdf7f54c3da"), "Part 4" },
-                    { new Guid("f1d383cf-4023-41db-9bee-20832cf31fd5"), "Part 7" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "TestTypes",
-                columns: new[] { "idTestType", "typeName" },
-                values: new object[,]
-                {
-                    { new Guid("86373e27-a594-4075-b2fa-340b5055adb2"), "Mini Test" },
-                    { new Guid("fe3844c1-6886-43ea-bd20-b35bbf38e1c0"), "Full Test" }
                 });
 
             migrationBuilder.CreateIndex(
