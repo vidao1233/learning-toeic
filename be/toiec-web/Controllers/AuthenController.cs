@@ -110,8 +110,8 @@ namespace toeic_web.Controllers
 
                 //send email confirm
                 //var domain = "toeic.workon.space";
-                var confirmationLink = Url.Action(nameof(ConfirmEmail), "Authen" , new { token, email = user.Email}, Request.Scheme);
-                if(confirmationLink != null && confirmationLink.Contains("http://backend"))
+                var confirmationLink = Url.Action(nameof(ConfirmEmail), "Authen", new { token, email = user.Email }, Request.Scheme);
+                if (confirmationLink != null && confirmationLink.Contains("http://backend"))
                 {
                     confirmationLink = confirmationLink.Replace("http://backend", "https://toeic.workon.space");
                 }
@@ -138,7 +138,7 @@ namespace toeic_web.Controllers
         [Route("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string token, string email)
         {
-            var user = await _userManager.FindByEmailAsync(email);            
+            var user = await _userManager.FindByEmailAsync(email);
             var redirectUrlSuccess = "https://toeic.workon.space/login/success";
             var redirectUrlFailed = "https://toeic.workon.space/login/failed";
             if (user != null)
@@ -342,6 +342,95 @@ namespace toeic_web.Controllers
                 freetest = student.freeTest
             });
 
+        }
+
+        [HttpGet]
+        [Route("ResendConfirmEmail")]
+        public async Task<IActionResult> ResendConfirmEmail(string email)
+        {
+            //check user if exist
+            var userExist = await _userManager.FindByEmailAsync(email);
+
+            if (userExist != null)
+            {
+                if (userExist.EmailConfirmed)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest,
+                    new Response { Status = "Error", Message = "Your email already confirm!" });
+                }
+                //Add Token to Verify the email...
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(userExist);
+
+                // send email confirm
+                //var confirmationLink = Url.Action(nameof(ConfirmEmail), "Authen", new { token, email }, Request.Scheme);
+                //if (confirmationLink != null && confirmationLink.Contains("http://backend"))
+                //{
+                //    confirmationLink = confirmationLink.Replace("http://backend", "https://toeic.workon.space");
+                //}
+                //var message = new Message(new string[] { email! }, "Confirmation email link", confirmationLink!);
+                //_emailService.SendEmail(message);
+
+                var confirmationLink = Url.Action(nameof(ConfirmEmail), "Authen", new { token, email }, Request.Scheme);
+                if (confirmationLink != null && confirmationLink.Contains("http://backend"))
+                {
+                    confirmationLink = confirmationLink.Replace("http://backend", "https://toeic.workon.space");
+                }
+
+                //Tạo nội dung email dưới dạng HTML
+               var htmlContent = $@"
+                <!DOCTYPE html>
+                <html lang=""en"">
+                <head>
+                    <meta charset=""UTF-8"">
+                    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+                    <title>Xác nhận Email</title>
+                    <style>
+                        body {{
+                            font-family: Arial, sans-serif;
+                            background-color: #f4f4f4;
+                            padding: 20px;
+                            margin: 0;
+                        }}
+                        .container {{
+                            max-width: 600px;
+                            margin: auto;
+                            background: #fff;
+                            padding: 20px;
+                            border-radius: 10px;
+                            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        }}
+                        .button {{
+                            display: inline-block;
+                            padding: 10px 20px;
+                            background-color: #aaaaaa;
+                            color: #fff;
+                            text-decoration: none;
+                            border-radius: 5px;
+                        }}
+                    </style>
+                </head>
+                <body>
+                    <div class=""container"">
+                        <h2>Xác nhận email của bạn</h2>
+                        <p>Vui lòng xác nhận email của bạn bằng cách nhấn vào đường link dưới đây:</p>
+                        <a class=""button"" href=""{confirmationLink}"">Xác nhận Email</a>
+                        <p>Nếu bạn không thể nhấn vào liên kết trên, hãy sao chép và dán đường link sau vào trình duyệt của bạn:</p>
+                        <p>{confirmationLink}</p>
+                    </div>
+                </body>
+                </html>";
+
+                var message = new Message(new string[] { email! }, "Confirm Email", htmlContent);
+                //Đảm bảo rằng bạn đã cấu hình EmailService để chấp nhận nội dung HTML
+                _emailService.SendEmail(message);
+
+                //when success
+                return StatusCode(StatusCodes.Status200OK,
+                    new Response { Status = "Success", Message = $"We have sent EmailConfirm to {email}. Verified your email to Login!" });
+
+            }
+            return StatusCode(StatusCodes.Status403Forbidden,
+                    new Response { Status = "Error", Message = "User doesn't exist, please signup to get email confirm !" });
         }
 
         [AllowAnonymous]
@@ -569,14 +658,14 @@ namespace toeic_web.Controllers
                     return StatusCode(StatusCodes.Status404NotFound,
                     new Response { Status = "Error", Message = "This User Does Not Exist" });
                 }
-                var userView = _mapper.Map<UserViewModel>(user);                
+                var userView = _mapper.Map<UserViewModel>(user);
                 return Ok(new
                 {
                     userView.fullname,
                     userView.imageURL
                 });
             }
-            
+
         }
 
         [Authorize]
