@@ -2,6 +2,8 @@
 using toeic_web.Repository.IRepository;
 using toeic_web.Services;
 using toeic_web.Services.IService;
+using toiec_web.Services;
+using toiec_web.Services.IService;
 
 namespace toeic_web.Infrastructure
 {
@@ -42,8 +44,7 @@ namespace toeic_web.Infrastructure
             services.AddTransient<ICourseService, CourseService>();
             services.AddTransient<IUserService, UserService>();
             services.AddScoped<UserService>();
-            services.AddTransient<IAuthenticationService, AuthenticationService>();
-            services.AddScoped<IEmailService, EmailService>();
+            services.AddTransient<IAuthenticationService, AuthenticationService>();            
             services.AddTransient<IStudentService, StudentService>();
             services.AddTransient<IProfessorService, ProfessorService>();
             services.AddTransient<ILessonService, LessonService>();
@@ -63,6 +64,8 @@ namespace toeic_web.Infrastructure
             services.AddTransient<IUserAnswerService, UserAnswerService>();
             services.AddTransient<IRecordService, RecordService>();
             services.AddTransient<IVipStudentService, VipStudentService>();
+            services.AddScoped< IExcelHelperService, ExcelHelperService > ();
+            services.AddScoped<IEmailService, EmailService>();
             return services;
         }
     }

@@ -1,12 +1,9 @@
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using toeic_web.Controllers;
 using toeic_web.Infrastructure;
 using toeic_web.Models;
 
@@ -139,7 +136,6 @@ namespace toeic_web
             app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 

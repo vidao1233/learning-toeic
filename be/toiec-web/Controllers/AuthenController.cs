@@ -119,7 +119,7 @@ namespace toeic_web.Controllers
                 _emailService.SendEmail(message);
 
                 //create Student into database
-                _studentService.AddStudent(user.Id);
+                await _studentService.AddStudent(user.Id);
                 await _dbContext.SaveChangesAsync();
 
                 //when success
@@ -516,7 +516,7 @@ namespace toeic_web.Controllers
                     var message = new Message(new string[] { email }, "Signup successfully", $"Your account: Username:{username}, Password: NewPass@123.");
                     _emailService.SendEmail(message);
                     //create Student into database
-                    _studentService.AddStudent(user.Id);
+                    await _studentService.AddStudent(user.Id);
                     //save userLogin
                     await _userManager.AddLoginAsync(user, info);
                     await _dbContext.SaveChangesAsync();

@@ -1,17 +1,26 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using toeic_web.Models;
 using toeic_web.Services.IService;
 using toeic_web.ViewModels.VocTopic;
+using toiec_web.Services;
+using toiec_web.Services.IService;
 
 namespace toeic_web.Controllers
 {
     public class VocTopicController : BaseAPIController
     {
         private readonly IVocTopicService _vocTopicService;
+        private readonly ToeicDbContext _dbContext;
+        private readonly IExcelHelperService _excelHelper;
 
-        public VocTopicController(IVocTopicService vocTopicService) 
+        public VocTopicController(IVocTopicService vocTopicService, ToeicDbContext dbContext,
+            IExcelHelperService excelHelper) 
         {
             _vocTopicService = vocTopicService;
+            _dbContext = dbContext;
+            _excelHelper = excelHelper;
         }
 
         [HttpGet]
@@ -78,6 +87,14 @@ namespace toeic_web.Controllers
             }
             else
                 return StatusCode(StatusCodes.Status404NotFound);
+        }
+
+        [HttpGet("download")]
+        public async Task<FileResult> Download(CancellationToken ct)
+        {
+            var topics = await _dbContext.VocabularyTopics.ToListAsync(ct);
+            var file = await _excelHelper.CreateFile(topics);
+            return File(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "vocTopics.xlsx");
         }
     }
 }
