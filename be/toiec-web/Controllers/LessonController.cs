@@ -1,17 +1,28 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using toeic_web.Models;
 using toeic_web.Services.IService;
 using toeic_web.ViewModels.Lesson;
+using toiec_web.ExcelRequestModels;
+using toiec_web.Services.IService;
 
 namespace toeic_web.Controllers
 {
     public class LessonController : BaseAPIController
     {
         private readonly ILessonService _lessonService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ToeicDbContext _dbContext;
+        private readonly IExcelHelperService _excelHelperService;
 
-        public LessonController(ILessonService lessonService)
+        public LessonController(ILessonService lessonService, 
+            IWebHostEnvironment webHostEnvironment, 
+            ToeicDbContext dbContext, IExcelHelperService excelHelperService)
         {
             _lessonService = lessonService;
+            _webHostEnvironment = webHostEnvironment;
+            _dbContext = dbContext;
+            _excelHelperService = excelHelperService;
         }
 
         [HttpGet]
@@ -90,6 +101,65 @@ namespace toeic_web.Controllers
             }
             else
                 return StatusCode(StatusCodes.Status404NotFound);
+        }
+
+        [HttpPost("upload")]
+        [DisableRequestSizeLimit]
+        public async Task<ActionResult> Upload(CancellationToken ct)
+        {
+            if (Request.Form.Files.Count == 0) return NoContent();
+
+            var file = Request.Form.Files[0];
+            var filePath = SaveFile(file);
+
+            // load lessons requests from excel file
+            var lessons = await _excelHelperService.Import<LessonRequest>(filePath);
+
+            // save lesson requests to database
+            foreach (var item in lessons)
+            {   
+                var lesson = new Lesson
+                {
+                    idLesson = new Guid(item.idLesson),
+                    idCourse = new Guid(item.idCourse),
+                    title = item.title,
+                    content = item.content
+                };
+                await _dbContext.AddAsync(lesson, ct);
+            }
+            await _dbContext.SaveChangesAsync(ct);
+
+            return Ok();
+        }
+
+        // save the uploaded file into ExcelData/uploads folder
+        private string SaveFile(IFormFile file)
+        {
+            if (file.Length == 0)
+            {
+                throw new BadHttpRequestException("File is empty.");
+            }
+
+            var extension = Path.GetExtension(file.FileName);
+
+            var webRootPath = _webHostEnvironment.WebRootPath;
+            if (string.IsNullOrWhiteSpace(webRootPath))
+            {
+                webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "ExcelData");
+            }
+
+            var folderPath = Path.Combine(webRootPath, "uploads");
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            var fileName = $"{Guid.NewGuid()}.{extension}";
+            var filePath = Path.Combine(folderPath, fileName);
+            using var stream = new FileStream(filePath, FileMode.Create);
+            file.CopyTo(stream);
+
+            return filePath;
         }
     }
 }
