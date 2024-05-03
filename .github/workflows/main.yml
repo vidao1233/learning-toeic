@@ -10,13 +10,13 @@ jobs:
     name: Build and Push Docker Image BE
     runs-on: ubuntu-latest
     steps:
-      - uses: .github\workflow\ci-backend.yml
+      - uses: ./.github/workflows/ci-backend.yml
 
   build-and-push-fe:
     name: Build and Push Docker Image FE
     runs-on: ubuntu-latest
     steps:
-      - uses: .github\workflow\ci-frontend.yml
+      - uses: ./.github/workflows/ci-frontend.yml
 
   deploy:
     runs-on: ubuntu-latest
