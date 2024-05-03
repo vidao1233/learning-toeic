@@ -60,6 +60,10 @@ namespace toiec_web.Controllers
                 options.ScriptData = true;
                 options.Indexes = true;
 
+                // Set the command timeout for the SQL command
+                var commandTimeout = 600; // 10 minutes (in seconds)
+                ((SqlCommand)connect.CreateCommand()).CommandTimeout = commandTimeout;
+
                 var tableEnum = databases.Tables.Cast<SMO.Table>().Where(i => i.Schema == _schemaName);
                 var viewEnum = databases.Views.Cast<SMO.View>().Where(i => i.Schema == _schemaName);
                 var procedureEnum = databases.StoredProcedures.Cast<SMO.StoredProcedure>().Where(i => i.Schema == _schemaName);
