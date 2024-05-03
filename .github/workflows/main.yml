@@ -7,7 +7,6 @@ on:
 
 jobs:
   build-and-push-be:
-    name: Build and Push Docker Image BE
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -25,7 +24,6 @@ jobs:
             run: docker push vidao1233/toeic-web:v1
 
   build-and-push-fe:
-    name: Build and Push Docker Image FE
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
