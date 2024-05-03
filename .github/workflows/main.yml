@@ -10,25 +10,49 @@ jobs:
     name: Build and Push Docker Image BE
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/ci-backend.yml
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: CI - Backend
+        runs-on: ubuntu-latest
+        container:
+          image: docker:dind
+        steps:
+          - name: Login docker
+            run: docker login -u vidao1233 -p d@oVi1233
+          - name: Build Backend
+            run: docker build -t vidao1233/toeic-web:v1 .
+          - name: Push image
+            run: docker push vidao1233/toeic-web:v1
 
   build-and-push-fe:
     name: Build and Push Docker Image FE
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/ci-frontend.yml
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: CI - Frontend
+        runs-on: ubuntu-latest
+        container:
+          image: docker:dind
+        steps:
+          - name: Login docker
+            run: docker login -u tranngobichdu -p du2392002
+          - name: Build Frontend
+            run: docker build -t tranngobichdu/toeic-learning-website:v1 .
+          - name: Push image
+            run: docker push tranngobichdu/toeic-learning-website:v1
 
   deploy:
     runs-on: ubuntu-latest
     needs: [build-and-push-be, build-and-push-fe]
     steps:
       - name: SSH into the server and deploy Docker
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v0.2.0  # Sử dụng một phiên bản cụ thể của action
         with:
           host: 103.130.211.150
           username: hcmute
           password: hcmute@fit
           port: 10038
           script: |
-            docker compose -f /project/20110223_20110618/toeicweb/learning-toeic/docker-compose.yml down
-            docker compose -f /project/20110223_20110618/toeicweb/learning-toeic/docker-compose.yml up --build -d
+            docker-compose -f /project/20110223_20110618/toeicweb/learning-toeic/docker-compose.yml down
+            docker-compose -f /project/20110223_20110618/toeicweb/learning-toeic/docker-compose.yml up --build -d
