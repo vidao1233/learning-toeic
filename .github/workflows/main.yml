@@ -34,13 +34,13 @@ jobs:
         runs-on: ubuntu-latest
         container:
           image: docker:dind
-        steps:
-          - name: Login docker
-            run: docker login -u tranngobichdu -p du2392002
-          - name: Build Frontend
-            run: docker build -t tranngobichdu/toeic-learning-website:v1 .
-          - name: Push image
-            run: docker push tranngobichdu/toeic-learning-website:v1
+          commands:
+            - name: Login docker
+              run: docker login -u tranngobichdu -p du2392002
+            - name: Build Frontend
+              run: docker build -t tranngobichdu/toeic-learning-website:v1 .
+            - name: Push image
+              run: docker push tranngobichdu/toeic-learning-website:v1
 
   deploy:
     runs-on: ubuntu-latest
