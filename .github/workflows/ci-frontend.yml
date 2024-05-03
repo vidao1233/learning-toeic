@@ -1,8 +1,8 @@
 name: CI - Frontend
 on:
   pull_request:
-    branches:
-      - main  
+    paths:
+      - "**/*"
 jobs:
   ci-frontend:
     runs-on: ubuntu-latest
