@@ -41,6 +41,7 @@
   <ItemGroup>
     <Folder Include="ExcelData\" />
     <Folder Include="Properties\" />
+    <Folder Include="ViewModels\Comment\" />
   </ItemGroup>
 
 </Project>

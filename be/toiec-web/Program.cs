@@ -39,7 +39,7 @@ namespace toeic_web
             //add DBContext
             builder.Services.AddDbContext<ToeicDbContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("CustomConnection"));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("FixConnection"));
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
             //add Identity
