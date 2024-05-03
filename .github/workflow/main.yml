@@ -1,0 +1,34 @@
+name: Main Workflow
+
+on:
+  pull_request:
+    branches:
+      - main  
+
+jobs:
+  build-and-push-be:
+    name: Build and Push Docker Image BE
+    runs-on: ubuntu-latest
+    steps:
+      - uses: .github\workflow\ci-backend.yml
+
+  build-and-push-fe:
+    name: Build and Push Docker Image FE
+    runs-on: ubuntu-latest
+    steps:
+      - uses: .github\workflow\ci-frontend.yml
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build-and-push-be, build-and-push-fe]
+    steps:
+      - name: SSH into the server and deploy Docker
+        uses: appleboy/ssh-action@master
+        with:
+          host: 103.130.211.150
+          username: hcmute
+          password: hcmute@fit
+          port: 10038
+          script: |
+            docker compose -f /project/20110223_20110618/toeicweb/learning-toeic/docker-compose.yml down
+            docker compose -f /project/20110223_20110618/toeicweb/learning-toeic/docker-compose.yml up --build -d
