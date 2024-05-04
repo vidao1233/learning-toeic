@@ -61,7 +61,7 @@ jobs:
     needs: [build-and-push-be, build-and-push-fe]
     steps:
       - name: SSH into the server and deploy Docker
-        uses: appleboy/ssh-action@v0.2.0
+        uses: appleboy/ssh-action
         with:
           host: 103.130.211.150
           username: hcmute
