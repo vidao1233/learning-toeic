@@ -67,6 +67,6 @@ jobs:
           username: hcmute
           password: hcmute@fit
           port: 10038
-        run: |
+        script: |
           docker-compose -f /project/20110223_20110618/toeicweb/learning-toeic/docker-compose.yml down
           docker-compose -f /project/20110223_20110618/toeicweb/learning-toeic/docker-compose.yml up --build -d
