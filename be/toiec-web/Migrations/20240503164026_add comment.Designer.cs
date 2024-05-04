@@ -12,8 +12,8 @@ using toeic_web.Models;
 namespace toiec_web.Migrations
 {
     [DbContext(typeof(ToeicDbContext))]
-    [Migration("20240407063142_initBD")]
-    partial class initBD
+    [Migration("20240503164026_add comment")]
+    partial class addcomment
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -340,7 +340,10 @@ namespace toiec_web.Migrations
                     b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("idPost")
+                    b.Property<Guid?>("idCommentReply")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("idLesson")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("idUser")
@@ -349,7 +352,7 @@ namespace toiec_web.Migrations
 
                     b.HasKey("idComment");
 
-                    b.HasIndex("idPost");
+                    b.HasIndex("idLesson");
 
                     b.HasIndex("idUser");
 
@@ -368,6 +371,9 @@ namespace toiec_web.Migrations
 
                     b.Property<Guid>("idProfessor")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool?>("isVip")
+                        .HasColumnType("bit");
 
                     b.Property<string>("name")
                         .IsRequired()
@@ -392,6 +398,9 @@ namespace toiec_web.Migrations
 
                     b.Property<Guid>("idCourse")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool?>("isVip")
+                        .HasColumnType("bit");
 
                     b.Property<string>("title")
                         .IsRequired()
@@ -453,30 +462,6 @@ namespace toiec_web.Migrations
                     b.HasKey("idMethod");
 
                     b.ToTable("PaymentMethods");
-                });
-
-            modelBuilder.Entity("toeic_web.Models.Post", b =>
-                {
-                    b.Property<Guid>("idPost")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("createdTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("idUser")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("idPost");
-
-                    b.HasIndex("idUser");
-
-                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("toeic_web.Models.Professor", b =>
@@ -600,8 +585,6 @@ namespace toiec_web.Migrations
                     b.HasKey("idReport");
 
                     b.HasIndex("idAdmin");
-
-                    b.HasIndex("idPost");
 
                     b.HasIndex("idUser");
 
@@ -990,21 +973,21 @@ namespace toiec_web.Migrations
 
             modelBuilder.Entity("toeic_web.Models.Comment", b =>
                 {
-                    b.HasOne("toeic_web.Models.Post", "Post")
+                    b.HasOne("toeic_web.Models.Lesson", "Lessons")
                         .WithMany("Comments")
-                        .HasForeignKey("idPost")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("idLesson")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_CommentsOfPost");
+                        .HasConstraintName("FK_CommentsOfLesson");
 
                     b.HasOne("toeic_web.Models.Users", "Users")
                         .WithMany("Comments")
                         .HasForeignKey("idUser")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_CommentsOfUser");
 
-                    b.Navigation("Post");
+                    b.Navigation("Lessons");
 
                     b.Navigation("Users");
                 });
@@ -1060,18 +1043,6 @@ namespace toiec_web.Migrations
                     b.Navigation("Student");
 
                     b.Navigation("VipPackage");
-                });
-
-            modelBuilder.Entity("toeic_web.Models.Post", b =>
-                {
-                    b.HasOne("toeic_web.Models.Users", "Users")
-                        .WithMany("Posts")
-                        .HasForeignKey("idUser")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_PostOfUser");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("toeic_web.Models.Professor", b =>
@@ -1133,12 +1104,6 @@ namespace toiec_web.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_AdminCheckReport");
 
-                    b.HasOne("toeic_web.Models.Post", "Post")
-                        .WithMany("Reports")
-                        .HasForeignKey("idPost")
-                        .IsRequired()
-                        .HasConstraintName("FK_ReportsOfPost");
-
                     b.HasOne("toeic_web.Models.Users", "Users")
                         .WithMany("Reports")
                         .HasForeignKey("idUser")
@@ -1146,8 +1111,6 @@ namespace toiec_web.Migrations
                         .HasConstraintName("FK_ReportsOfUser");
 
                     b.Navigation("Admin");
-
-                    b.Navigation("Post");
 
                     b.Navigation("Users");
                 });
@@ -1326,19 +1289,14 @@ namespace toiec_web.Migrations
 
             modelBuilder.Entity("toeic_web.Models.Lesson", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Quizzes");
                 });
 
             modelBuilder.Entity("toeic_web.Models.PaymentMethod", b =>
                 {
                     b.Navigation("Payments");
-                });
-
-            modelBuilder.Entity("toeic_web.Models.Post", b =>
-                {
-                    b.Navigation("Comments");
-
-                    b.Navigation("Reports");
                 });
 
             modelBuilder.Entity("toeic_web.Models.Professor", b =>
@@ -1416,8 +1374,6 @@ namespace toiec_web.Migrations
                         .IsRequired();
 
                     b.Navigation("Comments");
-
-                    b.Navigation("Posts");
 
                     b.Navigation("Professor")
                         .IsRequired();

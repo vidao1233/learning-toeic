@@ -6,5 +6,6 @@
         public string dateOfBirth { get; set; }
         public bool gender { get; set; }
         public bool mobile { get; set; }
+        public string imageURL { get; set; }
     }
 }

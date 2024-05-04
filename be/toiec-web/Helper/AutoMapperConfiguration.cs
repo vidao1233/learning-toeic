@@ -17,6 +17,9 @@ using toeic_web.ViewModels.VipPackage;
 using toeic_web.ViewModels.Record;
 using toeic_web.ViewModels.Payment;
 using toeic_web.ViewModels.DoTest;
+using toiec_web.Models;
+using toiec_web.ViewModels.Comment;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace toeic_web.Helper
 {
@@ -29,6 +32,13 @@ namespace toeic_web.Helper
             CreateMap<CourseModel, CourseViewModel>().ReverseMap();
             CreateMap<CourseModel, CourseAddModel>().ReverseMap();
             CreateMap<CourseModel, CourseUpdateModel>().ReverseMap();
+            #endregion
+
+            #region Comment
+            CreateMap<Comment, CommentModel>().ReverseMap();
+            CreateMap<CommentModel, CommentAddModel>().ReverseMap();
+            CreateMap<CommentModel, CommentUpdateModel>().ReverseMap();
+            CreateMap<CommentModel, FirstCommentViewModel>().ReverseMap();
             #endregion
 
             #region User

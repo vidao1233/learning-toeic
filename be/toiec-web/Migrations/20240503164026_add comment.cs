@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace toiec_web.Migrations
 {
-    public partial class initBD : Migration
+    public partial class addcomment : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -243,26 +243,6 @@ namespace toiec_web.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Posts",
-                columns: table => new
-                {
-                    idPost = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idUser = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    createdTime = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Posts", x => x.idPost);
-                    table.ForeignKey(
-                        name: "FK_PostOfUser",
-                        column: x => x.idUser,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Professors",
                 columns: table => new
                 {
@@ -300,6 +280,33 @@ namespace toiec_web.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Reports",
+                columns: table => new
+                {
+                    idReport = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idUser = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    idAdmin = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idPost = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    isCheck = table.Column<bool>(type: "bit", nullable: false),
+                    reportDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reports", x => x.idReport);
+                    table.ForeignKey(
+                        name: "FK_AdminCheckReport",
+                        column: x => x.idAdmin,
+                        principalTable: "Admins",
+                        principalColumn: "idAdmin");
+                    table.ForeignKey(
+                        name: "FK_ReportsOfUser",
+                        column: x => x.idUser,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "VipPackages",
                 columns: table => new
                 {
@@ -321,72 +328,14 @@ namespace toiec_web.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comments",
-                columns: table => new
-                {
-                    idComment = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idUser = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    idPost = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Comments", x => x.idComment);
-                    table.ForeignKey(
-                        name: "FK_CommentsOfPost",
-                        column: x => x.idPost,
-                        principalTable: "Posts",
-                        principalColumn: "idPost",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_CommentsOfUser",
-                        column: x => x.idUser,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Reports",
-                columns: table => new
-                {
-                    idReport = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idUser = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    idAdmin = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idPost = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    isCheck = table.Column<bool>(type: "bit", nullable: false),
-                    reportDate = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reports", x => x.idReport);
-                    table.ForeignKey(
-                        name: "FK_AdminCheckReport",
-                        column: x => x.idAdmin,
-                        principalTable: "Admins",
-                        principalColumn: "idAdmin");
-                    table.ForeignKey(
-                        name: "FK_ReportsOfPost",
-                        column: x => x.idPost,
-                        principalTable: "Posts",
-                        principalColumn: "idPost");
-                    table.ForeignKey(
-                        name: "FK_ReportsOfUser",
-                        column: x => x.idUser,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Courses",
                 columns: table => new
                 {
                     idCourse = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idProfessor = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    isVip = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -503,7 +452,8 @@ namespace toiec_web.Migrations
                     idLesson = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idCourse = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    content = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    isVip = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -602,6 +552,34 @@ namespace toiec_web.Migrations
                         column: x => x.idTopic,
                         principalTable: "VocabularyTopics",
                         principalColumn: "idVocTopic",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    idComment = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idLesson = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idCommentReply = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    idUser = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.idComment);
+                    table.ForeignKey(
+                        name: "FK_CommentsOfLesson",
+                        column: x => x.idLesson,
+                        principalTable: "Lessons",
+                        principalColumn: "idLesson",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CommentsOfUser",
+                        column: x => x.idUser,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -767,9 +745,9 @@ namespace toiec_web.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_idPost",
+                name: "IX_Comments_idLesson",
                 table: "Comments",
-                column: "idPost");
+                column: "idLesson");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_idUser",
@@ -802,11 +780,6 @@ namespace toiec_web.Migrations
                 column: "idStudent");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Posts_idUser",
-                table: "Posts",
-                column: "idUser");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Professors_idUser",
                 table: "Professors",
                 column: "idUser",
@@ -836,11 +809,6 @@ namespace toiec_web.Migrations
                 name: "IX_Reports_idAdmin",
                 table: "Reports",
                 column: "idAdmin");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reports_idPost",
-                table: "Reports",
-                column: "idPost");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reports_idUser",
@@ -977,9 +945,6 @@ namespace toiec_web.Migrations
 
             migrationBuilder.DropTable(
                 name: "VipPackages");
-
-            migrationBuilder.DropTable(
-                name: "Posts");
 
             migrationBuilder.DropTable(
                 name: "Questions");

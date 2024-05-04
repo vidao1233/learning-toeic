@@ -20,7 +20,6 @@ namespace toeic_web.Models
         public virtual DbSet<Lesson> Lessons { get; set; }
         public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<PaymentMethod> PaymentMethods { get; set; }
-        public virtual DbSet<Post> Posts { get; set; }
         public virtual DbSet<Professor> Professors { get; set; }
         public virtual DbSet<Question> Questions { get; set; }
         public virtual DbSet<Quiz> Quizs { get; set; }
@@ -62,14 +61,14 @@ namespace toeic_web.Models
             modelBuilder.Entity<Comment>(entity =>
             {
                 entity.HasKey(s => s.idComment);
-                entity.HasOne(s => s.Post).WithMany(s => s.Comments)
-                    .HasForeignKey(s => s.idPost)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_CommentsOfPost");
                 entity.HasOne(s => s.Users).WithMany(s => s.Comments)
                     .HasForeignKey(s => s.idUser)
-                    .OnDelete(DeleteBehavior.Restrict)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_CommentsOfUser");
+                entity.HasOne(s => s.Lessons).WithMany(s => s.Comments)
+                    .HasForeignKey(s => s.idLesson)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_CommentsOfLesson");
 
             });
             modelBuilder.Entity<Course>(entity =>
@@ -110,15 +109,6 @@ namespace toeic_web.Models
                 entity.HasKey(s => s.idMethod);
                 
             });
-            modelBuilder.Entity<Post>(entity =>
-            {
-                entity.HasKey(s => s.idPost);
-                entity.HasOne(s => s.Users).WithMany(s => s.Posts)
-                    .HasForeignKey(s => s.idUser)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_PostOfUser");
-
-            });
             modelBuilder.Entity<Professor>(entity =>
             {
                 entity.HasKey(s => s.idProfessor);
@@ -154,10 +144,6 @@ namespace toeic_web.Models
             modelBuilder.Entity<Report>(entity =>
             {
                 entity.HasKey(s => s.idReport);
-                entity.HasOne(s => s.Post).WithMany(s => s.Reports)
-                    .HasForeignKey(s => s.idPost)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ReportsOfPost");
                 entity.HasOne(s => s.Users).WithMany(s => s.Reports)
                     .HasForeignKey(s => s.idUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
