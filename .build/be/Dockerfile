@@ -12,7 +12,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["be/toiec-web/toeic-web.csproj", "toiec-web/"]
 RUN dotnet restore "toiec-web/toeic-web.csproj"
-COPY . .
+COPY be/toiec-web .
 WORKDIR "/src/toiec-web"
 RUN dotnet build "toeic-web.csproj" -c Release -o /app/build
 
