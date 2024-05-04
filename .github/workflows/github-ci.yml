@@ -1,0 +1,72 @@
+name: github ci/cd
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push-be:
+    name: Build and Push Docker Image BE
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build BE Docker Image
+        run: docker build -t vidao1233/toeic-web:v1 -f .build/be/Dockerfile .
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: vidao1233
+          password: d@oVi1233
+          # username: ${{ secrets.DOCKER_USERNAME }}
+          # password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push Docker Image
+        run: docker push vidao1233/toeic-web:v1
+
+  build-and-push-fe:
+    name: Build and Push Docker Image FE
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build FE Docker Image
+        run: docker build -t tranngobichdu/toeic-learning-website:v1 -f .build/fe/Dockerfile .
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: tranngobichdu
+          password: du2392002
+          # username: ${{ secrets.DOCKER_USERNAME }}
+          # password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push Docker Image
+        run: docker push tranngobichdu/toeic-learning-website:v1
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build-and-push-be, build-and-push-fe]
+    steps:
+      - name: SSH into the server and deploy Docker
+        uses: appleboy/ssh-action@v0.2.0
+        with:
+          host: 103.130.211.150
+          username: hcmute
+          password: hcmute@fit
+          port: 10038
+          script: |
+            docker-compose -f /project/20110223_20110618/toeicweb/learning-toeic/docker-compose.yml down
+            docker-compose -f /project/20110223_20110618/toeicweb/learning-toeic/docker-compose.yml up --build -d
