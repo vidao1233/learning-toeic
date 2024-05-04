@@ -68,5 +68,6 @@ jobs:
           password: hcmute@fit
           port: 10038
           script: |
-            docker-compose -f docker-compose.yml down
-            docker-compose -f docker-compose.yml up --build -d
+            cd ~/project/20110223_20110618/toeicweb/learning-toeic
+            docker compose -f docker-compose.yml down
+            docker compose -f docker-compose.yml up --build -d
