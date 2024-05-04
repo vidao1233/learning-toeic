@@ -2,6 +2,8 @@
 using toeic_web.Repository.IRepository;
 using toeic_web.Services;
 using toeic_web.Services.IService;
+using toiec_web.Repository;
+using toiec_web.Repository.IRepository;
 using toiec_web.Services;
 using toiec_web.Services.IService;
 
@@ -35,6 +37,7 @@ namespace toeic_web.Infrastructure
             services.AddTransient(typeof(IRecordRepository), typeof(RecordRepository));
             services.AddTransient(typeof(IRecordRepository), typeof(RecordRepository));
             services.AddTransient(typeof(IVipStudentRepository), typeof(VipStudentRepository));
+            services.AddTransient(typeof(ICommentRepository), typeof(CommentRepository));
             return services;
 
         }
@@ -66,6 +69,7 @@ namespace toeic_web.Infrastructure
             services.AddTransient<IVipStudentService, VipStudentService>();
             services.AddScoped< IExcelHelperService, ExcelHelperService > ();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddTransient<ICommentService, CommentService>();
             return services;
         }
     }
