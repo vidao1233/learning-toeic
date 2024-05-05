@@ -69,5 +69,6 @@ jobs:
           port: 10038
           script: |
             cd ~/project/20110223_20110618/toeicweb/learning-toeic
+            git pull origin main
             docker compose -f docker-compose.yml down
             docker compose -f docker-compose.yml up --build -d
