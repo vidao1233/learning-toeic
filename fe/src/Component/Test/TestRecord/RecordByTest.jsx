@@ -64,7 +64,7 @@ function RecordByTest() {
             <button
               className="do-test"
               onClick={() => {
-                navigate(`/do-test/${id}`);
+                 navigate(`/do-test/${id}`);
               }}
             >
               Làm bài thi ngay

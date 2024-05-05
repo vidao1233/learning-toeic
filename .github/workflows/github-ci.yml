@@ -61,12 +61,13 @@ jobs:
     needs: [build-and-push-be, build-and-push-fe]
     steps:
       - name: SSH into the server and deploy Docker
-        uses: appleboy/ssh-action@v0.2.0
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: 103.130.211.150
           username: hcmute
           password: hcmute@fit
           port: 10038
           script: |
-            docker-compose -f /project/20110223_20110618/toeicweb/learning-toeic/docker-compose.yml down
-            docker-compose -f /project/20110223_20110618/toeicweb/learning-toeic/docker-compose.yml up --build -d
+            cd ~/project/20110223_20110618/toeicweb/learning-toeic
+            docker compose -f docker-compose.yml down
+            docker compose -f docker-compose.yml up --build -d
