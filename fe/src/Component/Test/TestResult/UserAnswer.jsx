@@ -78,21 +78,28 @@ function UserAnswer({ id }) {
                   ? "B"
                   : userAnswer.userChoice === "3"
                   ? "C"
-                  : "D"}
+                  : userAnswer.userChoice === "4"
+                  ? "D"
+                  : "Chưa trả lời"}
                 {userAnswer.state ? (
-                  <i className="fa-solid fa-check" style={{ color: "#0cb300" }}></i>
+                  <i
+                    className="fa-solid fa-check"
+                    style={{ color: "#0cb300" }}
+                  ></i>
                 ) : (
                   <i className="fa-solid fa-x" style={{ color: "#ff0000" }}></i>
                 )}
-                <div
-                  onClick={() => {
+                <a
+                  href="/"
+                  onClick={(e) => {
+                    e.preventDefault()
                     setQuestion_num(index + 1);
                     setCurentAnswer(userAnswer);
                     toggleModal();
                   }}
                 >
                   Xem chi tiết
-                </div>
+                </a>
               </div>
             );
           })}
