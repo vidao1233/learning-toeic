@@ -161,6 +161,7 @@ namespace toeic_web.Controllers
             //Checking email confirm
             if (!user.EmailConfirmed)
             {
+                //ResendConfirmEmail(user.Email);
                 return StatusCode(StatusCodes.Status404NotFound,
                      new Response { Status = "Error", Message = $"We have sent EmailConfirm to {user.Email}. Verified your email to Login!" });
             }
@@ -346,10 +347,10 @@ namespace toeic_web.Controllers
 
         [HttpGet]
         [Route("ResendConfirmEmail")]
-        public async Task<IActionResult> ResendConfirmEmail(string email)
+        public async Task<IActionResult> ResendConfirmEmail(string username)
         {
             //check user if exist
-            var userExist = await _userManager.FindByEmailAsync(email);
+            var userExist = await _userManager.FindByNameAsync(username);
 
             if (userExist != null)
             {
@@ -420,13 +421,13 @@ namespace toeic_web.Controllers
                 </body>
                 </html>";
 
-                var message = new Message(new string[] { email! }, "Confirm Email", htmlContent);
+                var message = new Message(new string[] { userExist.Email! }, "Confirm Email", htmlContent);
                 //Đảm bảo rằng bạn đã cấu hình EmailService để chấp nhận nội dung HTML
                 _emailService.SendEmail(message);
 
                 //when success
                 return StatusCode(StatusCodes.Status200OK,
-                    new Response { Status = "Success", Message = $"We have sent EmailConfirm to {email}. Verified your email to Login!" });
+                    new Response { Status = "Success", Message = $"We have sent EmailConfirm to {userExist.Email}. Verified your email to Login!" });
 
             }
             return StatusCode(StatusCodes.Status403Forbidden,
