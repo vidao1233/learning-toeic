@@ -371,7 +371,7 @@ namespace toeic_web.Controllers
                 //var message = new Message(new string[] { email! }, "Confirmation email link", confirmationLink!);
                 //_emailService.SendEmail(message);
 
-                var confirmationLink = Url.Action(nameof(ConfirmEmail), "Authen", new { token, email }, Request.Scheme);
+                var confirmationLink = Url.Action(nameof(ConfirmEmail), "Authen", new { token, userExist.Email }, Request.Scheme);
                 if (confirmationLink != null && confirmationLink.Contains("http://backend"))
                 {
                     confirmationLink = confirmationLink.Replace("http://backend", "https://toeic.workon.space");
