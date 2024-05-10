@@ -805,6 +805,21 @@ namespace toeic_web.Controllers
             }
             return StatusCode(StatusCodes.Status404NotFound);
         }
+        [Authorize]
+        [HttpGet("CurrentUserInfo")]
+        public async Task<IActionResult> CurrentUserInfo()
+        {
+            var userName = HttpContext.User.Identity.Name;
+            var user = await _userManager.FindByNameAsync(userName);
+            var userRole = await _userManager.GetRolesAsync(user);
+            if (user != null)
+            {
+                return Ok(new { 
+                    user = user,
+                    role = userRole });
+            }
+            return StatusCode(StatusCodes.Status404NotFound);
+        }
 
         [HttpPost]
         [Route("Logout")]
