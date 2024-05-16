@@ -10,6 +10,7 @@ namespace toeic_web.Models
         public string name { get; set; }
         public DateTime createDate { get; set; }
         public DateTime useDate { get; set; }
+        public bool? isVip { get; set; }
         public virtual TestType TestType { get; set; }
         public virtual ICollection<TestQuestionUnit> TestQuestionUnits { get; set; }
         public virtual ICollection<TestRecord> TestRecords { get; set; }    
