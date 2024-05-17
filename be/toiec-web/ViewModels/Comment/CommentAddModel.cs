@@ -8,5 +8,6 @@
         public string idUser { get; set; }
         public string content { get; set; }
         public DateTime createdDate { get; set; }
+        public bool isCheck { get; set; }
     }
 }

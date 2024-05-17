@@ -50,7 +50,7 @@ namespace toeic_web.Controllers
             return Ok(voc);
         }
 
-        [Authorize(Roles = "Professor")]
+        //[Authorize(Roles = ("Professor ,VipStudent"))]
         [HttpPost]
         [Route("AddVocabulary")]
         public async Task<IActionResult> AddVocabulary(VocabularyAddModel model, string userId)
@@ -64,7 +64,7 @@ namespace toeic_web.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
-        [Authorize(Roles = "Professor")]
+        //[Authorize(Roles = ("Professor ,VipStudent"))]
         [HttpPut]
         [Route("UpdateVocabulary/{idVoc:guid}&&{userId}")]
         public async Task<IActionResult> UpdateVocabulary(VocabularyUpdateModel model, Guid idVoc, string userId)
@@ -78,7 +78,7 @@ namespace toeic_web.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
-        [Authorize(Roles = "Professor")]
+        //[Authorize(Roles = ("Professor ,VipStudent"))]
         [HttpDelete]
         [Route("DeleteVocabulary/{id:guid}")]
         public async Task<IActionResult> DeleteVocabulary(Guid id)

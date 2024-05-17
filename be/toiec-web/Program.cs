@@ -39,7 +39,12 @@ namespace toeic_web
             //add DBContext
             builder.Services.AddDbContext<ToeicDbContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("Connection"));
+                options.UseSqlServer(
+                    builder.Configuration.GetConnectionString("FixConnection"),
+                    options => options.EnableRetryOnFailure(
+                    maxRetryCount: 5,
+                    maxRetryDelay: System.TimeSpan.FromSeconds(30),
+                    errorNumbersToAdd: null));
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
             //add Identity

@@ -348,6 +348,9 @@ namespace toiec_web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("isCheck")
+                        .HasColumnType("bit");
+
                     b.HasKey("idComment");
 
                     b.HasIndex("idLesson");
@@ -625,6 +628,9 @@ namespace toiec_web.Migrations
                     b.Property<Guid>("idType")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool?>("isVip")
+                        .HasColumnType("bit");
+
                     b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -830,11 +836,12 @@ namespace toiec_web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("idProfessor")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("idTopic")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("idUser")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("meaning")
                         .IsRequired()
@@ -848,9 +855,9 @@ namespace toiec_web.Migrations
 
                     b.HasKey("idVoc");
 
-                    b.HasIndex("idProfessor");
-
                     b.HasIndex("idTopic");
+
+                    b.HasIndex("idUser");
 
                     b.ToTable("Vocabularies");
                 });
@@ -861,8 +868,9 @@ namespace toiec_web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("idProfessor")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("idUser")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("name")
                         .IsRequired()
@@ -870,7 +878,7 @@ namespace toiec_web.Migrations
 
                     b.HasKey("idVocTopic");
 
-                    b.HasIndex("idProfessor");
+                    b.HasIndex("idUser");
 
                     b.ToTable("VocabularyTopics");
                 });
@@ -1239,12 +1247,6 @@ namespace toiec_web.Migrations
 
             modelBuilder.Entity("toeic_web.Models.Vocabulary", b =>
                 {
-                    b.HasOne("toeic_web.Models.Professor", "Professor")
-                        .WithMany("Vocabularies")
-                        .HasForeignKey("idProfessor")
-                        .IsRequired()
-                        .HasConstraintName("FK_VocOfProfessor");
-
                     b.HasOne("toeic_web.Models.VocTopic", "VocTopic")
                         .WithMany("Vocabularies")
                         .HasForeignKey("idTopic")
@@ -1252,20 +1254,26 @@ namespace toiec_web.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_VocOfTopic");
 
-                    b.Navigation("Professor");
+                    b.HasOne("toeic_web.Models.Users", "Users")
+                        .WithMany("Vocabulary")
+                        .HasForeignKey("idUser")
+                        .IsRequired()
+                        .HasConstraintName("FK_VocOfUser");
+
+                    b.Navigation("Users");
 
                     b.Navigation("VocTopic");
                 });
 
             modelBuilder.Entity("toeic_web.Models.VocTopic", b =>
                 {
-                    b.HasOne("toeic_web.Models.Professor", "Professor")
+                    b.HasOne("toeic_web.Models.Users", "Users")
                         .WithMany("VocTopics")
-                        .HasForeignKey("idProfessor")
+                        .HasForeignKey("idUser")
                         .IsRequired()
-                        .HasConstraintName("FK_TopicOfProfessor");
+                        .HasConstraintName("FK_TopicOfUser");
 
-                    b.Navigation("Professor");
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("toeic_web.Data.TestPart", b =>
@@ -1304,10 +1312,6 @@ namespace toiec_web.Migrations
                     b.Navigation("Questions");
 
                     b.Navigation("Tests");
-
-                    b.Navigation("VocTopics");
-
-                    b.Navigation("Vocabularies");
                 });
 
             modelBuilder.Entity("toeic_web.Models.Question", b =>
@@ -1380,6 +1384,10 @@ namespace toiec_web.Migrations
 
                     b.Navigation("Student")
                         .IsRequired();
+
+                    b.Navigation("VocTopics");
+
+                    b.Navigation("Vocabulary");
                 });
 #pragma warning restore 612, 618
         }

@@ -6,6 +6,7 @@ using toeic_web.Models;
 using toeic_web.Services.IService;
 using toeic_web.ViewModels.Payment;
 using static System.Net.WebRequestMethods;
+using System.Globalization;
 
 namespace toeic_web.Controllers
 {
@@ -20,11 +21,13 @@ namespace toeic_web.Controllers
         private readonly IVipPackageService _vipPackageService;
         private readonly IStudentService _studentService;
         private readonly IMapper _mapper;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
 
         public PaymentController(IPaymentService paymentService, IPaymentMethodService paymentMethodService
             , IMapper mapper, IVipPackageService vipPackageService, UserManager<Users> userManager
-            , IVipStudentService vipStudentService, ToeicDbContext dbContext, IStudentService studentService)
+            , IVipStudentService vipStudentService, ToeicDbContext dbContext, IStudentService studentService,
+            RoleManager<IdentityRole> roleManager)
         {
             _paymentService = paymentService;
             _paymentMethodService = paymentMethodService;
@@ -34,7 +37,8 @@ namespace toeic_web.Controllers
             _dbContext = dbContext;
             _vipPackageService = vipPackageService;
             _studentService = studentService;
-            
+            _roleManager = roleManager;
+
         }
         [Authorize]
         [HttpPost]
@@ -220,8 +224,19 @@ namespace toeic_web.Controllers
         public async Task<IActionResult> GetExpireTimeVipStudent(string userId)
         {
             var data = await _paymentService.GetExpireTimeVipStudent(userId);
-            if (data != null)
-            {
+            if (data != null) {
+                // Chuyển đổi chuỗi ngày thành DateTime để kiểm tra
+                DateTime vipExpireDate;
+                if (DateTime.TryParseExact(data, "M/d/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out vipExpireDate))
+                {
+                    bool isExpired = vipExpireDate <= DateTime.UtcNow;
+                    var user = await _userManager.FindByIdAsync(userId);
+                    if (isExpired)
+                    {
+                       await  _userManager.RemoveFromRoleAsync(user, "VipStudent");
+                    }
+                    return Ok(new { vipExpire = "Bạn không còn là Vip, hãy gia hạn thêm thời gian để trải nghiệm !" });
+                }
                 return Ok(new {vipExpire = data});
             }
             return Ok(null);

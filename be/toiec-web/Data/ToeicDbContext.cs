@@ -259,18 +259,18 @@ namespace toeic_web.Models
                     .HasForeignKey(s => s.idTopic)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_VocOfTopic");
-                entity.HasOne(s => s.Professor).WithMany(s => s.Vocabularies)
-                    .HasForeignKey(s => s.idProfessor)
+                entity.HasOne(s => s.Users).WithMany(s => s.Vocabulary)
+                    .HasForeignKey(s => s.idUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_VocOfProfessor");
+                    .HasConstraintName("FK_VocOfUser");
             });
             modelBuilder.Entity<VocTopic>(entity =>
             {
                 entity.HasKey(s => s.idVocTopic);
-                entity.HasOne(s => s.Professor).WithMany(s => s.VocTopics)
-                    .HasForeignKey(s => s.idProfessor)
+                entity.HasOne(s => s.Users).WithMany(s => s.VocTopics)
+                    .HasForeignKey(s => s.idUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TopicOfProfessor");
+                    .HasConstraintName("FK_TopicOfUser");
             });
             modelBuilder.Entity<ScoreParam>(entity =>
             {

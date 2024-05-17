@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.SqlServer.Management.Smo;
 using toeic_web.Infrastructure;
 using toeic_web.Models;
 using toeic_web.Repository.IRepository;
@@ -11,26 +12,25 @@ namespace toeic_web.Repository
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
         private readonly IProfessorRepository _professorRepository;
+        private readonly IVocTopicRepository _topicRepository;
 
         public VocabularyRepository(ToeicDbContext dbContext, IUnitOfWork uow, IMapper mapper,
-            IProfessorRepository professorRepository) 
+            IProfessorRepository professorRepository, IVocTopicRepository vocTopicRepository) 
             : base(dbContext)
         {
             _uow = uow;
             _mapper = mapper;
             _professorRepository = professorRepository;
+            _topicRepository = vocTopicRepository;
         }
 
         public async Task<bool> AddVocabulary(VocabularyModel model, string userId)
         {
             try
-            {
-                //get professor by userId
-                var professor = await _professorRepository.GetProfessorByUserId(userId);
-
+            {               
                 var voc = _mapper.Map<Vocabulary>(model);
                 voc.idVoc = Guid.NewGuid();
-                voc.idProfessor = professor.idProfessor;
+                voc.idUser = userId;
                 Entities.Add(voc);
                 _uow.SaveChanges();
                 return true;
@@ -98,12 +98,9 @@ namespace toeic_web.Repository
         {
             try
             {
-                //get professor by userId
-                var professor = await _professorRepository.GetProfessorByUserId(userId);
-
                 var voc = _mapper.Map<Vocabulary>(model);
                 voc.idVoc = vocId;
-                voc.idProfessor = professor.idProfessor;
+                voc.idUser = userId;
                 Entities.Update(voc);
                 _uow.SaveChanges();
                 return true;

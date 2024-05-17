@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace toiec_web.Migrations
 {
-    public partial class addcomment : Migration
+    public partial class updatevocabulary : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -280,6 +280,24 @@ namespace toiec_web.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "VocabularyTopics",
+                columns: table => new
+                {
+                    idVocTopic = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idUser = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VocabularyTopics", x => x.idVocTopic);
+                    table.ForeignKey(
+                        name: "FK_TopicOfUser",
+                        column: x => x.idUser,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Reports",
                 columns: table => new
                 {
@@ -356,7 +374,8 @@ namespace toiec_web.Migrations
                     idProfessor = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     createDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    useDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    useDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    isVip = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -371,24 +390,6 @@ namespace toiec_web.Migrations
                         column: x => x.idType,
                         principalTable: "TestTypes",
                         principalColumn: "idTestType");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "VocabularyTopics",
-                columns: table => new
-                {
-                    idVocTopic = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idProfessor = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VocabularyTopics", x => x.idVocTopic);
-                    table.ForeignKey(
-                        name: "FK_TopicOfProfessor",
-                        column: x => x.idProfessor,
-                        principalTable: "Professors",
-                        principalColumn: "idProfessor");
                 });
 
             migrationBuilder.CreateTable(
@@ -408,6 +409,34 @@ namespace toiec_web.Migrations
                         principalTable: "Students",
                         principalColumn: "idStudent",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Vocabularies",
+                columns: table => new
+                {
+                    idVoc = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idTopic = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idUser = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    engWord = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    pronunciation = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    wordType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    meaning = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Vocabularies", x => x.idVoc);
+                    table.ForeignKey(
+                        name: "FK_VocOfTopic",
+                        column: x => x.idTopic,
+                        principalTable: "VocabularyTopics",
+                        principalColumn: "idVocTopic",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_VocOfUser",
+                        column: x => x.idUser,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -528,34 +557,6 @@ namespace toiec_web.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Vocabularies",
-                columns: table => new
-                {
-                    idVoc = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idTopic = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idProfessor = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    engWord = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    pronunciation = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    wordType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    meaning = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Vocabularies", x => x.idVoc);
-                    table.ForeignKey(
-                        name: "FK_VocOfProfessor",
-                        column: x => x.idProfessor,
-                        principalTable: "Professors",
-                        principalColumn: "idProfessor");
-                    table.ForeignKey(
-                        name: "FK_VocOfTopic",
-                        column: x => x.idTopic,
-                        principalTable: "VocabularyTopics",
-                        principalColumn: "idVocTopic",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Comments",
                 columns: table => new
                 {
@@ -564,7 +565,8 @@ namespace toiec_web.Migrations
                     idCommentReply = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     idUser = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    isCheck = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -878,19 +880,19 @@ namespace toiec_web.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vocabularies_idProfessor",
-                table: "Vocabularies",
-                column: "idProfessor");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Vocabularies_idTopic",
                 table: "Vocabularies",
                 column: "idTopic");
 
             migrationBuilder.CreateIndex(
-                name: "IX_VocabularyTopics_idProfessor",
+                name: "IX_Vocabularies_idUser",
+                table: "Vocabularies",
+                column: "idUser");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VocabularyTopics_idUser",
                 table: "VocabularyTopics",
-                column: "idProfessor");
+                column: "idUser");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
