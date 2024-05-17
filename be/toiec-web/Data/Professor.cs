@@ -7,8 +7,6 @@
         public virtual Users Users { get; set; }
         public virtual ICollection<Course> Courses { get; set; }
         public virtual ICollection<Question> Questions { get; set; }
-        public virtual ICollection<Vocabulary> Vocabularies { get; set; }
-        public virtual ICollection<VocTopic> VocTopics { get; set; }
         public virtual ICollection<Test> Tests { get; set; }
     }
 }

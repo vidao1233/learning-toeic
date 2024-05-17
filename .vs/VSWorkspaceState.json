@@ -5,6 +5,6 @@
     "\\be\\toiec-web",
     "\\be\\toiec-web\\Controllers"
   ],
-  "SelectedNode": "\\be\\toiec-web.sln",
+  "SelectedNode": "\\be\\toiec-web\\Controllers\\PaymentController.cs",
   "PreviewInSolutionExplorer": false
 }
