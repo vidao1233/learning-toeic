@@ -13,17 +13,12 @@ namespace toeic_web.Repository
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
-        private readonly IProfessorRepository _professorRepository;
-        private readonly IVocabularyRepository _vocabularyRepository;
 
-        public VocTopicRepository(ToeicDbContext dbContext, IUnitOfWork uow, IMapper mapper,
-            IProfessorRepository professorRepository, IVocabularyRepository vocabularyRepository) 
+        public VocTopicRepository(ToeicDbContext dbContext, IUnitOfWork uow, IMapper mapper) 
             : base(dbContext)
         {
             _uow = uow;
             _mapper = mapper;
-            _professorRepository = professorRepository;
-            _vocabularyRepository = vocabularyRepository;
         }
 
         public async Task<bool> AddVocTopic(VocTopicModel model, string userId)
