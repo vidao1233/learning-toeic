@@ -47,7 +47,7 @@ namespace toeic_web.Controllers
             return Ok(topic);
         }
 
-        [Authorize(Roles = ("Professor ,VipStudent"))]
+        [Authorize]
         [HttpPost]
         [Route("AddVocTopic")]
         public async Task<IActionResult> AddVocTopic(VocTopicAddModel model, string userId)
@@ -61,7 +61,7 @@ namespace toeic_web.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
-        [Authorize(Roles = ("Professor ,VipStudent"))]
+        [Authorize]
         [HttpPut]
         [Route("UpdateVocTopic/{idTopic:guid}&&{userId}")]
         public async Task<IActionResult> UpdateVocTopic(VocTopicUpdateModel model, Guid idTopic, string userId)
@@ -75,7 +75,7 @@ namespace toeic_web.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
-        [Authorize(Roles = ("Professor ,VipStudent"))]
+        [Authorize]
         [HttpDelete]
         [Route("DeleteVocTopic/{id:guid}")]
         public async Task<IActionResult> DeleteVocTopic(Guid id)
