@@ -68,6 +68,28 @@ namespace toiec_web.Repository
             }
         }
 
+        public async Task<IEnumerable<CommentModel>> GetCommentFalseCheck()
+        {
+            try
+            {
+                var listData = new List<CommentModel>();
+                var data = await Entities.OrderBy(ls => ls.createdDate).ToListAsync();
+                foreach (var comment in data)
+                {
+                    if (comment.isCheck == false)
+                    {
+                        var obj = _mapper.Map<CommentModel>(comment);
+                        listData.Add(obj);
+                    }
+                }
+                return listData;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<IEnumerable<CommentModel>> GetCommentFirst(Guid idLesson)
         {
             try

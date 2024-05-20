@@ -95,6 +95,21 @@ namespace toiec_web.Services
             }
         }
 
+        public async Task<IEnumerable<CommentModel>> GetCommentFalseCheck()
+        {
+            var data = await _commentRepository.GetCommentFalseCheck();
+            var listData = new List<CommentModel>();
+            if (data != null)
+            {
+                foreach (var comment in data)
+                {
+                    var obj = _mapper.Map<CommentModel>(comment);
+                    listData.Add(obj);
+                }
+            }
+            return listData;
+        }
+
         public Task<bool> UpdateComment(CommentUpdateModel model, Guid idComment)
         {
             try

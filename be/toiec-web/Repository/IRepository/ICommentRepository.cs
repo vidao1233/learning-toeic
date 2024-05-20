@@ -4,6 +4,7 @@ namespace toiec_web.Repository.IRepository
 {
     public interface ICommentRepository
     {
+        Task<IEnumerable<CommentModel>> GetCommentFalseCheck();
         Task<IEnumerable<CommentModel>> GetCommentFirst(Guid idLesson);
         Task<IEnumerable<CommentModel>> GetCommentSecond(Guid idComment);
         Task<bool> AddComment(CommentModel model);
