@@ -15,6 +15,18 @@ namespace toiec_web.Controllers
         }
 
         [HttpGet]
+        [Route("GetFalseComment")]
+        public async Task<IActionResult> GetFalseComment()
+        {
+            var response = await _commentService.GetCommentFalseCheck();
+            if (response == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+            return Ok(response);
+        }
+
+        [HttpGet]
         [Route("GetComment")]
         public async Task<IActionResult> GetComment(Guid idLesson)
         {
