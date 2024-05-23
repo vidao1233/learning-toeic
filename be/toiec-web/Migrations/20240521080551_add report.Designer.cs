@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using toeic_web.Models;
 
@@ -11,9 +12,10 @@ using toeic_web.Models;
 namespace toiec_web.Migrations
 {
     [DbContext(typeof(ToeicDbContext))]
-    partial class ToeicDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240521080551_add report")]
+    partial class addreport
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -348,7 +350,7 @@ namespace toiec_web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool>("isDeleted")
+                    b.Property<bool>("isCheck")
                         .HasColumnType("bit");
 
                     b.HasKey("idComment");
@@ -566,7 +568,7 @@ namespace toiec_web.Migrations
                     b.Property<string>("checkNote")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("commentDeleted")
+                    b.Property<bool>("commentCheck")
                         .HasColumnType("bit");
 
                     b.Property<Guid>("idComment")

@@ -148,10 +148,10 @@ namespace toeic_web.Models
                     .HasForeignKey(s => s.idUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ReportsOfUser");
-                entity.HasOne(s => s.Admin).WithMany(s => s.Reports)
-                    .HasForeignKey(s => s.idAdmin)
+                entity.HasOne(s => s.Comment).WithMany(s => s.Reports)
+                    .HasForeignKey(s => s.idComment)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_AdminCheckReport");
+                    .HasConstraintName("FK_ReportOfComment");
 
             });
             modelBuilder.Entity<Student>(entity =>
