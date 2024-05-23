@@ -38,6 +38,7 @@ namespace toeic_web.Infrastructure
             services.AddTransient(typeof(IRecordRepository), typeof(RecordRepository));
             services.AddTransient(typeof(IVipStudentRepository), typeof(VipStudentRepository));
             services.AddTransient(typeof(ICommentRepository), typeof(CommentRepository));
+            services.AddTransient(typeof(IReportRepository), typeof(ReportRepository));
             return services;
 
         }
@@ -70,6 +71,7 @@ namespace toeic_web.Infrastructure
             services.AddScoped< IExcelHelperService, ExcelHelperService > ();
             services.AddScoped<IEmailService, EmailService>();
             services.AddTransient<ICommentService, CommentService>();
+            services.AddTransient<IReportService, ReportService>();
             return services;
         }
     }

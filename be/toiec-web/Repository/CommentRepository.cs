@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.SqlServer.Management.Smo;
 using Microsoft.SqlServer.Management.XEvent;
+using System.Collections.Generic;
 using toeic_web.Infrastructure;
 using toeic_web.Models;
 using toiec_web.Models;
@@ -68,6 +69,27 @@ namespace toiec_web.Repository
             }
         }
 
+        public async Task<CommentModel> GetCommentById(Guid idComment)
+        {
+            try
+            {
+                IAsyncEnumerable<Comment> cmts = Entities.AsAsyncEnumerable();
+                await foreach (var cmt in cmts)
+                {
+                    if (cmt.idComment == idComment)
+                    {
+                        var data = _mapper.Map<CommentModel>(cmt);
+                        return data;
+                    }
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<IEnumerable<CommentModel>> GetCommentFalseCheck()
         {
             try
@@ -76,7 +98,7 @@ namespace toiec_web.Repository
                 var data = await Entities.OrderBy(ls => ls.createdDate).ToListAsync();
                 foreach (var comment in data)
                 {
-                    if (comment.isCheck == false)
+                    if (comment.isDeleted == false)
                     {
                         var obj = _mapper.Map<CommentModel>(comment);
                         listData.Add(obj);
@@ -98,7 +120,7 @@ namespace toiec_web.Repository
                 var data = await Entities.OrderBy(ls => ls.createdDate).ToListAsync();
                 foreach (var comment in data)
                 {
-                    if (comment.idLesson == idLesson && comment.idCommentReply == null)
+                    if (comment.idLesson == idLesson && comment.idCommentReply == null && comment.isDeleted == false)
                     {
                         var obj = _mapper.Map<CommentModel>(comment);
                         listData.Add(obj);
@@ -117,7 +139,7 @@ namespace toiec_web.Repository
             try
             {
                 var listData = new List<CommentModel>();
-                var data = await Entities.Where(comment => comment.idCommentReply == idComment)
+                var data = await Entities.Where(comment => comment.idCommentReply == idComment && comment.isDeleted == false)
                                           .OrderBy(comment => comment.createdDate)
                                           .ToListAsync();
                 foreach (var comment in data)
@@ -163,6 +185,22 @@ namespace toiec_web.Repository
             {
                 var cmt = _mapper.Map<Comment>(model);
                 cmt.idComment = idComment;
+                Entities.Update(cmt);
+                _uow.SaveChanges();
+                return Task.FromResult(true);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public Task<bool> UpdateReportComment(CommentModel model, Guid idComment, bool isDeleted)
+        {
+            try
+            {
+                var cmt = _mapper.Map<Comment>(model);
+                cmt.idComment = idComment;
+                cmt.isDeleted = isDeleted;
                 Entities.Update(cmt);
                 _uow.SaveChanges();
                 return Task.FromResult(true);

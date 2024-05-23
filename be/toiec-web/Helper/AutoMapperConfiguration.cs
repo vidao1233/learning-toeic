@@ -20,6 +20,7 @@ using toeic_web.ViewModels.DoTest;
 using toiec_web.Models;
 using toiec_web.ViewModels.Comment;
 using Microsoft.EntityFrameworkCore.Internal;
+using toiec_web.ViewModels.Report;
 
 namespace toeic_web.Helper
 {
@@ -39,6 +40,13 @@ namespace toeic_web.Helper
             CreateMap<CommentModel, CommentAddModel>().ReverseMap();
             CreateMap<CommentModel, CommentUpdateModel>().ReverseMap();
             CreateMap<CommentModel, FirstCommentViewModel>().ReverseMap();
+            #endregion
+            CreateMap<Report, ReportModel>().ReverseMap();
+            CreateMap<ReportModel, ReportViewModel>().ReverseMap();
+            CreateMap<ReportModel, ReportAddModel>().ReverseMap();
+            CreateMap<ReportModel, ReportUpdateModel>().ReverseMap();
+            #region Report
+
             #endregion
 
             #region User

@@ -8,8 +8,9 @@
         public string idUser { get; set; }
         public string content { get; set; }
         public DateTime createdDate { get; set; }
-        public bool isCheck {  get; set; }
+        public bool isDeleted {  get; set; }
         public virtual Users Users { get; set; }
         public virtual Lesson Lessons { get; set; }
+        public virtual ICollection<Report> Reports { get; set; }
     }
 }

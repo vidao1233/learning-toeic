@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using toeic_web.Models;
 
@@ -11,9 +12,10 @@ using toeic_web.Models;
 namespace toiec_web.Migrations
 {
     [DbContext(typeof(ToeicDbContext))]
-    partial class ToeicDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240523071256_update comment")]
+    partial class updatecomment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -3,8 +3,9 @@
     "",
     "\\be",
     "\\be\\toiec-web",
-    "\\be\\toiec-web\\Controllers"
+    "\\be\\toiec-web\\Controllers",
+    "\\be\\toiec-web\\Repository"
   ],
-  "SelectedNode": "\\be\\toiec-web\\Controllers\\PaymentController.cs",
+  "SelectedNode": "\\be\\toiec-web\\Repository\\ReportRepository.cs",
   "PreviewInSolutionExplorer": false
 }
