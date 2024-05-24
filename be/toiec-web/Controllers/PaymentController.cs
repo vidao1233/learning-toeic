@@ -235,7 +235,6 @@ namespace toeic_web.Controllers
                     {
                        await  _userManager.RemoveFromRoleAsync(user, "VipStudent");
                     }
-                    return Ok(new { vipExpire = "Bạn không còn là Vip, hãy gia hạn thêm thời gian để trải nghiệm !" });
                 }
                 return Ok(new {vipExpire = data});
             }
