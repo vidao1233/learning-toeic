@@ -10,9 +10,12 @@ import Loader from "../../Common/Loader/Loader";
 import { toast } from "react-toastify";
 import HTMLReactParser from "html-react-parser";
 import Comment from "./Comment/Comment";
+import { UserContext } from "../../../Context/UserContext";
 
 function Lesson() {
   const { id } = useParams();
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const [other_lessons, setOtherLesson] = useState([]);
   const [current_lesson, setCurrentLesson] = useState({});
@@ -130,7 +133,9 @@ function Lesson() {
   if (isLoading) {
     return <Loader />;
   }
-
+  if (current_lesson?.isVip && user.idUser && user.role[1] !== "VipStudent") {
+    navigate("/vippackage");
+  }
   return (
     <div className="lesson-wrapper">
       <Heading subtitle="VictoryU" title="TOEIC BASIC" />
@@ -199,7 +204,7 @@ function Lesson() {
               />
             )}
           </div>
-          <Comment id={id}/>
+          <Comment id={id} />
         </div>
       </div>
     </div>
