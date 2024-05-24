@@ -1,0 +1,18 @@
+export const THRESHOLDS = {
+  Toxic: 0.4,
+  Insult: 0.4,
+  Profanity: 0.4,
+  Derogatory: 0.4,
+  Sexual: 0.4,
+  "Death, Harm & Tragedy": 0.4,
+  Violent: 0.4,
+  "Firearms & Weapons": 0.4,
+  "Public Safety": 0.4,
+  Health: 0.4,
+  "Religion & Belief": 0.4,
+  "Illicit Drugs": 0.4,
+  "War & Conflict": 0.4,
+  Politics: 0.4,
+  Finance: 0.4,
+  Legal: 0.4,
+};
