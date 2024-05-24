@@ -27,37 +27,57 @@ function Comment({ id }) {
     const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
     return formattedDateTime;
   }
-
-  const handleInsertNode = async (inserted_node) => {
+  const checkValidateComment = async (content) => {
     try {
-      setIsLoading(true);
-      const myDate = formatDateTime();
-      const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL ?? "/api"}/Comment/AddComment`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            idLesson: inserted_node.idLesson,
-            idUser: inserted_node.idUser,
-            content: inserted_node.content,
-            idCommentReply: inserted_node.idCommentReply,
-            createdDate: myDate,
-          }),
-        }
-      );
-      setIsLoading(false);
-      if (!response.ok) {
-        const errorData = await response.json();
-        toast.error(`${errorData.message}`);
-      } else {
-        handleSetCommentData();
-      }
+      const response = await fetch("http://localhost:5000/analyze-sentiment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: content }),
+      });
+
+      const data = await response.json();
+      if (data?.score > -0.1) return true;
+      else return false;
     } catch (error) {
-      toast.error(`${error}`);
+      console.error("Error analyzing sentiment:", error);
     }
+  };
+  const handleInsertNode = async (inserted_node) => {
+    const checked = await checkValidateComment(inserted_node.content);
+    console.log(checked);
+    // const checked = await checkValidateComment(inserted_node.content);
+    // try {
+    //   setIsLoading(true);
+    //   const myDate = formatDateTime();
+    //   const response = await fetch(
+    //     `${process.env.REACT_APP_API_BASE_URL ?? "/api"}/Comment/AddComment`,
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify({
+    //         idLesson: inserted_node.idLesson,
+    //         idUser: inserted_node.idUser,
+    //         content: inserted_node.content,
+    //         idCommentReply: inserted_node.idCommentReply,
+    //         createdDate: myDate,
+    //         isCheck: checked,
+    //       }),
+    //     }
+    //   );
+    //   setIsLoading(false);
+    //   if (!response.ok) {
+    //     const errorData = await response.json();
+    //     toast.error(`${errorData.message}`);
+    //   } else {
+    //     handleSetCommentData();
+    //   }
+    // } catch (error) {
+    //   toast.error(`${error}`);
+    // }
   };
 
   const handleEditNode = async (edited_comment) => {
@@ -181,6 +201,7 @@ function Comment({ id }) {
               idUser: user.idUser,
               content: input,
             });
+            setInput("");
           }}
         />
       </div>
