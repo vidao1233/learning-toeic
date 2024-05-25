@@ -8,5 +8,6 @@
         public string name { get; set; }
         public DateTime createDate { get; set; }
         public DateTime useDate { get; set; }
+        public bool? isVip { get; set; }
     }
 }
