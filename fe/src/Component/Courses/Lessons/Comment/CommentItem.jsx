@@ -97,6 +97,7 @@ function CommentItem({
                     content: e.currentTarget.value,
                   });
                 }}
+                disabled={!editMode}
                 id={`content_${currentComent.idComment}`}
               ></input>
               <div className="flex">
@@ -106,7 +107,8 @@ function CommentItem({
                       className="text-xs p-2 rounded-md text-gray-700 font-semibold cursor-pointer"
                       onClick={() => {
                         setEditMode(false);
-                        handleEdit();
+                        if (comment.content) handleEdit();
+                        else setCurrentComent(comment.firstComment ?? comment);
                       }}
                     >
                       SAVE

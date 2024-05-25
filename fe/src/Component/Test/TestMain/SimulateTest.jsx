@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import css from "./test-main.module.scss";
 import Loader from "../../Common/Loader/Loader.jsx";
 import HTMLReactParser from "html-react-parser";
@@ -7,7 +7,7 @@ import { UserContext } from "../../../Context/UserContext.jsx";
 import { toast } from "react-toastify";
 import { TestCancel, showSubmitWarning } from "../../Common/Alert/Alert.jsx";
 
-function SimulateTest({id}) {
+function SimulateTest({ id }) {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -20,7 +20,6 @@ function SimulateTest({id}) {
   const [testdata, setTestdata] = useState([]);
   const [testType, setTestType] = useState("");
   const [answers, setAnswers] = useState([]);
-  const [freeTest, setFreeTest] = useState(true);
 
   let question_num = 0;
   let navigate_num = 0;
@@ -97,12 +96,6 @@ function SimulateTest({id}) {
       fetchTestType();
     }
   }, []);
-
-  useEffect(() => {
-    if (user.idUser) {
-      fetchFreeTest();
-    }
-  }, [user]);
 
   useEffect(() => {
     if (current_question !== 0) {
@@ -196,41 +189,10 @@ function SimulateTest({id}) {
       toast.error(`${error}`);
     }
   }
-  async function fetchFreeTest() {
-    setIsLoading(true);
-    try {
-      const response = await fetch(
-        `${
-          process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/Student/CheckFreeTest/${user.idUser}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-        }
-      );
-      setIsLoading(false);
-      if (!response.ok) {
-        const errorData = await response.json();
-        toast.error(`${errorData.message}`);
-      } else {
-        const data = await response.text();
-        if (data === "true") {
-          setFreeTest(true);
-        } else {
-          setFreeTest(false);
-        }
-      }
-    } catch (error) {
-      toast.error(`${error}`);
-    }
-  }
   async function SubmitTest() {
     setIsLoading(true);
     localStorage.removeItem(`expirationTime_${id}`);
-    localStorage.removeItem(`test_answer_${id}`);
+    localStorage.removeItem(`test_answer_${user.idUser}`);
     try {
       const response = await fetch(
         `${
@@ -345,8 +307,8 @@ function SimulateTest({id}) {
       setCurrentPart(current_part - 1);
     }
   }
-  if (!user.auth) {
-    navigate("/login");
+  if (user.idUser && user.role[1] !== "VipStudent") {
+    navigate("/vippackage");
   }
   if (isLoading) {
     return <Loader fullLoad={true} />;
@@ -572,7 +534,7 @@ function SimulateTest({id}) {
           onClick={() => {
             TestCancel(() => {
               localStorage.removeItem(`expirationTime_${id}`);
-              localStorage.removeItem(`test_answer_${id}`);
+              localStorage.removeItem(`test_answer_${user.idUser}`);
               navigate(`/test/${id}`);
             });
           }}

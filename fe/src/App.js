@@ -44,6 +44,7 @@ import RecordByTest from "./Component/Test/TestRecord/RecordByTest";
 import UserPrivate from "./Component/Common/Layout/UserPrivate";
 import EmailVerify from "./Component/Login/MailVerify/EmailVerify";
 import TestResult from "./Component/Test/TestResult/TestResult";
+import CommentManage from "./Component/AdminComponent/CommentManage/CommentManage";
 
 function App() {
   return (
@@ -79,11 +80,7 @@ function App() {
             />
             <Route exact path="/test" element={<TestIndex />} />
             <Route exact path="/test/type/:id" element={<TestList />} />
-            <Route
-              exact
-              path="/test/result/:id"
-              element={<TestResult />}
-            />
+            <Route exact path="/test/result/:id" element={<TestResult />} />
             <Route exact path="/forgot-password" element={<ForgotPassword />} />
 
             <Route element={<UserPrivate />}>
@@ -200,6 +197,11 @@ function App() {
                 exact
                 path="admin/vip-package/update/:idPackage"
                 element={<UpdateVipPackage />}
+              />
+              <Route
+                exact
+                path="admin/comment-manage"
+                element={<CommentManage />}
               />
             </Route>
           </Routes>

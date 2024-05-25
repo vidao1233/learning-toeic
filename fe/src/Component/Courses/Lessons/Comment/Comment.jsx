@@ -3,6 +3,7 @@ import { UserContext } from "../../../../Context/UserContext";
 import CommentItem from "./CommentItem";
 import { toast } from "react-toastify";
 import Loader from "../../../Common/Loader/Loader";
+import { THRESHOLDS } from "../../../../constant/thresholds";
 
 function Comment({ id }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -27,71 +28,108 @@ function Comment({ id }) {
     const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
     return formattedDateTime;
   }
-
-  const handleInsertNode = async (inserted_node) => {
+  const checkValidateComment = async (content) => {
     try {
-      setIsLoading(true);
-      const myDate = formatDateTime();
       const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL ?? "/api"}/Comment/AddComment`,
+        "https://us-central1-lucid-vector-424107-f8.cloudfunctions.net/moderateText",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            idLesson: inserted_node.idLesson,
-            idUser: inserted_node.idUser,
-            content: inserted_node.content,
-            idCommentReply: inserted_node.idCommentReply,
-            createdDate: myDate,
-          }),
+          body: JSON.stringify({ text: content }),
         }
       );
-      setIsLoading(false);
-      if (!response.ok) {
-        const errorData = await response.json();
-        toast.error(`${errorData.message}`);
-      } else {
-        handleSetCommentData();
+
+      const data = await response.json();
+      const result = data.result;
+      for (const category of result) {
+        if (category.confidence >= THRESHOLDS[category.name]) {
+          return false;
+        }
       }
+      return true;
     } catch (error) {
-      toast.error(`${error}`);
+      console.error("Error analyzing sentiment:", error);
     }
+  };
+  const handleInsertNode = async (inserted_node) => {
+    const checked = await checkValidateComment(inserted_node.content);
+    if (checked)
+      try {
+        setIsLoading(true);
+        const myDate = formatDateTime();
+        const response = await fetch(
+          `${process.env.REACT_APP_API_BASE_URL ?? "/api"}/Comment/AddComment`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              idLesson: inserted_node.idLesson,
+              idUser: inserted_node.idUser,
+              content: inserted_node.content,
+              idCommentReply: inserted_node.idCommentReply,
+              createdDate: myDate,
+              isDeleted: false,
+            }),
+          }
+        );
+        setIsLoading(false);
+        if (!response.ok) {
+          const errorData = await response.json();
+          toast.error(`${errorData.message}`);
+        } else {
+          handleSetCommentData();
+        }
+      } catch (error) {
+        toast.error(`${error}`);
+      }
+    else
+      toast.error(
+        `Bình luận "${inserted_node.content}" của bạn có nội dung không phù hợp.`
+      );
   };
 
   const handleEditNode = async (edited_comment) => {
-    try {
-      setIsLoading(true);
-      const myDate = formatDateTime();
-      const response = await fetch(
-        `${
-          process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/Comment/UpdateComment?idComment=${edited_comment.idComment}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            idLesson: edited_comment.idLesson,
-            idUser: edited_comment.idUser,
-            content: edited_comment.content,
-            idCommentReply: edited_comment.idCommentReply,
-            createdDate: myDate,
-          }),
+    const checked = await checkValidateComment(edited_comment.content);
+    if (checked)
+      try {
+        setIsLoading(true);
+        const myDate = formatDateTime();
+        const response = await fetch(
+          `${
+            process.env.REACT_APP_API_BASE_URL ?? "/api"
+          }/Comment/UpdateComment?idComment=${edited_comment.idComment}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              idLesson: edited_comment.idLesson,
+              idUser: edited_comment.idUser,
+              content: edited_comment.content,
+              idCommentReply: edited_comment.idCommentReply,
+              createdDate: myDate,
+            }),
+          }
+        );
+        setIsLoading(false);
+        if (!response.ok) {
+          const errorData = await response.json();
+          toast.error(`${errorData.message}`);
+        } else {
+          handleSetCommentData();
         }
-      );
-      setIsLoading(false);
-      if (!response.ok) {
-        const errorData = await response.json();
-        toast.error(`${errorData.message}`);
-      } else {
-        handleSetCommentData();
+      } catch (error) {
+        toast.error(`${error}`);
       }
-    } catch (error) {
-      toast.error(`${error}`);
-    }
+    else
+      toast.error(
+        `Bình luận "${edited_comment.content}" của bạn có nội dung không phù hợp.`
+      );
   };
 
   const handleDeleteNode = async (edited_id) => {
@@ -181,6 +219,7 @@ function Comment({ id }) {
               idUser: user.idUser,
               content: input,
             });
+            setInput("");
           }}
         />
       </div>

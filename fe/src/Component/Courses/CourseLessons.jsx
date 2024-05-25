@@ -1,15 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./CourseLessons.css";
 import Heading from "../Common/Header/Heading";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Loader from "../Common/Loader/Loader";
 import { toast } from "react-toastify";
+import { UserContext } from "../../Context/UserContext";
 
 function CourseLessons() {
   const [lessons, setLessons] = useState([]);
   const { id } = useParams();
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
   const [current_course, setCurrentCourse] = useState({});
   const [other_courses, setOtherCourses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -57,7 +60,9 @@ function CourseLessons() {
     fetchLessons();
     fetchOtherCourses();
   }, [id]);
-
+  if (current_course?.isVip && user.idUser && user.role[1] !== "VipStudent") {
+    navigate("/vippackage");
+  }
   return (
     <div>
       <div className="course-lesson-wrapper">
