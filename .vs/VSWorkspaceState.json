@@ -8,6 +8,6 @@
     "\\be\\toiec-web\\ViewModels",
     "\\be\\toiec-web\\ViewModels\\Test"
   ],
-  "SelectedNode": "\\be\\toiec-web\\ViewModels\\Test\\TestUpdateModel.cs",
+  "SelectedNode": "\\be\\toiec-web\\Repository\\CommentRepository.cs",
   "PreviewInSolutionExplorer": false
 }

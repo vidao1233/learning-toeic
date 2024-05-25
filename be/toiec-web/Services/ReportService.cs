@@ -14,13 +14,15 @@ namespace toiec_web.Services
         private readonly IReportRepository _reportRepository;
         private readonly IMapper _mapper;
         private readonly ICommentRepository _commentRepository;
+        private readonly UserManager<Users> _userManager;
 
         public ReportService(IReportRepository reportRepository, IMapper mapper,
-            ICommentRepository commentRepository)
+            ICommentRepository commentRepository, UserManager<Users> userManager)
         {
             _reportRepository = reportRepository;
             _mapper = mapper;
             _commentRepository = commentRepository;
+            _userManager = userManager;
         }
         public Task<bool> AddReport(ReportAddModel model)
         {
@@ -55,7 +57,14 @@ namespace toiec_web.Services
             {
                 foreach (var report in data)
                 {
+                    var cmt = await _commentRepository.GetCommentById(report.idComment);
+                    var reporter = await _userManager.FindByIdAsync(report.idUser);
+                    var accused = await _userManager.FindByIdAsync(cmt.idUser);
+
                     var obj = _mapper.Map<ReportViewModel>(report);
+                    obj.reporterUsername = reporter.UserName;
+                    obj.accusedUsername = accused.UserName;
+                    obj.content = cmt.content;
                     listData.Add(obj);
                 }
             }
@@ -70,7 +79,14 @@ namespace toiec_web.Services
             {
                 foreach (var report in data)
                 {
+                    var cmt = await _commentRepository.GetCommentById(report.idComment);
+                    var reporter = await _userManager.FindByIdAsync(report.idUser);
+                    var accused = await _userManager.FindByIdAsync(cmt.idUser);
+
                     var obj = _mapper.Map<ReportViewModel>(report);
+                    obj.reporterUsername = reporter.UserName;
+                    obj.accusedUsername = accused.UserName;
+                    obj.content = cmt.content;
                     listData.Add(obj);
                 }
             }
