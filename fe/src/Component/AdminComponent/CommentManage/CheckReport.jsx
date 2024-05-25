@@ -1,79 +1,50 @@
-import React, { useContext, useEffect, useState } from "react";
-import "./AddTest.css";
-import { useForm } from "react-hook-form";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
-import { UserContext } from "../../../Context/UserContext";
 import Loader from "../../Common/Loader/Loader";
+import "../../ProfessorComponent/TestManage/AddTest.css";
 
-function AddTest({ toggleModal, modal_on }) {
-  const { user } = useContext(UserContext);
-  const [isloading, setIsLoading] = useState(true);
-  const [testType, setTestType] = useState([]);
-  const {
-    register: testData,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
-  useEffect(() => {
-    reset();
-  }, [modal_on]);
-  async function fetchTestType() {
+function CheckReport({ toggleModal, modal_on, report }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [checkReport, setCheckReport] = useState({
+    isChecked: false,
+    checkNote: "",
+  });
+
+  const handleEditNode = async () => {
     try {
+      setIsLoading(true);
       const response = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/TestType/GetAllTestTypes`
-      );
-      if (!response.ok) {
-        const errorData = await response.json();
-        toast.error(`${errorData.message}`, {});
-      }
-      const data = await response.json();
-      setTestType(data);
-      setIsLoading(false);
-    } catch (error) {
-      toast.error(`${error}`);
-    }
-  }
-  useEffect(() => {
-    fetchTestType();
-  }, []);
-  async function handleAddTest(data) {
-    setIsLoading(true);
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL ?? "/api"}/Test/AddTest?userId=${
-          user.idUser
-        }`,
+        }/Report/UpdateReport?idReport=${report.idReport}`,
         {
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
           },
           body: JSON.stringify({
-            idType: data.idType,
-            name: data.name,
-            isVIP: data.isVIP,
+            idComment: report.idComment,
+            idUser: report.idUser,
+            reason: report.reason,
+            reportDate: report.reportDate,
+            checkNote: checkReport.checkNote,
+            isCheck: checkReport.isChecked,
           }),
         }
       );
       setIsLoading(false);
-      toggleModal();
       if (!response.ok) {
-        toast.error(`${"Thêm đề thi mới thất bại"}`, {});
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`);
       } else {
-        toast.success("Thêm đề thi mới thành công");
-        reset();
+        toast.success("Đã xác nhận");
+        toggleModal();
       }
     } catch (error) {
-      console.log(error);
       toast.error(`${error}`);
     }
-  }
-
-  if (isloading) {
+  };
+  if (isLoading) {
     return <Loader />;
   }
   return (
@@ -103,23 +74,28 @@ function AddTest({ toggleModal, modal_on }) {
                   ></path>
                 </svg>
               </div>
-              <form onSubmit={handleSubmit(handleAddTest)}>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleEditNode();
+                }}
+              >
                 <div className="add-test-title">
-                  <h2>Thêm Đề thi thử</h2>
+                  <h2>Xác nhận báo cáo</h2>
                 </div>
                 <div className="input-field">
-                  <input
+                  <textarea
                     className="input-item"
                     type="text"
-                    placeholder="Nhập tên bài thi thử"
-                    defaultValue={""}
-                    {...testData("name", { required: true })}
+                    placeholder="Ghi chú"
+                    onChange={(e) => {
+                      setCheckReport({
+                        ...checkReport,
+                        checkNote: e.currentTarget.value,
+                      });
+                    }}
                   />
                 </div>
-                <error>
-                  {errors.name?.type === "required" &&
-                    "Không được để trống tên"}
-                </error>
                 <div
                   style={{
                     display: "flex",
@@ -128,24 +104,20 @@ function AddTest({ toggleModal, modal_on }) {
                     width: "fit-full",
                   }}
                 >
-                  <select
-                    className="test-type"
-                    {...testData("idType", { required: true })}
-                  >
-                    {testType &&
-                      testType.map((type) => {
-                        return (
-                          <option value={type.idTestType}>
-                            {type.typeName}
-                          </option>
-                        );
-                      })}
-                  </select>
                   <div
                     style={{ display: "flex", width: "fit-content", gap: 4 }}
                   >
-                    <input style={{}} type="checkbox" {...testData("idVip")} />
-                    <div style={{ padding: 4 }}>VIP?</div>
+                    <input
+                      style={{}}
+                      type="checkbox"
+                      onChange={(e) => {
+                        setCheckReport({
+                          ...checkReport,
+                          isChecked: e.currentTarget.checked,
+                        });
+                      }}
+                    />
+                    <div style={{ padding: 4 }}>Có vi phạm</div>
                   </div>
                 </div>
                 <input
@@ -162,4 +134,4 @@ function AddTest({ toggleModal, modal_on }) {
   );
 }
 
-export default AddTest;
+export default CheckReport;

@@ -5,29 +5,30 @@ import { toast } from "react-toastify";
 import Loader from "../../../Common/Loader/Loader";
 import { THRESHOLDS } from "../../../../constant/thresholds";
 
+// Hàm tạo chuỗi định dạng ngày tháng từ đối tượng Date
+export function formatDateTime() {
+  // Tạo một đối tượng Date đại diện cho thời gian hiện tại
+  const currentDate = new Date();
+
+  // Lấy thông tin về năm, tháng, ngày, giờ, phút và giây
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0, nên cần cộng thêm 1
+  const day = String(currentDate.getDate()).padStart(2, "0");
+  const hours = String(currentDate.getHours()).padStart(2, "0");
+  const minutes = String(currentDate.getMinutes()).padStart(2, "0");
+  const seconds = String(currentDate.getSeconds()).padStart(2, "0");
+
+  // Tạo chuỗi định dạng "YYYY-MM-DDTHH:mm:ss"
+  const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+  return formattedDateTime;
+}
+
 function Comment({ id }) {
   const [isLoading, setIsLoading] = useState(false);
   const [commentsData, setCommentsData] = useState([]);
   const { user } = useContext(UserContext);
   const [input, setInput] = useState("");
 
-  // Hàm tạo chuỗi định dạng ngày tháng từ đối tượng Date
-  function formatDateTime() {
-    // Tạo một đối tượng Date đại diện cho thời gian hiện tại
-    const currentDate = new Date();
-
-    // Lấy thông tin về năm, tháng, ngày, giờ, phút và giây
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0, nên cần cộng thêm 1
-    const day = String(currentDate.getDate()).padStart(2, "0");
-    const hours = String(currentDate.getHours()).padStart(2, "0");
-    const minutes = String(currentDate.getMinutes()).padStart(2, "0");
-    const seconds = String(currentDate.getSeconds()).padStart(2, "0");
-
-    // Tạo chuỗi định dạng "YYYY-MM-DDTHH:mm:ss"
-    const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
-    return formattedDateTime;
-  }
   const checkValidateComment = async (content) => {
     try {
       const response = await fetch(
@@ -203,7 +204,7 @@ function Comment({ id }) {
         </div>
         <textarea
           type="text"
-          className="w-full p-2 flex border border-gray-300 items-center justify-between rounded-md bg-gray-200"
+          className="w-full p-2 flex border border-gray-300 items-center justify-between rounded-md bg-primary-50"
           autoFocus
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -225,15 +226,13 @@ function Comment({ id }) {
       </div>
       {commentsData?.map((comment) => {
         return (
-          <div key={comment.firstComment.idComment ?? comment.idComment}>
-            <CommentItem
-              key={comment.firstComment.idComment ?? comment.idComment}
-              handleInsertNode={handleInsertNode}
-              handleEditNode={handleEditNode}
-              handleDeleteNode={handleDeleteNode}
-              comment={comment}
-            />
-          </div>
+          <CommentItem
+            key={comment.firstComment.idComment ?? comment.idComment}
+            handleInsertNode={handleInsertNode}
+            handleEditNode={handleEditNode}
+            handleDeleteNode={handleDeleteNode}
+            comment={comment}
+          />
         );
       })}
     </div>

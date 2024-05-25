@@ -16,6 +16,7 @@ function UpdateTest() {
   const [test, setTest] = useState({
     name: "",
     idType: "",
+    isVip: false,
   });
   const [testType, setTestType] = useState([]);
   const [testUnits, setTestUnits] = useState([]);
@@ -121,6 +122,7 @@ function UpdateTest() {
           body: JSON.stringify({
             idType: test.idType,
             name: test.name,
+            isVip: test.isVip,
           }),
         }
       );
@@ -225,6 +227,22 @@ function UpdateTest() {
                 return <option value={type.idTestType}>{type.typeName}</option>;
               })}
           </select>
+        )}
+        {showButton && (
+          <div style={{ display: "flex", width: "fit-content", gap: 4 }}>
+            <input
+              style={{ height: 36, width: 26 }}
+              type="checkbox"
+              value={test.isVip}
+              onChange={(e) =>
+                setTest({
+                  ...test,
+                  isVip: e.target.checked,
+                })
+              }
+            />
+            <div style={{ padding: 4 }}>VIP?</div>
+          </div>
         )}
         {showButton && (
           <input type="submit" className="test-submit" value="Cập nhật"></input>
