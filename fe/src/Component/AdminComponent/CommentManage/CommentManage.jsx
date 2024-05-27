@@ -5,6 +5,8 @@ import CheckReport from "./CheckReport";
 
 function CommentManage() {
   const [reports, setReports] = useState([]);
+
+  const [selectedCheckbox, setSelectedCheckbox] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
   const [modal, setModal] = useState(false);
 
@@ -42,17 +44,83 @@ function CommentManage() {
       toast.error(`${error}`);
     }
   }
+  async function fetchFaliedReports() {
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `${
+          process.env.REACT_APP_API_BASE_URL ?? "/api"
+        }/Report/GetAllFalseReports`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setIsLoading(false);
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(`${errorData}`);
+      } else {
+        const data = await response.json();
+        setReports(data);
+        console.log(data);
+      }
+    } catch (error) {
+      toast.error(`${error}`);
+    }
+  }
+
   useEffect(() => {
-    fetchReports();
-  }, []);
+    if (selectedCheckbox === "InCompleted") fetchFaliedReports();
+    else fetchReports();
+  }, [selectedCheckbox]);
 
   if (isLoading) return <Loader />;
   return (
     <Fragment>
-      <div>
+      <div className="mt-5 flex justify-between">
         <h2 class="text-2xl font-semibold leading-tight">
           Danh sách báo cáo bình luận
         </h2>
+        <div className="relative">
+          <input
+            className="filter-btn h-12 w-[168px] absolute top-0 opacity-0 peer z-10"
+            type="checkbox"
+          />
+          <div className="w-[168px] h-12 flex justify-between px-4 py-3 bg-white rounded-lg drop-shadow-[0_4px_4px_rgba(0,0,0,0.12)]">
+            <div className="text-sm font-HelveticaNeue font-normal text-light_finance-textsub leading-5">
+              {selectedCheckbox === "All" ? "Tất cả" : "Chưa kiểm tra"}
+            </div>
+          </div>
+          <i className="fa-solid fa-chevron-down fa-xl peer-checked:rotate-180 absolute top-6 right-4"></i>
+          <div className="absolute peer-checked:flex hidden top-14 w-[168px] bg-white rounded-lg drop-shadow-[0_4px_4px_rgba(0,0,0,0.12)] flex-col ">
+            <div className="self-stretch px-3 py-2 justify-start items-start gap-2 inline-flex">
+              <input
+                className="w-4 h-4 rounded-sm border border-light_finance-textsub checked:!bg-light_finance-primary"
+                type="checkbox"
+                value={"All"}
+                checked={selectedCheckbox === "All"}
+                onChange={(e) => setSelectedCheckbox("All")}
+              />
+              <div className="text-light_finance-textsub text-sm font-normal font-['Helvetica Neue'] leading-5">
+                Tất cả
+              </div>
+            </div>
+            <div className="self-stretch px-3 py-2 justify-start items-start gap-2 inline-flex">
+              <input
+                className="w-4 h-4 rounded-sm border border-light_finance-textsub checked:!bg-light_finance-primary"
+                type="checkbox"
+                value={"InCompleted"}
+                checked={selectedCheckbox === "InCompleted"}
+                onChange={(e) => setSelectedCheckbox("InCompleted")}
+              />
+              <div className="text-light_finance-textsub text-sm font-normal font-['Helvetica Neue'] leading-5">
+                Chưa kiểm tra
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="-mx-4 px-4 py-4 overflow-x-auto">
         <div class="inline-block min-w-full shadow-md rounded-lg overflow-hidden">
@@ -60,7 +128,7 @@ function CommentManage() {
             <thead className="min-w-full">
               <tr className="w-full grid grid-cols-12">
                 <th class="col-span-2 p-4 border-b-2 border-gray-200 bg-gray-100 inline-flex items-center text-lg font-semibold text-gray-800 tracking-tight">
-                  Người báo cáo
+                  Người bị báo cáo
                 </th>
                 <th class="col-span-3 p-4 border-b-2 border-gray-200 bg-gray-100 inline-flex items-center text-lg font-semibold text-gray-800 tracking-tight">
                   Nội dung bình luận
@@ -88,12 +156,12 @@ function CommentManage() {
                     <tr className="w-full grid grid-cols-12">
                       <td class="col-span-2 px-5 py-5 border-b border-gray-200 bg-white text-sm">
                         <p class="text-gray-900 whitespace-no-wrap">
-                          {report.idUser}
+                          {report.accusedUsername}
                         </p>
                       </td>
                       <td class="col-span-3 px-5 py-5 border-b border-gray-200 bg-white text-sm">
                         <p class="text-gray-900 whitespace-no-wrap">
-                          {report.idComment}
+                          {report.content}
                         </p>
                       </td>
                       <td class="col-span-3 px-5 py-5 border-b border-gray-200 bg-white text-sm">

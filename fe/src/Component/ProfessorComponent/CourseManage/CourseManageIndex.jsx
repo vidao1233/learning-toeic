@@ -106,6 +106,18 @@ function CourseManageIndex() {
                       key={course.index}
                       className="professor-courses-list-item"
                     >
+                      {course.isVip ? (
+                        <div style={{ position: "absolute", top: 8, right: 8 }}>
+                          <img
+                            width="48"
+                            height="48"
+                            src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-vip-music-festival-flaticons-flat-flat-icons.png"
+                            alt=""
+                          />
+                        </div>
+                      ) : (
+                        <></>
+                      )}
                       <div className="image">
                         <img
                           src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-online-course-university-flaticons-flat-flat-icons-3.png"

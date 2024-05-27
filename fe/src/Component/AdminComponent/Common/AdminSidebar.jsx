@@ -48,8 +48,8 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
             <img
               width="34"
               height="34"
-              src="https://img.icons8.com/fluency/48/vip.png"
-              alt="vip"
+              src="https://img.icons8.com/ios-filled/50/health-graph.png"
+              alt="health-graph"
             />
             Báo cáo bình luận
           </Link>

@@ -83,7 +83,11 @@ function CheckReport({ toggleModal, modal_on, report }) {
                 <div className="add-test-title">
                   <h2>Xác nhận báo cáo</h2>
                 </div>
-                <div className="input-field">
+                <p>{report.content}</p>
+                <div
+                  style={{ overflow: "auto", maxHeight: "40vh" }}
+                  className="input-field"
+                >
                   <textarea
                     className="input-item"
                     type="text"
@@ -117,7 +121,9 @@ function CheckReport({ toggleModal, modal_on, report }) {
                         });
                       }}
                     />
-                    <div style={{ padding: 4 }}>Có vi phạm</div>
+                    <div style={{ padding: 4, fontSize: 16, fontWeight: 600 }}>
+                      Có vi phạm
+                    </div>
                   </div>
                 </div>
                 <input

@@ -62,6 +62,7 @@ function UpdateTest() {
       setTest({
         name: data.name,
         idType: data.idType,
+        isVip: data.isVip,
       });
     } catch (error) {
       toast.error(`${error}`);
@@ -131,6 +132,7 @@ function UpdateTest() {
         toast.error("Chỉnh sửa đề thi thất bại", {});
       } else {
         toast.success("Chỉnh sửa đề thi thành công");
+        fetchTest();
       }
     } catch (error) {
       toast.error(`${error}`);
@@ -233,7 +235,7 @@ function UpdateTest() {
             <input
               style={{ height: 36, width: 26 }}
               type="checkbox"
-              value={test.isVip}
+              checked={test.isVip}
               onChange={(e) =>
                 setTest({
                   ...test,
