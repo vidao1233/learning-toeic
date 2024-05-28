@@ -21,9 +21,11 @@ function UpdateLesson() {
     []
   );
 
-  const [content, setContent] = useState("");
-  const [title, setTitle] = useState("");
-  const [idCourse, setIdCourse] = useState("");
+  const [formData, setFormData] = useState({
+    content: "",
+    title: "",
+    isVip: false,
+  });
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,9 +43,8 @@ function UpdateLesson() {
         toast.error(`${errorData.message}`);
       } else {
         const data = await response.json();
-        setTitle(data.title);
-        setContent(data.content);
-        setIdCourse(data.idCourse);
+        console.log(data);
+        setFormData(data);
       }
     } catch (error) {
       toast.error(`${error}`);
@@ -64,9 +65,10 @@ function UpdateLesson() {
             Authorization: `Bearer ${user.token}`,
           },
           body: JSON.stringify({
-            idCourse: idCourse,
-            title: title,
-            content: content,
+            idCourse: formData.idCourse,
+            title: formData.title,
+            content: formData.content,
+            isVip: formData.isVip,
           }),
         }
       );
@@ -97,7 +99,7 @@ function UpdateLesson() {
           <h3 style={{ marginLeft: "1rem" }}>CHỈNH SỬA BÀI HỌC</h3>
         </div>
         <img
-          onClick={() => navigate(`/professor/course/${idCourse}`)}
+          onClick={() => navigate(`/professor/course/${formData.idCourse}`)}
           width="50"
           height="50"
           src="https://img.icons8.com/ios-filled/50/2d9358/reply-arrow.png"
@@ -109,20 +111,34 @@ function UpdateLesson() {
           <div>
             <h3>Tên bài học</h3>
             <input
-              defaultValue={title}
-              onChange={(e) => setTitle(e.target.value)}
+              defaultValue={formData.title}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
             ></input>
           </div>
-
+          <div style={{ display: "flex", width: "fit-content", gap: 4 }}>
+            <input
+              style={{ height: 36, width: 26 }}
+              type="checkbox"
+              checked={formData.isVip}
+              onChange={(e) =>
+                setFormData({ ...formData, isVip: e.currentTarget.checked })
+              }
+            />
+            <div style={{ padding: 4 }}>Is VIP?</div>
+          </div>
           <h3>Nội dung bài học</h3>
           <JoditEditor
             ref={editor}
-            value={content}
-            onChange={(newContent) => setContent(newContent)}
+            value={formData.content}
+            onChange={(newContent) =>
+              setFormData({ ...formData, content: newContent })
+            }
             config={config}
           ></JoditEditor>
           <h3>Kiểm tra lại</h3>
-          <div>{HTMLReactParser(String(content))}</div>
+          <div>{HTMLReactParser(String(formData.content))}</div>
           <input
             className="professor-add-lesson-btn"
             type="submit"

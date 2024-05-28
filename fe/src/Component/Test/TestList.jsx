@@ -56,6 +56,7 @@ function TestList({ testType }) {
                 return (
                   <div
                     className="test-item"
+                    key={index}
                     onClick={() => navigate(`/test/${test.idTest}`)}
                   >
                     <img
@@ -77,6 +78,18 @@ function TestList({ testType }) {
                         </div>
                       </div>
                     </div>
+                    {test.isVip ? (
+                      <div style={{ position: "absolute", top: 8, right: 8 }}>
+                        <img
+                          width="54"
+                          height="54"
+                          src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-vip-music-festival-flaticons-flat-flat-icons.png"
+                          alt=""
+                        />
+                      </div>
+                    ) : (
+                      <></>
+                    )}
                   </div>
                 );
               })}

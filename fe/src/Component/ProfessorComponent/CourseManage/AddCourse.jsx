@@ -30,6 +30,7 @@ function AddCourse({ toggleModal, modal_on }) {
             idUser: user.idUser,
             name: data.name,
             description: data.description,
+            isVip: data.isVip,
           }),
         }
       );
@@ -90,6 +91,14 @@ function AddCourse({ toggleModal, modal_on }) {
                   {errors.name?.type === "required" &&
                     "Không được để trống tên"}
                 </error>
+                <div style={{ display: "flex", width: "fit-content", gap: 4 }}>
+                  <input
+                    style={{ height: 36, width: 26 }}
+                    type="checkbox"
+                    {...new_course("isVip")}
+                  />
+                  <div style={{ padding: 4 }}>Is VIP?</div>
+                </div>
                 <div className="input-field" style={{ height: "7rem" }}>
                   <textarea
                     type="text"

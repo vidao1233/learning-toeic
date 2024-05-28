@@ -20,9 +20,11 @@ function AddLesson() {
     []
   );
 
-  const [content, setContent] = useState("");
-  const [title, setTitle] = useState("");
-
+  const [formData, setFormData] = useState({
+    content: "",
+    title: "",
+    isVip: false,
+  });
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleAddLesson(data) {
@@ -38,8 +40,9 @@ function AddLesson() {
           },
           body: JSON.stringify({
             idCourse: id,
-            title: title,
-            content: content,
+            title: formData.title,
+            content: formData.content,
+            isVip: formData.isVip,
           }),
         }
       );
@@ -78,19 +81,34 @@ function AddLesson() {
             <h3>Tên bài học</h3>
             <input
               placeholder="Nhập tên bài học"
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
             ></input>
+          </div>
+          <div style={{ display: "flex", width: "fit-content", gap: 4 }}>
+            <input
+              style={{ height: 36, width: 26 }}
+              type="checkbox"
+              checked={formData.isVip}
+              onChange={(e) =>
+                setFormData({ ...formData, isVip: e.currentTarget.checked })
+              }
+            />
+            <div style={{ padding: 4 }}>Is VIP?</div>
           </div>
 
           <h3>Nội dung bài học</h3>
           <JoditEditor
             ref={editor}
-            value={content}
-            onChange={(newContent) => setContent(newContent)}
+            value={formData.content}
+            onChange={(newContent) =>
+              setFormData({ ...formData, content: newContent })
+            }
             config={config}
           ></JoditEditor>
           <h3>Kiểm tra lại</h3>
-          <div>{HTMLReactParser(String(content))}</div>
+          <div>{HTMLReactParser(String(formData.content))}</div>
           <input
             type="submit"
             value="Thêm bài học"

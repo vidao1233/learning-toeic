@@ -55,6 +55,7 @@ function AddTest({ toggleModal, modal_on }) {
           body: JSON.stringify({
             idType: data.idType,
             name: data.name,
+            isVIP: data.isVIP,
           }),
         }
       );
@@ -108,6 +109,7 @@ function AddTest({ toggleModal, modal_on }) {
                 </div>
                 <div className="input-field">
                   <input
+                    className="input-item"
                     type="text"
                     placeholder="Nhập tên bài thi thử"
                     defaultValue={""}
@@ -118,17 +120,34 @@ function AddTest({ toggleModal, modal_on }) {
                   {errors.name?.type === "required" &&
                     "Không được để trống tên"}
                 </error>
-                <select
-                  className="test-type"
-                  {...testData("idType", { required: true })}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    width: "fit-full",
+                  }}
                 >
-                  {testType &&
-                    testType.map((type) => {
-                      return (
-                        <option value={type.idTestType}>{type.typeName}</option>
-                      );
-                    })}
-                </select>
+                  <select
+                    className="test-type"
+                    {...testData("idType", { required: true })}
+                  >
+                    {testType &&
+                      testType.map((type) => {
+                        return (
+                          <option value={type.idTestType}>
+                            {type.typeName}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  <div
+                    style={{ display: "flex", width: "fit-content", gap: 4 }}
+                  >
+                    <input style={{}} type="checkbox" {...testData("idVip")} />
+                    <div style={{ padding: 4 }}>VIP?</div>
+                  </div>
+                </div>
                 <input
                   type="submit"
                   className="vocabulary-submit"

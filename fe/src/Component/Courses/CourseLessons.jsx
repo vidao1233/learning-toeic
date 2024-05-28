@@ -80,6 +80,20 @@ function CourseLessons() {
                         <Link to={`/lesson/${lesson.idLesson}`}>
                           <div className="list-lesson-name">{lesson.title}</div>
                         </Link>
+                        {lesson.isVip ? (
+                          <div
+                            style={{ position: "absolute", top: 12, right: 0 }}
+                          >
+                            <img
+                              width="34"
+                              height="34"
+                              src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-vip-music-festival-flaticons-flat-flat-icons.png"
+                              alt=""
+                            />
+                          </div>
+                        ) : (
+                          <></>
+                        )}
                       </div>
                     );
                   })}

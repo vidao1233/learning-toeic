@@ -16,6 +16,7 @@ function UpdateTest() {
   const [test, setTest] = useState({
     name: "",
     idType: "",
+    isVip: false,
   });
   const [testType, setTestType] = useState([]);
   const [testUnits, setTestUnits] = useState([]);
@@ -61,6 +62,7 @@ function UpdateTest() {
       setTest({
         name: data.name,
         idType: data.idType,
+        isVip: data.isVip,
       });
     } catch (error) {
       toast.error(`${error}`);
@@ -121,6 +123,7 @@ function UpdateTest() {
           body: JSON.stringify({
             idType: test.idType,
             name: test.name,
+            isVip: test.isVip,
           }),
         }
       );
@@ -129,6 +132,7 @@ function UpdateTest() {
         toast.error("Chỉnh sửa đề thi thất bại", {});
       } else {
         toast.success("Chỉnh sửa đề thi thành công");
+        fetchTest();
       }
     } catch (error) {
       toast.error(`${error}`);
@@ -225,6 +229,22 @@ function UpdateTest() {
                 return <option value={type.idTestType}>{type.typeName}</option>;
               })}
           </select>
+        )}
+        {showButton && (
+          <div style={{ display: "flex", width: "fit-content", gap: 4 }}>
+            <input
+              style={{ height: 36, width: 26 }}
+              type="checkbox"
+              checked={test.isVip}
+              onChange={(e) =>
+                setTest({
+                  ...test,
+                  isVip: e.target.checked,
+                })
+              }
+            />
+            <div style={{ padding: 4 }}>VIP?</div>
+          </div>
         )}
         {showButton && (
           <input type="submit" className="test-submit" value="Cập nhật"></input>
