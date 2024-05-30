@@ -7,7 +7,7 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
     <aside id="sidebar" className={!openSidebarToggle ? "sidebar-hidden" : ""}>
       <div className="sidebar-title">
         <div className="sidebar-brand">
-          <img src={brand_logo} alt=""/>
+          <img src={brand_logo} alt="" />
         </div>
       </div>
 
@@ -23,7 +23,7 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
               src="https://img.icons8.com/material-sharp/24/user-male-circle.png"
               alt="user-male-circle"
             />
-            Account
+            Tài khoản
           </Link>
         </li>
         <li className="sidebar-list-item">
@@ -37,7 +37,21 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
               src="https://img.icons8.com/fluency/48/vip.png"
               alt="vip"
             />
-            VIP Package
+            Gói VIP
+          </Link>
+        </li>
+        <li className="sidebar-list-item">
+          <Link
+            style={{ display: "flex", gap: 5, alignItems: "center" }}
+            to="admin/comment-manage"
+          >
+            <img
+              width="34"
+              height="34"
+              src="https://img.icons8.com/ios-filled/50/health-graph.png"
+              alt="health-graph"
+            />
+            Báo cáo bình luận
           </Link>
         </li>
       </ul>

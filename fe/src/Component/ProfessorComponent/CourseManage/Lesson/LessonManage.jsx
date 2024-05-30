@@ -14,13 +14,13 @@ function LessonManage() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [showButton, setShowButton] = useState(false);
-  const [current_course, setCurrentCourse] = useState({});
   const [lessons, setLessons] = useState([]);
 
   const {
     register: course,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm();
 
   async function fetchCurrentLesson() {
@@ -36,7 +36,11 @@ function LessonManage() {
         toast.error(`${errorData}`);
       }
       const data = await response.json();
-      setCurrentCourse(data);
+      // setCurrentCourse(data);
+      setValue("idCourse", data.idCourse);
+      setValue("name", data.name);
+      setValue("description", data.description);
+      setValue("isVip", data.isVip);
       setIsLoading(false);
     } catch (error) {
       toast.error(`${error}`);
@@ -59,6 +63,7 @@ function LessonManage() {
             idUser: user.idUser,
             name: course.name,
             description: course.description,
+            isVip: course.isVip,
           }),
         }
       );
@@ -143,7 +148,6 @@ function LessonManage() {
             <div className="input-field">
               <input
                 type="text"
-                defaultValue={current_course.name}
                 onFocus={() => setShowButton(true)}
                 {...course("name", { required: true })}
               />
@@ -164,10 +168,17 @@ function LessonManage() {
         </div>
         {showButton && (
           <>
+            <div style={{ display: "flex", width: "fit-content", gap: 4 }}>
+              <input
+                style={{ height: 36, width: 26 }}
+                type="checkbox"
+                {...course("isVip")}
+              />
+              <div style={{ padding: 4 }}>Is VIP?</div>
+            </div>
             <div className="input-field description">
               <textarea
                 type="text"
-                defaultValue={current_course.description}
                 {...course("description", { required: true })}
               />
             </div>
