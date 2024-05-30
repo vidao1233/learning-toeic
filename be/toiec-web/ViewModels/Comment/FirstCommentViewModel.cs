@@ -1,4 +1,6 @@
-﻿namespace toiec_web.ViewModels.Comment
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace toiec_web.ViewModels.Comment
 {
     public class FirstCommentViewModel
     {
@@ -9,7 +11,9 @@
         public string? imageURL { get; set; }
         public Guid? idCommentReply { get; set; }
         public string content { get; set; }
-        public DateTime createdDate { get; set; }
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yy H:mm:ss}", ApplyFormatInEditMode = true)]
+        public string createdDate { get; set; }
         public bool isDeleted { get; set; }
 
     }

@@ -4,10 +4,10 @@ namespace toeic_web.Repository.IRepository
 {
     public interface IVocTopicRepository
     {
-        Task<IEnumerable<VocTopicModel>> GetAllVocTopics();
-        Task<VocTopicModel> GetVocTopicById(Guid topicId);
-        Task<bool> AddVocTopic(VocTopicModel model, string userId);
-        Task<bool> UpdateVocTopic(VocTopicModel model, Guid topicId, string userId);
-        Task<bool> DeleteVocTopic(Guid topicId);
+        Task<IEnumerable<VocListModel>> GetAllVocList();
+        Task<IEnumerable<VocListModel>> GetVocListByUser(string idUser);
+        Task<bool> AddVocList(VocListModel model);
+        Task<bool> UpdateVocList(VocListModel model);
+        Task<bool> DeleteVocList(Guid topicId);
     }
 }

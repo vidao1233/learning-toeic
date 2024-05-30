@@ -13,7 +13,7 @@ namespace toeic_web.Models
         public virtual Professor Professor { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Report> Reports { get; set; }
-        public virtual ICollection<VocTopic> VocTopics { get; set; }
+        public virtual ICollection<VocList> VocTopics { get; set; }
         public virtual ICollection<Vocabulary> Vocabulary { get; set;}
     }
 }

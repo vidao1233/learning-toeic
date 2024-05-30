@@ -1,15 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.SqlServer.Management.Smo;
-using System.Linq;
-using System.Web.Http.Routing.Constraints;
 using toeic_web.Infrastructure;
 using toeic_web.Models;
 using toeic_web.Repository.IRepository;
 
 namespace toeic_web.Repository
 {
-    public class VocTopicRepository : Repository<VocTopic>, IVocTopicRepository
+    public class VocTopicRepository : Repository<VocList>, IVocTopicRepository
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
@@ -21,42 +18,39 @@ namespace toeic_web.Repository
             _mapper = mapper;
         }
 
-        public async Task<bool> AddVocTopic(VocTopicModel model, string userId)
+        public async Task<bool> AddVocList(VocListModel model)
         {
             try
             {
-                var topic = _mapper.Map<VocTopic>(model);
-                topic.idVocTopic = Guid.NewGuid();
-                topic.idUser = userId;
+                var topic = _mapper.Map<VocList>(model);
+                topic.idVocList = Guid.NewGuid();
                 Entities.Add(topic);
                 _uow.SaveChanges();
                 return true;
             }
             catch (Exception ex)
-            {
+            {   
                 throw new Exception(ex.Message);
             }
         }
 
-        public async Task<bool> DeleteVocTopic(Guid topicId)
+        public async Task<bool> DeleteVocList(Guid topicId)
         {
             var topic = GetById(topicId);
             if (topic == null)
             {
-                throw new ArgumentNullException(nameof(topic));
+                return await Task.FromResult(false);
             }
             Entities.Remove(topic);
             _uow.SaveChanges();
             return await Task.FromResult(true);
         }
 
-        public async Task<bool> UpdateVocTopic(VocTopicModel model, Guid topicId, string userId)
+        public async Task<bool> UpdateVocList(VocListModel model)
         {
             try
             {
-                var topic = _mapper.Map<VocTopic>(model);
-                topic.idVocTopic = topicId;
-                topic.idUser = userId;
+                var topic = _mapper.Map<VocList>(model);
                 Entities.Update(topic);
                 _uow.SaveChanges();
                 return true;
@@ -66,31 +60,35 @@ namespace toeic_web.Repository
                 throw new Exception(ex.Message);
             }
         }
-        public async Task<IEnumerable<VocTopicModel>> GetAllVocTopics()
+        public async Task<IEnumerable<VocListModel>> GetAllVocList()
         {
-            var listData = new List<VocTopicModel>();
-            var data = await Entities.OrderBy(item => item.name).ToListAsync();
+            var listData = new List<VocListModel>();
+            var data = await Entities.OrderBy(item => item.title).ToListAsync();
             foreach (var item in data)
             {
-                var obj = _mapper.Map<VocTopicModel>(item);
-                listData.Add(obj);
+                if (item.isPublic)
+                {
+                    var obj = _mapper.Map<VocListModel>(item);
+                    listData.Add(obj);
+                }
             }
             return listData;
 
         }
 
-        public async Task<VocTopicModel> GetVocTopicById(Guid topicId)
+        public async Task<IEnumerable<VocListModel>> GetVocListByUser(string idUser)
         {
-            IAsyncEnumerable<VocTopic> topics = Entities.AsAsyncEnumerable();
-            await foreach (var topic in topics)
+            var listData = new List<VocListModel>();
+            var data = await Entities.OrderBy(item => item.title).ToListAsync();
+            foreach (var item in data)
             {
-                if (topic.idVocTopic == topicId)
+                if (item.idUser == idUser)
                 {
-                    VocTopicModel data = _mapper.Map<VocTopicModel>(topic);
-                    return data;
+                    var obj = _mapper.Map<VocListModel>(item);
+                    listData.Add(obj);
                 }
             }
-            return null;
+            return listData;
         }
 
     }

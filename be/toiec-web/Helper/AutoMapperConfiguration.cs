@@ -86,10 +86,10 @@ namespace toeic_web.Helper
             #endregion
 
             #region VocTopic
-            CreateMap<VocTopic, VocTopicModel>().ReverseMap();
-            CreateMap<VocTopicModel, VocTopicViewModel>().ReverseMap();
-            CreateMap<VocTopicModel, VocTopicAddModel>().ReverseMap();
-            CreateMap<VocTopicModel, VocTopicUpdateModel>().ReverseMap();
+            CreateMap<VocList, VocListModel>().ReverseMap();
+            CreateMap<VocListModel, VocListViewModel>().ReverseMap();
+            CreateMap<VocListModel, VocListAddModel>().ReverseMap();
+            CreateMap<VocListModel, VocListUpdateModel>().ReverseMap();
             #endregion
 
             #region Vocabulary

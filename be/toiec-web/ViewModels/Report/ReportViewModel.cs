@@ -1,4 +1,6 @@
-﻿namespace toiec_web.ViewModels.Report
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace toiec_web.ViewModels.Report
 {
     public class ReportViewModel
     {
@@ -9,7 +11,9 @@
         public string idUser { get; set; }
         public string reporterUsername { get; set; }
         public string reason { get; set; }
-        public DateTime reportDate { get; set; }
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yy H:mm:ss}", ApplyFormatInEditMode = true)]
+        public string reportDate { get; set; }
         public string? checkNote { get; set; }
         public bool commentDeleted { get; set; }
         public bool isCheck { get; set; }

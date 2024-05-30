@@ -6,8 +6,9 @@
     "\\be\\toiec-web\\Controllers",
     "\\be\\toiec-web\\Repository",
     "\\be\\toiec-web\\ViewModels",
-    "\\be\\toiec-web\\ViewModels\\Test"
+    "\\be\\toiec-web\\ViewModels\\Test",
+    "\\be\\toiec-web\\ViewModels\\Vocabulary"
   ],
-  "SelectedNode": "\\be\\toiec-web\\Repository\\CommentRepository.cs",
+  "SelectedNode": "\\be\\toiec-web\\Controllers\\VocabularyController.cs",
   "PreviewInSolutionExplorer": false
 }

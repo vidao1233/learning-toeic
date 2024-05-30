@@ -1,11 +1,15 @@
-﻿namespace toeic_web.ViewModels.Record
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace toeic_web.ViewModels.Record
 {
     public class RecordViewModel
     {
         public Guid idRecord { get; set; }
         public Guid idTest { get; set; }
         public Guid idStudent { get; set; }
-        public DateTime createDate { get; set; }
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yy H:mm:ss}", ApplyFormatInEditMode = true)]
+        public string createDate { get; set; }
         public int listenCorrect { get; set; }
         public int listenScore { get; set; }
         public int readingCorrect { get; set; }

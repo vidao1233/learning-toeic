@@ -37,5 +37,45 @@ namespace toeic_web.Services
         {
             return await _uploadFileRepository.AddAudioAsync(file);
         }
+
+        public async Task<string> ConvertIFormFileToBase64String(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return null;
+
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            var fileBytes = memoryStream.ToArray();
+            return Convert.ToBase64String(fileBytes);
+        }
+
+        public IFormFile ConvertBase64StringToIFormFile(string base64Data)
+        {
+            if (string.IsNullOrEmpty(base64Data))
+            {
+                return null;
+            }
+
+            byte[] imageBytes = Convert.FromBase64String(base64Data);
+
+            // Tạo bộ nhớ tạm từ mảng byte
+            using var stream = new MemoryStream(imageBytes);
+            // Tạo một IFormFile từ bộ nhớ tạm
+            IFormFile formFile = new FormFile(stream, 0, stream.Length, null, "image.png")
+            {
+                Headers = new HeaderDictionary(),
+                ContentType = "image/png"
+            };
+
+            return formFile;
+        }
+        public byte[] ConvertBase64StringToByteArray(string base64Data)
+        {
+            if (string.IsNullOrEmpty(base64Data))
+            {
+                return null;
+            }
+            return Convert.FromBase64String(base64Data);
+        }
     }
 }
