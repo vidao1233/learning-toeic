@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.SqlServer.Management.Smo;
 using toeic_web.Models;
 using toeic_web.Repository.IRepository;
 using toeic_web.Services.IService;
@@ -10,54 +12,73 @@ namespace toeic_web.Services
     {
         private readonly IVocTopicRepository _vocTopicRepository;
         private readonly IMapper _mapper;
+        private readonly UserManager<Users> _userManager;
 
-        public VocTopicService(IVocTopicRepository vocTopicRepository, IMapper mapper) 
+        public VocTopicService(IVocTopicRepository vocTopicRepository, IMapper mapper, UserManager<Users> userManager) 
         {
             _vocTopicRepository = vocTopicRepository;
             _mapper = mapper;
+            _userManager = userManager;
         }
-        public async Task<bool> AddVocTopic(VocTopicAddModel model, string userId)
+        public async Task<bool> AddVocList(VocListAddModel model, string userId)
         {
-            var data = _mapper.Map<VocTopicModel>(model);
-            return await _vocTopicRepository.AddVocTopic(data, userId);
+            //find author
+            var user = await _userManager.FindByIdAsync(userId);
+
+            var data = _mapper.Map<VocListModel>(model);
+            data.idVocList = new Guid();
+            data.idUser = userId;
+            data.author = user.UserName;
+            data.quantity = 0;
+            return await _vocTopicRepository.AddVocList(data);
         }
 
-        public async Task<bool> DeleteVocTopic(Guid topicId)
+        public async Task<bool> DeleteVocList(Guid topicId)
         {
-            return await _vocTopicRepository.DeleteVocTopic(topicId);
+            return await _vocTopicRepository.DeleteVocList(topicId);
         }
 
-        public async Task<IEnumerable<VocTopicViewModel>> GetAllVocTopics()
+        public async Task<IEnumerable<VocListViewModel>> GetAllVocList()
         {
-            var data = await _vocTopicRepository.GetAllVocTopics();
-            List<VocTopicViewModel> listData = new List<VocTopicViewModel>();
+            var data = await _vocTopicRepository.GetAllVocList();
+            List<VocListViewModel> listData = new List<VocListViewModel>();
             if (data != null)
             {
                 foreach (var item in data)
                 {
-                    var obj = _mapper.Map<VocTopicViewModel>(item);
+                    var obj = _mapper.Map<VocListViewModel>(item);
                     listData.Add(obj);
                 }
-                return listData;
             }
-            return null;
+            return listData;
         }
 
-        public async Task<VocTopicViewModel> GetVocTopicById(Guid topicId)
+        public async Task<IEnumerable<VocListViewModel>> GetVocListByUser(string idUser)
         {
-            var data = await _vocTopicRepository.GetVocTopicById(topicId);
-            if(data != null)
+            var data = await _vocTopicRepository.GetVocListByUser(idUser);
+            List<VocListViewModel> listData = new List<VocListViewModel>();
+            if (data != null)
             {
-                var obj = _mapper.Map<VocTopicViewModel>(data);
-                return obj;
+                foreach (var item in data)
+                {
+                    var obj = _mapper.Map<VocListViewModel>(item);
+                    listData.Add(obj);
+                }
             }
-            return null;
+            return listData;
         }
 
-        public async Task<bool> UpdateVocTopic(VocTopicUpdateModel model, Guid topicId, string userId)
+        public async Task<bool> UpdateVocList(VocListUpdateModel model, Guid listId, string userId)
         {
-            var data = _mapper.Map<VocTopicModel>(model);
-            return await _vocTopicRepository.UpdateVocTopic(data, topicId, userId);
+            //find author
+            var user = await _userManager.FindByIdAsync(userId);
+
+            var data = _mapper.Map<VocListModel>(model);
+            data.idVocList = listId;
+            data.idUser = userId;
+            data.author = user.UserName;
+            data.quantity = 0;
+            return await _vocTopicRepository.UpdateVocList(data);
 
         }
     }

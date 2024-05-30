@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace toiec_web.Migrations
 {
-    public partial class updatevocabulary : Migration
+    public partial class updatevoc : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -280,45 +280,24 @@ namespace toiec_web.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "VocabularyTopics",
+                name: "VocList",
                 columns: table => new
                 {
-                    idVocTopic = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idVocList = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idUser = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    author = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    quantity = table.Column<double>(type: "float", nullable: false),
+                    createDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    isPublic = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_VocabularyTopics", x => x.idVocTopic);
+                    table.PrimaryKey("PK_VocList", x => x.idVocList);
                     table.ForeignKey(
                         name: "FK_TopicOfUser",
-                        column: x => x.idUser,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Reports",
-                columns: table => new
-                {
-                    idReport = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idUser = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    idAdmin = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idPost = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    isCheck = table.Column<bool>(type: "bit", nullable: false),
-                    reportDate = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reports", x => x.idReport);
-                    table.ForeignKey(
-                        name: "FK_AdminCheckReport",
-                        column: x => x.idAdmin,
-                        principalTable: "Admins",
-                        principalColumn: "idAdmin");
-                    table.ForeignKey(
-                        name: "FK_ReportsOfUser",
                         column: x => x.idUser,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
@@ -416,27 +395,31 @@ namespace toiec_web.Migrations
                 columns: table => new
                 {
                     idVoc = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idTopic = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    idUser = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    idList = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    topic = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     engWord = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     pronunciation = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     wordType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    meaning = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    meaning = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    example = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    status = table.Column<bool>(type: "bit", nullable: false),
+                    UsersId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Vocabularies", x => x.idVoc);
                     table.ForeignKey(
-                        name: "FK_VocOfTopic",
-                        column: x => x.idTopic,
-                        principalTable: "VocabularyTopics",
-                        principalColumn: "idVocTopic",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_VocOfUser",
-                        column: x => x.idUser,
+                        name: "FK_Vocabularies_AspNetUsers_UsersId",
+                        column: x => x.UsersId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_VocOfTopic",
+                        column: x => x.idList,
+                        principalTable: "VocList",
+                        principalColumn: "idVocList",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -566,7 +549,7 @@ namespace toiec_web.Migrations
                     idUser = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     createdDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    isCheck = table.Column<bool>(type: "bit", nullable: false)
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -602,6 +585,34 @@ namespace toiec_web.Migrations
                         principalTable: "Lessons",
                         principalColumn: "idLesson",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reports",
+                columns: table => new
+                {
+                    idReport = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idComment = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idUser = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    reportDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    checkNote = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    commentDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    isCheck = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reports", x => x.idReport);
+                    table.ForeignKey(
+                        name: "FK_ReportOfComment",
+                        column: x => x.idComment,
+                        principalTable: "Comments",
+                        principalColumn: "idComment");
+                    table.ForeignKey(
+                        name: "FK_ReportsOfUser",
+                        column: x => x.idUser,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -808,9 +819,9 @@ namespace toiec_web.Migrations
                 column: "idLesson");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reports_idAdmin",
+                name: "IX_Reports_idComment",
                 table: "Reports",
-                column: "idAdmin");
+                column: "idComment");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reports_idUser",
@@ -880,18 +891,18 @@ namespace toiec_web.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vocabularies_idTopic",
+                name: "IX_Vocabularies_idList",
                 table: "Vocabularies",
-                column: "idTopic");
+                column: "idList");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vocabularies_idUser",
+                name: "IX_Vocabularies_UsersId",
                 table: "Vocabularies",
-                column: "idUser");
+                column: "UsersId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_VocabularyTopics_idUser",
-                table: "VocabularyTopics",
+                name: "IX_VocList_idUser",
+                table: "VocList",
                 column: "idUser");
         }
 
@@ -914,9 +925,6 @@ namespace toiec_web.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
-
-            migrationBuilder.DropTable(
-                name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "Payments");
@@ -949,13 +957,16 @@ namespace toiec_web.Migrations
                 name: "VipPackages");
 
             migrationBuilder.DropTable(
+                name: "Comments");
+
+            migrationBuilder.DropTable(
                 name: "Questions");
 
             migrationBuilder.DropTable(
                 name: "TestRecords");
 
             migrationBuilder.DropTable(
-                name: "VocabularyTopics");
+                name: "VocList");
 
             migrationBuilder.DropTable(
                 name: "Admins");

@@ -12,8 +12,8 @@ using toeic_web.Models;
 namespace toiec_web.Migrations
 {
     [DbContext(typeof(ToeicDbContext))]
-    [Migration("20240517073933_update vocabulary")]
-    partial class updatevocabulary
+    [Migration("20240528064027_update voc")]
+    partial class updatevoc
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -350,7 +350,7 @@ namespace toiec_web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool>("isCheck")
+                    b.Property<bool>("isDeleted")
                         .HasColumnType("bit");
 
                     b.HasKey("idComment");
@@ -565,10 +565,13 @@ namespace toiec_web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("idAdmin")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("checkNote")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("idPost")
+                    b.Property<bool>("commentDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("idComment")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("idUser")
@@ -587,7 +590,7 @@ namespace toiec_web.Migrations
 
                     b.HasKey("idReport");
 
-                    b.HasIndex("idAdmin");
+                    b.HasIndex("idComment");
 
                     b.HasIndex("idUser");
 
@@ -834,16 +837,21 @@ namespace toiec_web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("UsersId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("engWord")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("idTopic")
+                    b.Property<string>("example")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("idList")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("idUser")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("image")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("meaning")
                         .IsRequired()
@@ -852,37 +860,64 @@ namespace toiec_web.Migrations
                     b.Property<string>("pronunciation")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("topic")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("wordType")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("idVoc");
 
-                    b.HasIndex("idTopic");
+                    b.HasIndex("UsersId");
 
-                    b.HasIndex("idUser");
+                    b.HasIndex("idList");
 
                     b.ToTable("Vocabularies");
                 });
 
-            modelBuilder.Entity("toeic_web.Models.VocTopic", b =>
+            modelBuilder.Entity("toeic_web.Models.VocList", b =>
                 {
-                    b.Property<Guid>("idVocTopic")
+                    b.Property<Guid>("idVocList")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("author")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("createDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("idUser")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("name")
+                    b.Property<bool>("isPublic")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("quantity")
+                        .HasColumnType("float");
+
+                    b.Property<string>("status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("idVocTopic");
+                    b.Property<string>("title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("idVocList");
 
                     b.HasIndex("idUser");
 
-                    b.ToTable("VocabularyTopics");
+                    b.ToTable("VocList");
                 });
 
             modelBuilder.Entity("toeic_web.Models.Users", b =>
@@ -1106,11 +1141,11 @@ namespace toiec_web.Migrations
 
             modelBuilder.Entity("toeic_web.Models.Report", b =>
                 {
-                    b.HasOne("toeic_web.Models.Admin", "Admin")
+                    b.HasOne("toeic_web.Models.Comment", "Comment")
                         .WithMany("Reports")
-                        .HasForeignKey("idAdmin")
+                        .HasForeignKey("idComment")
                         .IsRequired()
-                        .HasConstraintName("FK_AdminCheckReport");
+                        .HasConstraintName("FK_ReportOfComment");
 
                     b.HasOne("toeic_web.Models.Users", "Users")
                         .WithMany("Reports")
@@ -1118,7 +1153,7 @@ namespace toiec_web.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_ReportsOfUser");
 
-                    b.Navigation("Admin");
+                    b.Navigation("Comment");
 
                     b.Navigation("Users");
                 });
@@ -1249,25 +1284,21 @@ namespace toiec_web.Migrations
 
             modelBuilder.Entity("toeic_web.Models.Vocabulary", b =>
                 {
-                    b.HasOne("toeic_web.Models.VocTopic", "VocTopic")
+                    b.HasOne("toeic_web.Models.Users", null)
+                        .WithMany("Vocabulary")
+                        .HasForeignKey("UsersId");
+
+                    b.HasOne("toeic_web.Models.VocList", "VocTopic")
                         .WithMany("Vocabularies")
-                        .HasForeignKey("idTopic")
+                        .HasForeignKey("idList")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_VocOfTopic");
 
-                    b.HasOne("toeic_web.Models.Users", "Users")
-                        .WithMany("Vocabulary")
-                        .HasForeignKey("idUser")
-                        .IsRequired()
-                        .HasConstraintName("FK_VocOfUser");
-
-                    b.Navigation("Users");
-
                     b.Navigation("VocTopic");
                 });
 
-            modelBuilder.Entity("toeic_web.Models.VocTopic", b =>
+            modelBuilder.Entity("toeic_web.Models.VocList", b =>
                 {
                     b.HasOne("toeic_web.Models.Users", "Users")
                         .WithMany("VocTopics")
@@ -1285,9 +1316,12 @@ namespace toiec_web.Migrations
 
             modelBuilder.Entity("toeic_web.Models.Admin", b =>
                 {
-                    b.Navigation("Reports");
-
                     b.Navigation("VipPackages");
+                });
+
+            modelBuilder.Entity("toeic_web.Models.Comment", b =>
+                {
+                    b.Navigation("Reports");
                 });
 
             modelBuilder.Entity("toeic_web.Models.Course", b =>
@@ -1367,7 +1401,7 @@ namespace toiec_web.Migrations
                     b.Navigation("Payments");
                 });
 
-            modelBuilder.Entity("toeic_web.Models.VocTopic", b =>
+            modelBuilder.Entity("toeic_web.Models.VocList", b =>
                 {
                     b.Navigation("Vocabularies");
                 });

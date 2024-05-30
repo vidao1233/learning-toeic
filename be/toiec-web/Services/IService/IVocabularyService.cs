@@ -7,9 +7,9 @@ namespace toeic_web.Services.IService
     {
         Task<IEnumerable<VocabularyViewModel>> GetAllVocabularies();
         Task<VocabularyViewModel> GetVocabularyById(Guid vocId);
-        Task<IEnumerable<VocabularyViewModel>> GetAllVocabularyByTopic(Guid topicId);
-        Task<bool> AddVocabulary(VocabularyAddModel model, string userId);
-        Task<bool> UpdateVocabulary(VocabularyUpdateModel model, Guid vocId, string userId);
-        Task<bool> DeleteVocabulary(Guid vocId);
+        Task<IEnumerable<VocabularyViewModel>> GetAllVocabularyByTopic(string topic);
+        Task<bool> AddVocabulary(VocabularyAddModel model);
+        Task<bool> UpdateVocabulary(VocabularyUpdateModel model, Guid vocId);
+        Task<bool> DeleteVocabulary(Guid listId, Guid vocId);
     }
 }

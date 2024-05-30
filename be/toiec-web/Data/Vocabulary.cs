@@ -3,13 +3,15 @@
     public class Vocabulary
     {
         public Guid idVoc { get; set; }
-        public Guid idTopic { get; set; }
-        public string idUser { get; set; }
+        public Guid idList { get; set; }
+        public string? topic { get; set; }
         public string engWord { get; set; }
         public string? pronunciation { get; set; }
         public string? wordType { get; set; }
         public string meaning { get; set; }
-        public virtual VocTopic VocTopic { get; set; }
-        public virtual Users Users { get; set; }
+        public string? image { get; set; }
+        public string? example { get; set; }
+        public bool status { get; set; }
+        public virtual VocList VocTopic { get; set; }
     }
 }

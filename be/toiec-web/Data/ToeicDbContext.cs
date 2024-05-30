@@ -35,7 +35,7 @@ namespace toeic_web.Models
         public virtual DbSet<VipPackage> VipPackages { get; set; }
         public virtual DbSet<VipStudent> VipStudents { get; set; }
         public virtual DbSet<Vocabulary> Vocabularies { get; set;}
-        public virtual DbSet<VocTopic> VocabularyTopics { get; set; }
+        public virtual DbSet<VocList> VocList { get; set; }
         public virtual DbSet<ResetPassword> ResetPasswords { get; set; }
         public virtual DbSet<ScoreParam> ScoreParams { get; set; }
 
@@ -256,17 +256,13 @@ namespace toeic_web.Models
             {
                 entity.HasKey(s => s.idVoc);
                 entity.HasOne(s => s.VocTopic).WithMany(s => s.Vocabularies)
-                    .HasForeignKey(s => s.idTopic)
+                    .HasForeignKey(s => s.idList)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_VocOfTopic");
-                entity.HasOne(s => s.Users).WithMany(s => s.Vocabulary)
-                    .HasForeignKey(s => s.idUser)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_VocOfUser");
             });
-            modelBuilder.Entity<VocTopic>(entity =>
+            modelBuilder.Entity<VocList>(entity =>
             {
-                entity.HasKey(s => s.idVocTopic);
+                entity.HasKey(s => s.idVocList);
                 entity.HasOne(s => s.Users).WithMany(s => s.VocTopics)
                     .HasForeignKey(s => s.idUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)

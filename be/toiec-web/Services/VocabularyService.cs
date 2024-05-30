@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using NgrokApi;
 using toeic_web.Models;
 using toeic_web.Repository.IRepository;
 using toeic_web.Services.IService;
@@ -10,53 +11,59 @@ namespace toeic_web.Services
     {
         private readonly IVocabularyRepository _vocabularyRepository;
         private readonly IMapper _mapper;
+        private readonly IUploadFileService _uploadFileService;
 
-        public VocabularyService(IVocabularyRepository vocabularyRepository, IMapper mapper) 
+        public VocabularyService(IVocabularyRepository vocabularyRepository, IMapper mapper,
+            IUploadFileService uploadFileService) 
         {
             _vocabularyRepository = vocabularyRepository;
             _mapper = mapper;
+            _uploadFileService = uploadFileService;
         }
-        public async Task<bool> AddVocabulary(VocabularyAddModel model, string userId)
+        public async Task<bool> AddVocabulary(VocabularyAddModel model)
         {
             var data = _mapper.Map<VocabularyModel>(model);
-            return await _vocabularyRepository.AddVocabulary(data, userId);
+            data.idVoc = new Guid();
+            if (model.image != null)
+            {
+                data.image = await _uploadFileService.ConvertIFormFileToBase64String(model.image);  
+            }
+            return await _vocabularyRepository.AddVocabularyToList(data.idList, data);
         }
 
-        public async Task<bool> DeleteVocabulary(Guid vocId)
+        public async Task<bool> DeleteVocabulary(Guid idList, Guid vocId)
         {
-            return await _vocabularyRepository.DeleteVocabulary(vocId);
+            return await _vocabularyRepository.RemoveVocabularyFromList(idList, vocId);
         }
 
         public async Task<IEnumerable<VocabularyViewModel>> GetAllVocabularies()
         {
             var data = await _vocabularyRepository.GetAllVocabularies();
-            List<VocabularyViewModel> listData = new List<VocabularyViewModel>();
+            var listData = new List<VocabularyViewModel>();
             if (data != null)
             {
                 foreach (var item in data)
                 {
                     var obj = _mapper.Map<VocabularyViewModel>(item);
                     listData.Add(obj);
-                }
-                return listData;
+                }                
             }
-            return null;
+            return listData;
         }
 
-        public async Task<IEnumerable<VocabularyViewModel>> GetAllVocabularyByTopic(Guid topicId)
+        public async Task<IEnumerable<VocabularyViewModel>> GetAllVocabularyByTopic(string topic)
         {
-            var data = await _vocabularyRepository.GetAllVocabularyByTopic(topicId);
-            List<VocabularyViewModel> listData = new List<VocabularyViewModel>();
+            var data = await _vocabularyRepository.GetAllVocabularyByTopic(topic);
+            var listData = new List<VocabularyViewModel>();
             if(data != null)
             {
                 foreach (var item in data)
                 {
                     var obj = _mapper.Map<VocabularyViewModel>(item);
                     listData.Add(obj);
-                }
-                return listData;
+                }                
             }
-            return null;
+            return listData;
         }
 
         public async Task<VocabularyViewModel> GetVocabularyById(Guid vocId)
@@ -70,10 +77,10 @@ namespace toeic_web.Services
             return null;
         }
 
-        public async Task<bool> UpdateVocabulary(VocabularyUpdateModel model, Guid vocId, string userId)
+        public async Task<bool> UpdateVocabulary(VocabularyUpdateModel model, Guid vocId)
         {
             var data = _mapper.Map<VocabularyModel>(model);
-            return await _vocabularyRepository.UpdateVocabulary(data, vocId, userId);
+            return await _vocabularyRepository.UpdateVocabulary(data, vocId);
         }
     }
 }

@@ -11,12 +11,14 @@ namespace toeic_web.Repository
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
+        private readonly ToeicDbContext _toeicDbContext;
 
-        public VocabularyRepository(ToeicDbContext dbContext, IUnitOfWork uow, IMapper mapper) 
+        public VocabularyRepository(ToeicDbContext dbContext, IUnitOfWork uow, IMapper mapper, ToeicDbContext toeicDbContext) 
             : base(dbContext)
         {
             _uow = uow;
             _mapper = mapper;
+            _toeicDbContext = toeicDbContext;
         }
 
         public async Task<bool> AddVocabulary(VocabularyModel model, string userId)
@@ -25,7 +27,6 @@ namespace toeic_web.Repository
             {               
                 var voc = _mapper.Map<Vocabulary>(model);
                 voc.idVoc = Guid.NewGuid();
-                voc.idUser = userId;
                 Entities.Add(voc);
                 _uow.SaveChanges();
                 return true;
@@ -36,12 +37,30 @@ namespace toeic_web.Repository
             }
         }
 
+        public async Task<bool> AddVocabularyToList(Guid listId, VocabularyModel model)
+        {
+            var vocList = await _toeicDbContext.VocList
+                .Include(v => v.Vocabularies)
+                .FirstOrDefaultAsync(v => v.idVocList == listId);
+            var vocItem = _mapper.Map<Vocabulary>(model);
+
+            if (vocList == null)
+            {
+                return false;
+            }
+            vocList.Vocabularies.Add(vocItem);
+            vocList.quantity = vocList.Vocabularies.Count;
+            _toeicDbContext.Update(vocList);
+            _uow.SaveChanges() ;
+            return true;
+        }
+
         public async Task<bool> DeleteVocabulary(Guid vocId)
         {
             var voc = GetById(vocId);
             if (voc == null)
             {
-                throw new ArgumentNullException(nameof(voc));
+                return await Task.FromResult(false);
             }
             Entities.Remove(voc);
             _uow.SaveChanges();
@@ -60,13 +79,13 @@ namespace toeic_web.Repository
             return listData;
         }
 
-        public async Task<IEnumerable<VocabularyModel>> GetAllVocabularyByTopic(Guid topicId)
+        public async Task<IEnumerable<VocabularyModel>> GetAllVocabularyByTopic(string topic)
         {
             var listData = new List<VocabularyModel>();
             var data = await Entities.OrderBy(v => v.engWord).ToListAsync();
             foreach(var item in data)
             {
-                if(item.idTopic == topicId)
+                if(item.topic == topic)
                 {
                     var obj = _mapper.Map<VocabularyModel>(item);
                     listData.Add(obj);
@@ -89,13 +108,37 @@ namespace toeic_web.Repository
             return null;
         }
 
-        public async Task<bool> UpdateVocabulary(VocabularyModel model, Guid vocId, string userId)
+        public async Task<bool> RemoveVocabularyFromList(Guid listId, Guid vocabularyId)
+        {
+            var vocList = await _toeicDbContext.VocList
+                .Include(v => v.Vocabularies)
+                .FirstOrDefaultAsync(v => v.idVocList == listId);
+
+            if (vocList != null)
+            {
+                var vocItem = vocList.Vocabularies.FirstOrDefault(v => v.idVoc == vocabularyId);
+                if (vocItem != null)
+                {
+                    vocList.Vocabularies.Remove(vocItem);
+                    vocList.quantity = vocList.Vocabularies.Count;
+                    _toeicDbContext.Update(vocList);
+                    var deleted = await DeleteVocabulary(vocItem.idVoc);
+                    if (deleted)
+                    {
+                        _uow.SaveChanges();
+                        return true;
+                    }                    
+                }
+            }
+            return false;
+        }
+
+        public async Task<bool> UpdateVocabulary(VocabularyModel model, Guid vocId)
         {
             try
             {
                 var voc = _mapper.Map<Vocabulary>(model);
                 voc.idVoc = vocId;
-                voc.idUser = userId;
                 Entities.Update(voc);
                 _uow.SaveChanges();
                 return true;

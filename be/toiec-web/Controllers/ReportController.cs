@@ -22,7 +22,8 @@ namespace toiec_web.Controllers
             var response = await _reportService.GetAllReports();
             if (response == null)
             {
-                return StatusCode(StatusCodes.Status404NotFound);
+                return StatusCode(StatusCodes.Status404NotFound,
+                    new Response { Status = "Fail", Message = "Data not found!" });
             }
             return Ok(response);
         }
@@ -33,7 +34,8 @@ namespace toiec_web.Controllers
             var response = await _reportService.GetAllFalseReports();
             if (response == null)
             {
-                return StatusCode(StatusCodes.Status404NotFound);
+                return StatusCode(StatusCodes.Status404NotFound,
+                    new Response { Status = "Fail", Message = "Data not found!" });
             }
             return Ok(response);
         }
@@ -44,7 +46,8 @@ namespace toiec_web.Controllers
             var response = await _reportService.AddReport(model);
             if (!response)
             {
-                return StatusCode(StatusCodes.Status400BadRequest);
+                return StatusCode(StatusCodes.Status400BadRequest,
+                    new Response { Status = "Fail", Message = "An issue when insert data!" });
             }
             return StatusCode(StatusCodes.Status200OK,
                 new Response { Status = "Success", Message = "Added !" });
@@ -56,7 +59,8 @@ namespace toiec_web.Controllers
             var response = await _reportService.UpdateReport(model, idReport);
             if (!response)
             {
-                return StatusCode(StatusCodes.Status400BadRequest);
+                return StatusCode(StatusCodes.Status400BadRequest,
+                    new Response { Status = "Fail", Message = "An issue when update data!" });
             }
             return StatusCode(StatusCodes.Status200OK,
                 new Response { Status = "Success", Message = "Updated !" });
@@ -68,7 +72,8 @@ namespace toiec_web.Controllers
             var response = await _reportService.DeleteReport(idReport);
             if (!response)
             {
-                return StatusCode(StatusCodes.Status400BadRequest);
+                return StatusCode(StatusCodes.Status400BadRequest,
+                    new Response { Status = "Fail", Message = "An issue when delete data!" });
             }
             return StatusCode(StatusCodes.Status200OK,
                    new Response { Status = "Success", Message = "Deleted !" });
