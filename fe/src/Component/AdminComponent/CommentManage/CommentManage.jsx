@@ -50,7 +50,7 @@ function CommentManage() {
       const response = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/Report/GetAllFalseReports`,
+        }/Report/GetAllFalseReports/false`,
         {
           headers: {
             "Content-Type": "application/json",

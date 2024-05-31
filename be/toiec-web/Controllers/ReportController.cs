@@ -28,10 +28,10 @@ namespace toiec_web.Controllers
             return Ok(response);
         }
         [HttpGet]
-        [Route("GetAllFalseReports")]
-        public async Task<IActionResult> GetAllFalseReports()
+        [Route("GetAllFalseReports/{check}")]
+        public async Task<IActionResult> GetAllFalseReports(bool check)
         {
-            var response = await _reportService.GetAllFalseReports();
+            var response = await _reportService.GetAllFalseReports(check);
             if (response == null)
             {
                 return StatusCode(StatusCodes.Status404NotFound,

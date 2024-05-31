@@ -131,7 +131,7 @@ namespace toeic_web.Controllers
 
         [Authorize]
         [HttpDelete]
-        [Route("DeleteVocabulary/{idList:guid}&&/{idVoc:guid}")]
+        [Route("DeleteVocabulary/{idList:guid}&&{idVoc:guid}")]
         public async Task<IActionResult> DeleteVocabulary(Guid idList, Guid idVoc)
         {
             var response = await _vocabularyService.DeleteVocabulary(idList, idVoc);

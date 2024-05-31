@@ -31,6 +31,7 @@ function CourseHome({ subtitle, title }) {
     }
     fetchCourses();
   }, []);
+  console.log(process.env.REACT_APP_API_BASE_URL)
   if (isLoading) {
     return <Loader />;
   }
