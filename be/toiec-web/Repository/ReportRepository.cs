@@ -49,7 +49,7 @@ namespace toiec_web.Repository
             return Task.FromResult(true);
         }
 
-        public async Task<IEnumerable<ReportModel>> GetAllFalseReports()
+        public async Task<IEnumerable<ReportModel>> GetAllFalseReports(bool check)
         {
             var data = await GetAllReports();
             var listData = new List<ReportModel>();
@@ -57,7 +57,7 @@ namespace toiec_web.Repository
             {
                 foreach (var report in data)
                 {
-                    if(report.isCheck == false)
+                    if(report.isCheck == check)
                     {
                         var obj = _mapper.Map<ReportModel>(report);
                         listData.Add(obj);
