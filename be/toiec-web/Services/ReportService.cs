@@ -15,20 +15,25 @@ namespace toiec_web.Services
         private readonly IMapper _mapper;
         private readonly ICommentRepository _commentRepository;
         private readonly UserManager<Users> _userManager;
+        private readonly IConfiguration _configuration;
 
         public ReportService(IReportRepository reportRepository, IMapper mapper,
-            ICommentRepository commentRepository, UserManager<Users> userManager)
+            ICommentRepository commentRepository, UserManager<Users> userManager, IConfiguration configuration)
         {
             _reportRepository = reportRepository;
             _mapper = mapper;
             _commentRepository = commentRepository;
             _userManager = userManager;
+            _configuration = configuration;
         }
         public Task<bool> AddReport(ReportAddModel model)
         {
             try
             {
+                var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
+                var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
                 var data = _mapper.Map<ReportModel>(model);
+                data.reportDate = timeNow;
                 return _reportRepository.AddReport(data);
             }
             catch (Exception ex)
@@ -98,6 +103,9 @@ namespace toiec_web.Services
             try
             {
                 var data = _mapper.Map<ReportModel>(model);
+                var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
+                var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
+                data.reportDate = timeNow;
                 var updateCmt = false;
                 if (data == null)
                 {

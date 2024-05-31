@@ -11,14 +11,16 @@ namespace toeic_web.Repository
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IStudentRepository _studentRepository;
+        private readonly IConfiguration _configuration;
 
         public RecordRepository(ToeicDbContext dbContext, IMapper mapper, IUnitOfWork unitOfWork,
-            IStudentRepository studentRepository, ITestRepository testRepository)
+            IStudentRepository studentRepository,IConfiguration configuration)
             : base(dbContext)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _studentRepository = studentRepository;
+            _configuration = configuration;
         }
 
         public Task<bool> AddRecord(RecordModel model)
@@ -26,6 +28,9 @@ namespace toeic_web.Repository
             try
             {
                 var record = _mapper.Map<TestRecord>(model);
+                var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
+                var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
+                record.createDate = timeNow;
                 Entities.Add(record);
                 _unitOfWork.SaveChanges();
                 return Task.FromResult(true);
@@ -42,6 +47,9 @@ namespace toeic_web.Repository
             try
             {
                 var record = _mapper.Map<TestRecord>(model);
+                var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
+                var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
+                record.createDate = timeNow;
                 record.idRecord = idRecord;
                 Entities.Update(record);
                 _unitOfWork.SaveChanges();

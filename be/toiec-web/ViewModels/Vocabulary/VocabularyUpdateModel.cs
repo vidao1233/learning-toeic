@@ -8,7 +8,7 @@
         public string? pronunciation { get; set; }
         public string? wordType { get; set; }
         public string meaning { get; set; }
-        public string? image { get; set; }
+        public IFormFile? image { get; set; }
         public string? example { get; set; }
         public bool status { get; set; }
     }

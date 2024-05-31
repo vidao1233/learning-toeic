@@ -71,7 +71,7 @@ namespace toeic_web.Services
         {
             var student = await _studentRepository.GetStudentByUserId(userId);
             var data = await _paymentRepository.GetAllPaymentByStudentId(student.idStudent);
-            List<PaymentViewModel> listData = new List<PaymentViewModel>();
+            var listData = new List<PaymentViewModel>();
             if (data != null)
             {
                 foreach (var item in data)
@@ -168,7 +168,7 @@ namespace toeic_web.Services
             Console.WriteLine(studentId);
             Console.WriteLine(idPackage);
             var user = await _studentRepository.GetStudentById(studentId);
-            PaymentModel payment = new PaymentModel()
+            var payment = new PaymentModel()
                 {
                     idPayment = Guid.NewGuid(),
                     idMethod = paymentMethodId,
