@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import Loader from "../../Common/Loader/Loader";
-import "../../ProfessorComponent/TestManage/AddTest.css";
+import { formatDateTime } from "../../Courses/Lessons/Comment/Comment";
 
-function CheckReport({ toggleModal, modal_on, report }) {
+function CheckReport({ toggleModal, modal_on, report, fetchReport }) {
   const [isLoading, setIsLoading] = useState(false);
   const [checkReport, setCheckReport] = useState({
     isChecked: false,
@@ -26,7 +26,7 @@ function CheckReport({ toggleModal, modal_on, report }) {
             idComment: report.idComment,
             idUser: report.idUser,
             reason: report.reason,
-            reportDate: report.reportDate,
+            reportDate: formatDateTime(),
             checkNote: checkReport.checkNote,
             isCheck: checkReport.isChecked,
           }),
@@ -39,6 +39,7 @@ function CheckReport({ toggleModal, modal_on, report }) {
       } else {
         toast.success("Đã xác nhận");
         toggleModal();
+        fetchReport();
       }
     } catch (error) {
       toast.error(`${error}`);
@@ -50,11 +51,14 @@ function CheckReport({ toggleModal, modal_on, report }) {
   return (
     <div className="professor-add-test">
       {modal_on && (
-        <div className="add-test-modal">
+        <div className="w-screen h-screen top-0 left-0 right-0 bottom-0 fixed">
           <div onClick={toggleModal} className="overlay"></div>
-          <div className="add-test-panel">
-            <div className="add-test-content">
-              <div onClick={toggleModal} className="add-test-close-btn">
+          <div className="w-full h-full flex justify-center items-center">
+            <div className=" absolute h-auto bg-slate-100 py-6 px-4 rounded-lg w-[40vw]">
+              <div
+                onClick={toggleModal}
+                className="absolute top-4 right-4 flex justify-end"
+              >
                 <svg
                   onClick={toggleModal}
                   xmlns="http://www.w3.org/2000/svg"
@@ -75,21 +79,17 @@ function CheckReport({ toggleModal, modal_on, report }) {
                 </svg>
               </div>
               <form
+                className="flex flex-col gap-4"
                 onSubmit={(e) => {
                   e.preventDefault();
                   handleEditNode();
                 }}
               >
-                <div className="add-test-title">
-                  <h2>Xác nhận báo cáo</h2>
-                </div>
+                <h2 className="text-center">Xác nhận báo cáo</h2>
                 <p>{report.content}</p>
-                <div
-                  style={{ overflow: "auto", maxHeight: "40vh" }}
-                  className="input-field"
-                >
+                <div className="h-20 w-full bg-white flex items-center justify-evenly p-2 border-2 rounded-3xl ">
                   <textarea
-                    className="input-item"
+                    className="w-full h-full text-lg font-semibold text-black pl-2 border-none outline-none"
                     type="text"
                     placeholder="Ghi chú"
                     onChange={(e) => {
@@ -108,11 +108,9 @@ function CheckReport({ toggleModal, modal_on, report }) {
                     width: "fit-full",
                   }}
                 >
-                  <div
-                    style={{ display: "flex", width: "fit-content", gap: 4 }}
-                  >
+                  <div className="flex items-center gap-2">
                     <input
-                      style={{}}
+                      className="h-5 w-5"
                       type="checkbox"
                       onChange={(e) => {
                         setCheckReport({
@@ -121,16 +119,16 @@ function CheckReport({ toggleModal, modal_on, report }) {
                         });
                       }}
                     />
-                    <div style={{ padding: 4, fontSize: 16, fontWeight: 600 }}>
-                      Có vi phạm
-                    </div>
+                    <div className="font-semibold text-lg ">Có vi phạm</div>
                   </div>
                 </div>
-                <input
-                  type="submit"
-                  className="vocabulary-submit"
-                  value="Thêm"
-                ></input>
+                <div className="w-full flex justify-center">
+                  <input
+                    type="submit"
+                    className="w-60 h-12 bg-primary-900 text-white font-semibold uppercase cursor-pointer mb-2.5 rounded-[50px] border-none"
+                    value="Thêm"
+                  ></input>
+                </div>
               </form>
             </div>
           </div>

@@ -58,15 +58,14 @@
   margin: 2rem 0;
 }
 
-.professor-lesson-list .lesson-list-item {
+.professor-lesson-list .wordList-item {
   font-size: 18px;
-  text-transform: capitalize;
   color: #535353;
   padding: 1rem;
   background-color: #fff;
   border-bottom: 1px solid #e8eaf1;
   display: grid;
-  grid-template-columns: auto 180px;
+  grid-template-columns: 1fr 1fr 2fr 1fr;
 }
 .professor-lesson-list .lesson-list-item:hover {
   transform: translateZ(1px);
@@ -75,7 +74,7 @@
 .professor-lesson-list .btn-wrapper {
   width: 100%;
   display: flex;
-  gap: 1rem;
+  gap: 8px;
 }
 .professor-lesson-list .delete-btn,
 .professor-lesson-list .update-btn {
@@ -90,8 +89,8 @@
   transition: all 0.2s ease;
 }
 .professor-lesson-list .delete-btn:hover {
-  width: 130%;
+  width: 150%;
 }
 .professor-lesson-list .update-btn:hover {
-  width: 130%;
+  width: 150%;
 }

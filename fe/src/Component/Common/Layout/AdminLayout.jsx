@@ -5,7 +5,7 @@ import AdminHeader from "../../AdminComponent/Common/AdminHeader";
 
 function AdminLayout({ children }) {
   const { user } = useContext(UserContext);
-  const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
+  const [openSidebarToggle, setOpenSidebarToggle] = useState(true);
   const OpenSidebar = () => {
     setOpenSidebarToggle(!openSidebarToggle);
   };

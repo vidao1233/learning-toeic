@@ -73,6 +73,20 @@ function CommentItem({
   useEffect(() => {
     setCurrentComent(comment.firstComment ?? comment);
   }, [comment]);
+  useEffect(() => {
+    const uncheckFilerInputs = (e) => {
+      if (!(e.target instanceof HTMLInputElement)) {
+        const filerInputs = document.querySelectorAll("input.filter-btn");
+        filerInputs.forEach((input) => {
+          input.checked = false;
+        });
+      }
+    };
+    document.body.addEventListener("click", uncheckFilerInputs);
+    return () => {
+      document.body.removeEventListener("click", uncheckFilerInputs);
+    };
+  }, []);
 
   return (
     currentComent && (
@@ -205,7 +219,7 @@ function CommentItem({
                   <i class="fa-solid fa-ellipsis-vertical fa-lg absolute top-6 right-4 cursor-pointer"></i>
                   <input
                     type="checkbox"
-                    className="absolute top-4 right-3 w-6 h-6 z-1 opacity-0 peer cursor-pointer"
+                    className="filter-btn absolute top-4 right-3 w-6 h-6 z-1 opacity-0 peer cursor-pointer"
                   />
                   <div
                     className="hidden peer-checked:flex absolute top-6 right-6 w-52 p-4 bg-primary-50 shadow-lg items-center gap-4 cursor-pointer"
