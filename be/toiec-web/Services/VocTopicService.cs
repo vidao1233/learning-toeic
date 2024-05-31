@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.SqlServer.Management.Smo;
 using toeic_web.Models;
 using toeic_web.Repository.IRepository;
@@ -13,23 +14,31 @@ namespace toeic_web.Services
         private readonly IVocTopicRepository _vocTopicRepository;
         private readonly IMapper _mapper;
         private readonly UserManager<Users> _userManager;
+        private readonly IConfiguration _configuration;
+        private readonly ToeicDbContext _toeicDbContext;
 
-        public VocTopicService(IVocTopicRepository vocTopicRepository, IMapper mapper, UserManager<Users> userManager) 
+        public VocTopicService(IVocTopicRepository vocTopicRepository, IMapper mapper, UserManager<Users> userManager, 
+            IConfiguration configuration, ToeicDbContext toeicDbContext)
         {
             _vocTopicRepository = vocTopicRepository;
             _mapper = mapper;
             _userManager = userManager;
+            _configuration = configuration;
+            _toeicDbContext = toeicDbContext;
         }
         public async Task<bool> AddVocList(VocListAddModel model, string userId)
         {
             //find author
             var user = await _userManager.FindByIdAsync(userId);
+            var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
+            var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
 
             var data = _mapper.Map<VocListModel>(model);
             data.idVocList = new Guid();
             data.idUser = userId;
             data.author = user.UserName;
             data.quantity = 0;
+            data.createDate = timeNow;
             return await _vocTopicRepository.AddVocList(data);
         }
 
@@ -41,7 +50,7 @@ namespace toeic_web.Services
         public async Task<IEnumerable<VocListViewModel>> GetAllVocList()
         {
             var data = await _vocTopicRepository.GetAllVocList();
-            List<VocListViewModel> listData = new List<VocListViewModel>();
+            var listData = new List<VocListViewModel>();
             if (data != null)
             {
                 foreach (var item in data)
@@ -56,7 +65,7 @@ namespace toeic_web.Services
         public async Task<IEnumerable<VocListViewModel>> GetVocListByUser(string idUser)
         {
             var data = await _vocTopicRepository.GetVocListByUser(idUser);
-            List<VocListViewModel> listData = new List<VocListViewModel>();
+            var listData = new List<VocListViewModel>();
             if (data != null)
             {
                 foreach (var item in data)
@@ -72,14 +81,23 @@ namespace toeic_web.Services
         {
             //find author
             var user = await _userManager.FindByIdAsync(userId);
+            var vocList = await _toeicDbContext.VocList
+                .Include(v => v.Vocabularies)
+                .FirstOrDefaultAsync(v => v.idVocList == listId);
+            var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
+            var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
 
+            if(vocList == null)
+            {
+                return false;
+            }
             var data = _mapper.Map<VocListModel>(model);
             data.idVocList = listId;
             data.idUser = userId;
             data.author = user.UserName;
-            data.quantity = 0;
+            data.quantity = vocList.Vocabularies.Count;
+            data.createDate = timeNow;
             return await _vocTopicRepository.UpdateVocList(data);
-
         }
     }
 }

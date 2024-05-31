@@ -35,7 +35,12 @@ namespace toeic_web.Controllers
                 var obj = _mapper.Map<VocabularyViewModel>(item);
                 if (item.image != null)
                 {
-                    obj.image = Url.Action(nameof(GetImage), "Vocabulary", new { id = item.idVoc }, Request.Scheme);
+                    var url = Url.Action(nameof(GetImage), "Vocabulary", new { id = item.idVoc }, Request.Scheme);
+                    if (url != null && url.Contains("http://backend"))
+                    {
+                        url = url.Replace("http://backend", "https://toeic.workon.space");
+                    }
+                    obj.image = url;
                 }  
                 response.Add(obj);
             }
@@ -54,7 +59,12 @@ namespace toeic_web.Controllers
             }
             if (voc.image != null)
             {
-                voc.image = Url.Action(nameof(GetImage), "Vocabulary", new { id = voc.idVoc }, Request.Scheme);
+                var url = Url.Action(nameof(GetImage), "Vocabulary", new { id = voc.idVoc }, Request.Scheme);
+                if (url != null && url.Contains("http://backend"))
+                {
+                    url = url.Replace("http://backend", "https://toeic.workon.space");
+                }
+                voc.image = url;
             }
             return Ok(voc);
         }
@@ -75,14 +85,19 @@ namespace toeic_web.Controllers
                 var obj = _mapper.Map<VocabularyViewModel>(item);
                 if (item.image != null)
                 {
-                    obj.image = Url.Action(nameof(GetImage), "Vocabulary", new { id = item.idVoc }, Request.Scheme);
+                    var url = Url.Action(nameof(GetImage), "Vocabulary", new { id = item.idVoc }, Request.Scheme);
+                    if (url != null && url.Contains("http://backend"))
+                    {
+                        url = url.Replace("http://backend", "https://toeic.workon.space");
+                    }
+                    obj.image = url;
                 }
                 response.Add(obj);
             }
             return Ok(voc);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         [Route("AddVocabulary")]
         public async Task<IActionResult> AddVocabulary([FromForm] VocabularyAddModel model)
@@ -101,7 +116,7 @@ namespace toeic_web.Controllers
         //[Authorize]
         [HttpPut]
         [Route("UpdateVocabulary/{idVoc:guid}")]
-        public async Task<IActionResult> UpdateVocabulary(VocabularyUpdateModel model, Guid idVoc)
+        public async Task<IActionResult> UpdateVocabulary([FromForm]VocabularyUpdateModel model, Guid idVoc)
         {
             var response = await _vocabularyService.UpdateVocabulary(model, idVoc);
             if (response == true)
@@ -114,7 +129,7 @@ namespace toeic_web.Controllers
                     new Response { Status = "Failed", Message = "An issue when update data !" });
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpDelete]
         [Route("DeleteVocabulary/{idList:guid}&&/{idVoc:guid}")]
         public async Task<IActionResult> DeleteVocabulary(Guid idList, Guid idVoc)

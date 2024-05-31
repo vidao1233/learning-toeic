@@ -80,6 +80,11 @@ namespace toeic_web.Services
         public async Task<bool> UpdateVocabulary(VocabularyUpdateModel model, Guid vocId)
         {
             var data = _mapper.Map<VocabularyModel>(model);
+            data.idVoc = vocId;
+            if (model.image != null)
+            {
+                data.image = await _uploadFileService.ConvertIFormFileToBase64String(model.image);
+            }
             return await _vocabularyRepository.UpdateVocabulary(data, vocId);
         }
     }

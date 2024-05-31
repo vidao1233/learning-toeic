@@ -13,15 +13,22 @@ namespace toeic_web.Services
     {
         private readonly ITestRepository _testRepository;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
-        public TestService(ITestRepository testRepository, IMapper mapper) 
+        public TestService(ITestRepository testRepository, IMapper mapper, IConfiguration configuration)
         {
             _testRepository = testRepository;
             _mapper = mapper;
+            _configuration = configuration;
         }
         public async Task<bool> AddTest(TestAddModel model, string userId)
         {
             var data = _mapper.Map<TestModel>(model);
+            var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
+            var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
+
+            data.createDate = timeNow;
+            data.useDate = timeNow;
             return await _testRepository.AddTest(data, userId);
         }
 
@@ -33,7 +40,7 @@ namespace toeic_web.Services
         public async Task<IEnumerable<TestViewModel>> GetAllTestByProfessor(string userId)
         {
             var data = await _testRepository.GetAllTestByProfessor(userId);
-            List<TestViewModel> listData = new List<TestViewModel>();
+            var listData = new List<TestViewModel>();
             if (data != null)
             {
                 foreach (var item in data)
@@ -41,15 +48,14 @@ namespace toeic_web.Services
                     var obj = _mapper.Map<TestViewModel>(item);
                     listData.Add(obj);
                 }
-                return listData;
             }
-            return null;
+            return listData;
         }
 
         public async Task<IEnumerable<TestViewModel>> GetAllTestByType(string typeName)
         {
             var data = await _testRepository.GetAllTestByType(typeName);
-            List<TestViewModel> listData = new List<TestViewModel>();
+            var listData = new List<TestViewModel>();
             if (data != null)
             {
                 foreach (var item in data)
@@ -57,15 +63,14 @@ namespace toeic_web.Services
                     var obj = _mapper.Map<TestViewModel>(item);
                     listData.Add(obj);
                 }
-                return listData;
             }
-            return null;
+            return listData;
         }
 
         public async Task<IEnumerable<TestViewModel>> GetAllTests()
         {
             var data = await _testRepository.GetAllTests();
-            List<TestViewModel> listData = new List<TestViewModel>();
+            var listData = new List<TestViewModel>();
             if (data != null)
             {
                 foreach (var item in data)
@@ -73,9 +78,8 @@ namespace toeic_web.Services
                     var obj = _mapper.Map<TestViewModel>(item);
                     listData.Add(obj);
                 }
-                return listData;
             }
-            return null;
+            return listData;
         }
 
         public async Task<TestViewModel> GetTestById(Guid testId)
@@ -92,6 +96,11 @@ namespace toeic_web.Services
         public async Task<bool> UpdateTest(TestUpdateModel model, Guid testId, string userId)
         {
             var data = _mapper.Map<TestModel>(model);
+            var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
+            var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
+
+            data.createDate = timeNow;
+            data.useDate = timeNow;
             return await _testRepository.UpdateTest(data, testId, userId);
         }
     }
