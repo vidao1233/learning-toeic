@@ -132,9 +132,9 @@ function UserManage() {
           users.map((item, index) => {
             return (
               <div key={index} className="wordList-item">
-                <div className="user-fullname">{item?.fullname}</div>
-                <div className="user-username">{item?.userName}</div>
-                <div className="user-email">{item?.email}</div>
+                <div>{item?.fullname}</div>
+                <div>{item?.userName}</div>
+                <div>{item?.email}</div>
                 <div className="btn-wrapper">
                   <button
                     className="delete-btn"

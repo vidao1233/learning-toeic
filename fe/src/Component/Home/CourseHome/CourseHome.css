@@ -47,6 +47,7 @@
   background: #fff;
   scroll-snap-align: start;
   box-shadow: 0 15px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
 }
 .lr-card .card:hover {
   cursor: pointer;

@@ -7,7 +7,9 @@ function AdminSidebar({ openSidebarToggle, OpenSidebar }) {
     <aside id="sidebar" className={!openSidebarToggle ? "sidebar-hidden" : ""}>
       <div className="sidebar-title">
         <div className="sidebar-brand">
-          <img src={brand_logo} alt="" />
+          <Link to="/">
+            <img src={brand_logo} alt="" />
+          </Link>
         </div>
       </div>
 

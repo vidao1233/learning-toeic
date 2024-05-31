@@ -53,6 +53,24 @@ function CourseHome({ subtitle, title }) {
                               src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-online-course-university-flaticons-flat-flat-icons-3.png"
                               alt=""
                             />
+                            {course.isVip ? (
+                              <div
+                                style={{
+                                  position: "absolute",
+                                  top: 4,
+                                  right: 4,
+                                }}
+                              >
+                                <img
+                                  width="64"
+                                  height="64"
+                                  src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-vip-music-festival-flaticons-flat-flat-icons.png"
+                                  alt=""
+                                />
+                              </div>
+                            ) : (
+                              <></>
+                            )}
                           </div>
                           <h2>{course.name}</h2>
                           <p>{course.description}</p>

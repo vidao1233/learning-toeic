@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import css from "./test-main.module.scss";
 import Loader from "../../Common/Loader/Loader.jsx";
 import HTMLReactParser from "html-react-parser";
@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { showSubmitWarning } from "../../Common/Alert/Alert.jsx";
 import { useBeforeunload } from "react-beforeunload";
 
-function NormalTest({id}) {
+function NormalTest({ id }) {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -101,17 +101,6 @@ function NormalTest({id}) {
       }
     }
   }, [current_question]);
-
-  useEffect(() => {
-    if (user?.idUser && answers?.length > 0) {
-      let time;
-      if (testType === "FullTest") {
-        time = new Date(new Date().getTime() + 120 * 60 * 1000);
-      } else {
-        time = new Date(new Date().getTime() + 60 * 60 * 1000);
-      }
-    }
-  }, [answers, user, testType]);
   useEffect(() => {
     if (answers?.length <= 0 && testdata?.length !== 0) {
       setAnswers(initialAnswerList());
