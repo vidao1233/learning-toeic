@@ -18,6 +18,7 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isloading, setIsLoading] = useState(false);
   const [is2FA, setIs2FA] = useState(false);
+  const [isresendEmail, setResendEmail] = useState(false);
   const [otp, setOTP] = useState([]);
   const ref_otp = useRef([]);
 
@@ -66,8 +67,7 @@ function Login() {
       setIsLoading(false);
       if (!response.ok) {
         if (response.status === 404) {
-          const errorData = await response.json();
-          toast.warning(`${errorData.message}`);
+          handleResendEmail(login_data.username);
         } else {
           toast.error("Đăng nhập không thành công", {
             autoClose: false,
@@ -79,11 +79,9 @@ function Login() {
           loginContext(data.token);
           const returnPath = localStorage.getItem("returnPath");
           if (returnPath) {
-            // Chuyển hướng người dùng về trang trước khi đăng nhập
             navigate(returnPath);
-            localStorage.removeItem("returnPath"); // Xóa đường dẫn sau khi đã sử dụng
+            localStorage.removeItem("returnPath");
           } else {
-            // Nếu không có đường dẫn trước đó, chuyển hướng về trang chủ
             navigate("/");
           }
         } else {
@@ -120,6 +118,31 @@ function Login() {
         const data = await response.json();
         toast.success(`${data.message}`);
         SwitchSignUpMode(false);
+      }
+    } catch (error) {
+      toast.error(`${error}`);
+    }
+  }
+  async function handleResendEmail(username) {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `${
+          process.env.REACT_APP_API_BASE_URL ?? "/api"
+        }/Authen/ResendConfirmEmail?username=${username}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setIsLoading(false);
+      const data = await response?.json();
+      if (!response.ok) {
+        toast.error(`${data.message}`, {});
+      } else {
+        toast.success(`${data.message}`);
       }
     } catch (error) {
       toast.error(`${error}`);
@@ -246,6 +269,11 @@ function Login() {
                     {error_login.password?.type === "required" &&
                       "Password is required"}
                   </error>
+                  {isresendEmail && (
+                    <div className="forgot-password" onClick={() => {}}>
+                      Gửi lại email
+                    </div>
+                  )}
                   <a className="forgot-password">
                     <Link to="/forgot-password">Quên mật khẩu</Link>
                   </a>
@@ -431,14 +459,19 @@ function Login() {
                 <a href="" className="social-icon">
                   <i className="fab fa-twitter"></i>
                 </a>
-                <a
-                  href={`${
-                    process.env.REACT_APP_API_BASE_URL ?? "/api"
-                  }/Authen/GoogleLogin`}
-                  className="social-icon"
-                >
-                  <i className="fab fa-google"></i>
-                </a>
+                <GoogleLogin
+                  clientId="1047820244524-i4q01pgchejg1cvdfne578ag4sj44elo.apps.googleusercontent.com"
+                  buttonText=""
+                  onSuccess={(response) => {
+                    LoginGoogle(response.profileObj);
+                  }}
+                  onFailure={(e) => {
+                    toast.error("Đăng nhập bằng google thất bại");
+                  }}
+                  cookiePolicy={"single_host_origin"}
+                  isSignedIn={true}
+                  className="social-icon customLoginGoogle"
+                />
                 <a href="" className="social-icon">
                   <i className="fab fa-linkedin-in"></i>
                 </a>
