@@ -32,7 +32,7 @@ function Header() {
       setIsVIP(true);
     }
   }, [user.role]);
-  
+
   if (isLoading) {
     return <Loader />;
   }

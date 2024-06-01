@@ -53,7 +53,7 @@ function ProfessorVocabulary() {
       const response = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/Vocabulary/GetVocabularyByTopic/${id}`
+        }/Vocabulary/GetVocabularyByList/${id}`
       );
       setIsLoading(false);
       if (!response.ok) {
@@ -72,7 +72,7 @@ function ProfessorVocabulary() {
       const response = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/VocTopic/GetVocTopicById/${id}`
+        }/VocList/GetVocListById/${id}`
       );
       if (!response.ok) {
         const errorData = await response.json();
@@ -105,7 +105,7 @@ function ProfessorVocabulary() {
       const response = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/VocTopic/UpdateVocTopic/${id}&&${user.idUser}`,
+        }/VocList/UpdateVocList/${id}&&${user.idUser}`,
         {
           method: "PUT",
           headers: {
@@ -127,13 +127,13 @@ function ProfessorVocabulary() {
       toast.error(`${error}`);
     }
   };
-  const handleDeleteVocabulary = async (id) => {
+  const handleDeleteVocabulary = async (idList, idVoc) => {
     setIsLoading(true);
     try {
       const response = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/Vocabulary/DeleteVocabulary/${id}`,
+        }/Vocabulary/DeleteVocabulary/${idList}&&${idVoc}`,
         {
           method: "DELETE",
           headers: {
@@ -169,7 +169,7 @@ function ProfessorVocabulary() {
       />
       <div className="professor-vocabulary">
         <div className="professor-managment-sub-title">
-          <h3>QUẢN LÝ CHỦ ĐỀ TỪ VỰNG</h3>
+          <h3>QUẢN LÝ DANH SÁCH TỪ VỰNG</h3>
         </div>
 
         <form

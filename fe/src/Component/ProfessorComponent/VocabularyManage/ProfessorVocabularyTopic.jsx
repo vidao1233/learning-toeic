@@ -29,7 +29,7 @@ function ProfessorVocabularyTopic() {
       const response = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/VocTopic/GetAllVocTopic`
+        }/VocList/GetVocListByUser/${user.idUser}`
       );
       setIsLoading(false);
       if (!response.ok) {
@@ -49,7 +49,7 @@ function ProfessorVocabularyTopic() {
       const response = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/VocTopic/DeleteVocTopic/${voc_topic_id}`,
+        }/VocList/DeleteVocList/${voc_topic_id}`,
         {
           method: "DELETE",
           headers: {
@@ -60,10 +60,10 @@ function ProfessorVocabularyTopic() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        toast.error(`Xóa chủ đề từ vựng thất bại`, {});
+        toast.error(`Xóa danh sách từ vựng thất bại`, {});
       } else {
         fetchVocabularyTopic();
-        toast.success("Xóa chủ đề từ vựng thành công");
+        toast.success("Xóa danh sách từ vựng thành công");
       }
     } catch (error) {
       toast.error(`${error}`);
@@ -87,7 +87,7 @@ function ProfessorVocabularyTopic() {
       <div className="professor-vocabulary-wrapper">
         <div className="professor-board-header">
           <div className="professor-managment-title">
-            <h3>QUẢN LÝ CHỦ ĐỀ TỪ VỰNG</h3>
+            <h3>QUẢN LÝ DANH SÁCH TỪ VỰNG</h3>
           </div>
           <div className="professor-add-button" onClick={toggleModal}>
             <img
@@ -96,26 +96,34 @@ function ProfessorVocabularyTopic() {
               src="https://img.icons8.com/doodle/48/add.png"
               alt="add"
             />
-            <h3>THÊM CHỦ ĐỀ MỚI</h3>
+            <h3>TẠO DANH SÁCH MỚI</h3>
           </div>
         </div>
         <div className="vocabulary-grid-wrapper">
           <div className="vocabulary-grid">
-            {topics &&
-              topics.map((topic, index) => {
-                return (
+            <div>
+              {topics && topics.length > 0 ? (
+                topics.map((topic, index) => (
                   <div key={index} className="vocabulary-item">
-                    <img
-                      src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-vocabulary-literature-flaticons-lineal-color-flat-icons-2.png"
-                      alt=""
-                    />
-                    <div className="vocabulary-title">{topic.name}</div>
+                    <div className="vocabulary-title">{topic.title}</div>
+                    <div className="vocabulary-title-detail-description">
+                      {topic.description}
+                    </div>
+                    <div className="vocabulary-title-detail">
+                      Ngày tạo: {topic.createDate}
+                    </div>
+                    <div className="vocabulary-title-detail">
+                      Số lượng từ: {topic.quantity} từ
+                    </div>
+                    <div className="vocabulary-title-detail">
+                      Trạng thái: {topic.isPublic ? "công khai" : "riêng tư"}
+                    </div>
                     <div className="btn-wrapper">
                       <button
                         className="delete-btn"
                         onClick={() =>
                           showDeleteWarning(() =>
-                            DeleteVocabularyTopic(topic.idVocTopic)
+                            DeleteVocabularyTopic(topic.idVocList)
                           )
                         }
                       >
@@ -124,15 +132,27 @@ function ProfessorVocabularyTopic() {
                       <button
                         className="update-btn"
                         onClick={() => {
-                          navigate(`/professor/vocabulary/${topic.idVocTopic}`);
+                          navigate(`/professor/vocabulary/${topic.idVocList}`);
                         }}
                       >
                         Sửa
                       </button>
                     </div>
                   </div>
-                );
-              })}
+                ))
+              ) : (
+                <div
+                  style={{
+                    width: "10cm",
+                    marginLeft: "18cm",
+                    marginTop: "5cm",
+                    fontSize: "17px",
+                  }}
+                >
+                  Chưa có danh sách từ vựng, hãy tạo mới!
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

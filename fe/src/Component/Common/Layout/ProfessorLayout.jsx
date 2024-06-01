@@ -5,7 +5,7 @@ import ProfessorSidebar from "../../ProfessorComponent/Common/ProfessorSidebar";
 
 function ProfessorLayout({ children }) {
   const { user } = useContext(UserContext);
-  const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
+  const [openSidebarToggle, setOpenSidebarToggle] = useState(true);
   const OpenSidebar = () => {
     setOpenSidebarToggle(!openSidebarToggle);
   };

@@ -9,6 +9,7 @@ module.exports = {
     "./src/Component/AdminComponent/CommentManage/CommentManage.jsx",
     "./src/Component/AdminComponent/CommentManage/ReportItem.jsx",
     "./src/Component/AdminComponent/CommentManage/CheckReport.jsx",
+    // "./src/Component/Vocabulary/VocabularyByTopic.jsx",
   ],
   theme: {
     extend: {
