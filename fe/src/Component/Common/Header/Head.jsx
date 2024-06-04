@@ -9,7 +9,7 @@ export default function Head() {
       <div className="flexSB">
         <div className="logo">
           <Link to="/">
-            <img style={{ height: "90px", width: "90px" }} src={logo} />
+            <img style={{ height: "90px", width: "90px" }} src={logo} alt=""/>
           </Link>
           <span>ONLINE EDUCATION & LEARNING</span>
         </div>

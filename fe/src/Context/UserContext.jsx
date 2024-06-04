@@ -43,6 +43,7 @@ const UserProvider = ({ children }) => {
         } = token_decode;
 
         setUser((user) => ({
+          ...user,
           username: username,
           role: role,
           auth: true,
@@ -92,6 +93,7 @@ const UserProvider = ({ children }) => {
         idUser,
     } = token_decode;
     setUser((user) => ({
+      ...user,
       username: username,
       role: role,
       auth: true,
