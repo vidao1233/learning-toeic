@@ -59,3 +59,22 @@
   font-weight: 600;
   text-align: center;
 }
+
+.vocabulary-title-detail{
+  width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: medium;
+  font-weight: 400;
+  text-align: justify;
+  white-space: normal;
+}
+.vocabulary-title-detail-description{
+  width: 100%;
+  white-space: nowrap;
+  font-size: medium;
+  font-weight: 400;
+  text-align: center;
+  white-space: normal;
+  font-size: 12px;
+}

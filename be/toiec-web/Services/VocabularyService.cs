@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using NgrokApi;
+using NPOI.XWPF.UserModel;
 using toeic_web.Models;
 using toeic_web.Repository.IRepository;
 using toeic_web.Services.IService;
@@ -31,6 +32,19 @@ namespace toeic_web.Services
             return await _vocabularyRepository.AddVocabularyToList(data.idList, data);
         }
 
+        public async Task<bool> AddVocFromExistList(Guid vocId, Guid idList)
+        {
+            var voc = await _vocabularyRepository.GetVocabularyById(vocId);            
+            var addCheck = false;
+
+            if (voc != null)
+            {
+                voc.idVoc = new Guid();
+                addCheck = await _vocabularyRepository.AddVocabularyToList(idList, voc);
+            }
+            return addCheck;
+        }
+
         public async Task<bool> DeleteVocabulary(Guid idList, Guid vocId)
         {
             return await _vocabularyRepository.RemoveVocabularyFromList(idList, vocId);
@@ -47,6 +61,24 @@ namespace toeic_web.Services
                     var obj = _mapper.Map<VocabularyViewModel>(item);
                     listData.Add(obj);
                 }                
+            }
+            return listData;
+        }
+
+        public async Task<IEnumerable<VocabularyViewModel>> GetAllVocabularyByList(Guid listId)
+        {
+            var data = await _vocabularyRepository.GetAllVocabularies();
+            var listData = new List<VocabularyViewModel>();
+            if (data != null)
+            {
+                foreach (var item in data)
+                {
+                    if (item.idList == listId)
+                    {
+                        var obj = _mapper.Map<VocabularyViewModel>(item);
+                        listData.Add(obj);
+                    }
+                }
             }
             return listData;
         }

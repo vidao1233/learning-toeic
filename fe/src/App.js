@@ -45,6 +45,7 @@ import UserPrivate from "./Component/Common/Layout/UserPrivate";
 import EmailVerify from "./Component/Login/MailVerify/EmailVerify";
 import TestResult from "./Component/Test/TestResult/TestResult";
 import CommentManage from "./Component/AdminComponent/CommentManage/CommentManage";
+import VocabularyUserManager from "./Component/Vocabulary/VocabularyManager";
 
 function App() {
   return (
@@ -71,6 +72,11 @@ function App() {
               exact
               path="/vocabulary-by-topic/:id"
               element={<VocabularyByTopic />}
+            />
+            <Route
+              exact
+              path="/vocabulary-by-user/:id"
+              element={<VocabularyUserManager />}
             />
             <Route exact path="/courses" element={<Courses />} />
             <Route

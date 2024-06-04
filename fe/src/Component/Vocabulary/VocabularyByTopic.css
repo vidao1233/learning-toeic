@@ -176,21 +176,47 @@ label:hover :checked + .flip-card {
   padding-top: 20px;
 }
 .vocabulary-list {
-  width: 100%;
-  padding-bottom: 6px;
-  flex: 70%;
-  overflow: hidden;
-  border-radius: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
-.vocabulary-list-item {
-  padding: 1rem;
+.vocabulary__item {
+  padding: 2rem;
   background-color: #fff;
-  border-bottom: 1px solid #e8eaf1;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  border: 1px solid #e8eaf1;
+  display: flex;
+  align-items: flex-start;
+  border-radius: 20px;
+  justify-content: space-between;
 }
-.vocabulary-list-item:hover {
-  cursor: pointer;
-  transform: translateZ(1px);
-  box-shadow: 0 6px 6px #e8eaf1;
+
+.vocabulary__item:hover {
+  transition: all;
+  box-shadow:  0 6px 6px #e8eaf1;
+}
+
+.vocabulary__item-content {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+
+.vocabulary__item-button {
+  border-radius: 5px;
+  padding: 4px 10px;
+  background: #f2f2f2;
+}
+
+.list__info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.list__info-title {
+  font-size: 22px;
+  font-weight: 600;
 }

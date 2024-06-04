@@ -49,8 +49,26 @@ namespace toeic_web.Controllers
             return Ok(topic);
         }
 
-        //[Authorize]
-        [HttpPost]
+        [HttpGet]
+        [Route("GetVocListById/{idList:guid}")]
+        public async Task<IActionResult> GetVocListById(Guid idList)
+        {
+            var topic = await _vocTopicService.GetAllVocList();
+            if (topic != null)
+            {
+                foreach (var item in topic)
+                {
+                    if (item.idVocList == idList)
+                    {
+                        return Ok(item);
+                    }
+                }
+            }            
+            return StatusCode(StatusCodes.Status404NotFound,
+                    new Response { Status = "Fail", Message = "Data not found." });
+        }
+            //[Authorize]
+            [HttpPost]
         [Route("AddVocList")]
         public async Task<IActionResult> AddVocList(VocListAddModel model, string userId)
         {

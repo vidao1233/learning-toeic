@@ -15,13 +15,14 @@ function AddVocabularyTopic({ toggleModal, modal_on }) {
     reset,
   } = useForm();
 
+  const currentDate = new Date().toISOString();
   async function handleAddVocabularyTopic(data) {
     setIsLoading(true);
     try {
       const response = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/VocTopic/AddVocTopic?userId=${user.idUser}`,
+        }/VocList/AddVocList?userId=${user.idUser}`,
         {
           method: "POST",
           headers: {
@@ -30,7 +31,11 @@ function AddVocabularyTopic({ toggleModal, modal_on }) {
             Authorization: `Bearer ${user.token}`,
           },
           body: JSON.stringify({
-            name: data.name,
+            title: data.title,
+            description: data.description,
+            createDate: currentDate,
+            status: "0",
+            isPublic: true,
           }),
         }
       );
@@ -82,23 +87,34 @@ function AddVocabularyTopic({ toggleModal, modal_on }) {
               </div>
               <form onSubmit={handleSubmit(handleAddVocabularyTopic)}>
                 <div className="add-vocabulary-topic-title">
-                  <h2>Thêm Chủ đề từ vựng</h2>
+                  <h2>Tạo danh sách từ vựng</h2>
                 </div>
                 <div className="input-field">
                   <input
                     type="text"
-                    placeholder="Nhập tên chủ đề từ vựng"
-                    {...vocabulary_topic("name", { required: true })}
+                    placeholder="Nhập tên danh sách "
+                    {...vocabulary_topic("title", { required: true })}
                   />
                 </div>
                 <error>
-                  {errors.name?.type === "required" &&
+                  {errors.title?.type === "required" &&
                     "Không được để trống tên"}
+                </error>
+                <div className="input-field">
+                  <input
+                    type="text"
+                    placeholder="Nhập tên mô tả danh sách"
+                    {...vocabulary_topic("description", { required: true })}
+                  />
+                </div>
+                <error>
+                  {errors.decription?.type === "required" &&
+                    "Không được để trống mô tả"}
                 </error>
                 <input
                   type="submit"
                   className="vocabulary-submit"
-                  value="Thêm"
+                  value="Tạo"
                 ></input>
               </form>
             </div>

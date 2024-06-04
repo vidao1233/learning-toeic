@@ -23,10 +23,8 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
-          username: vidao1233
-          password: d@oVi1233
-          # username: ${{ secrets.DOCKER_USERNAME }}
-          # password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ secrets.DOCKER_USERNAME_BE }}
+          password: ${{ secrets.DOCKER_PASSWORD_BE }}
 
       - name: Push Docker Image
         run: docker push vidao1233/toeic-web:v1
@@ -48,10 +46,8 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
-          username: tranngobichdu
-          password: du2392002
-          # username: ${{ secrets.DOCKER_USERNAME }}
-          # password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ secrets.DOCKER_USERNAME_FE }}
+          password: ${{ secrets.DOCKER_PASSWORD_FE }}
 
       - name: Push Docker Image
         run: docker push tranngobichdu/toeic-learning-website:v1
@@ -64,8 +60,8 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: 103.130.211.150
-          username: hcmute
-          password: hcmute@fit
+          username: ${{ secrets.DOCKER_USERNAME_HOST }}
+          password: ${{ secrets.DOCKER_PASSWORD_HOST }}
           port: 10038
           script: |
             cd ~/project/20110223_20110618/toeicweb/learning-toeic

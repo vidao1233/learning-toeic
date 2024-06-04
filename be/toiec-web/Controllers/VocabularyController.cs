@@ -5,6 +5,7 @@ using NgrokApi;
 using toeic_web.Models;
 using toeic_web.Services.IService;
 using toeic_web.ViewModels.Vocabulary;
+using toiec_web.ViewModels.Vocabulary;
 
 namespace toeic_web.Controllers
 {
@@ -70,17 +71,17 @@ namespace toeic_web.Controllers
         }
 
         [HttpGet]
-        [Route("GetVocabularyByTopic/{topic}")]
-        public async Task<IActionResult> GetAllVocabularyByTopic(string topic)
+        [Route("GetVocabularyByList/{listId:guid}")]
+        public async Task<IActionResult> GetAllVocabularyByList(Guid listId)
         {
-            var voc = await _vocabularyService.GetAllVocabularyByTopic(topic);
-            if (voc == null)
+            var listVoc = await _vocabularyService.GetAllVocabularyByList(listId);
+            if (listVoc == null)
             {
                 return StatusCode(StatusCodes.Status404NotFound,
                     new Response { Status = "Fail", Message = "Data not found !" });
             }
             var response = new List<VocabularyViewModel>();
-            foreach (var item in voc)
+            foreach (var item in listVoc)
             {
                 var obj = _mapper.Map<VocabularyViewModel>(item);
                 if (item.image != null)
@@ -94,7 +95,35 @@ namespace toeic_web.Controllers
                 }
                 response.Add(obj);
             }
-            return Ok(voc);
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("GetVocabularyByTopic/{topic}")]
+        public async Task<IActionResult> GetAllVocabularyByTopic(string topic)
+        {
+            var listVoc = await _vocabularyService.GetAllVocabularyByTopic(topic);
+            if (listVoc == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound,
+                    new Response { Status = "Fail", Message = "Data not found !" });
+            }
+            var response = new List<VocabularyViewModel>();
+            foreach (var item in listVoc)
+            {
+                var obj = _mapper.Map<VocabularyViewModel>(item);
+                if (item.image != null)
+                {
+                    var url = Url.Action(nameof(GetImage), "Vocabulary", new { id = item.idVoc }, Request.Scheme);
+                    if (url != null && url.Contains("http://backend"))
+                    {
+                        url = url.Replace("http://backend", "https://toeic.workon.space");
+                    }
+                    obj.image = url;
+                }
+                response.Add(obj);
+            }
+            return Ok(response);
         }
 
         [Authorize]
@@ -110,6 +139,20 @@ namespace toeic_web.Controllers
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    new Response { Status = "Failed", Message = "An issue when insert data !" });
+        }
+
+        [HttpPost]
+        [Route("AddVocFromExistList")]
+        public async Task<IActionResult> AddVocFromExistList(VocabularyAddExistModel model)
+        {
+            var response = await _vocabularyService.AddVocFromExistList(model.idVoc, model.idList);
+            if (response == true)
+            {
+                return StatusCode(StatusCodes.Status200OK,
+                    new Response { Status = "Success", Message = "Added !" });
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError,
                     new Response { Status = "Failed", Message = "An issue when insert data !" });
         }
 
