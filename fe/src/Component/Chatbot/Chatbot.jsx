@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import { UserContext } from "../../Context/UserContext";
 import { OpenAIClient, AzureKeyCredential } from "@azure/openai";
 import ChatMessage from "./ChatMessage";
