@@ -54,9 +54,9 @@ namespace toiec_web.Services
             }
         }
 
-        public async Task<IEnumerable<ReportViewModel>> GetAllFalseReports()
+        public async Task<IEnumerable<ReportViewModel>> GetAllFalseReports(bool check)
         {
-            var data = await _reportRepository.GetAllFalseReports();
+            var data = await _reportRepository.GetAllFalseReports(check);
             var listData = new List<ReportViewModel>();
             if (data != null)
             {
