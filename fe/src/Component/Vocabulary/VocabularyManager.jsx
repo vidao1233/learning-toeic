@@ -47,7 +47,7 @@ function VocabularyUserManager() {
       const response = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/VocList/DeleteVocList/${voc_topic_id}`,
+        }/Vocabulary/DeleteVocabulary/${voc_topic_id}`,
         {
           method: "DELETE",
           headers: {
