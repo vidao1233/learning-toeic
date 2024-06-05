@@ -1,15 +1,18 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./AddVocabularyTopic.css";
 import { useForm } from "react-hook-form";
 import { UserContext } from "../../Context/UserContext";
 import { toast } from "react-toastify";
 import Loader from "../Common/Loader/Loader";
+import { IoAddOutline } from "react-icons/io5";
 
 function AddVocabularyTopic({ toggleModal, modal_on, wordId }) {
   const { user } = useContext(UserContext);
   const [userList, setUserList] = useState([]);
   const [voc, setVoc] = useState("");
   const [isloading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
   const {
     register: vocabulary_topic,
     handleSubmit,
@@ -110,11 +113,11 @@ function AddVocabularyTopic({ toggleModal, modal_on, wordId }) {
               </div>
               <form onSubmit={handleSubmit(handleAddVocabularyTopic)}>
                 <div className="add-vocabulary-topic-title">
-                  <h2>Lựa chọn danh sách từ vựng</h2>
+                  <h2>Lựa chọn danh sách từ vựng của bạn</h2>
                 </div>
                 <div className="vocabulary-topic-grid-wrapper">
                   <div className="">
-                    {userList &&
+                    {userList && userList.length > 0 ? (
                       userList.map((val, index) => {
                         return (
                           <div
@@ -132,10 +135,15 @@ function AddVocabularyTopic({ toggleModal, modal_on, wordId }) {
                               backgroundColor: "#f9f9f9",
                             }}
                           >
-                            <div
-                              style={{ fontSize: "16px", fontWeight: "bold" }}
-                            >
-                              {val.title}
+                            <div>
+                              <div
+                                style={{ fontSize: "16px", fontWeight: "bold" }}
+                              >
+                                {val.title}
+                              </div>
+                              <div style={{ fontSize: "13px" }}>
+                                Có {val.quantity} từ
+                              </div>
                             </div>
                             <button
                               onClick={() => {
@@ -159,18 +167,47 @@ function AddVocabularyTopic({ toggleModal, modal_on, wordId }) {
                                   "#007BFF")
                               }
                             >
-                              Chọn
+                              Thêm
                             </button>
                           </div>
                         );
-                      })}
+                      })
+                    ) : (
+                      <div
+                        style={{
+                          fontSize: "16px",
+                          display: "flex",
+                        }}
+                      >
+                        Bạn chưa có danh sách từ. Hãy tạo mới!
+                        <button
+                          onClick={() => {
+                            navigate(`/vocabulary-by-user/${user.idUser}`);
+                          }}
+                          style={{
+                            padding: "8px 12px",
+                            border: "none",
+                            borderRadius: "4px",
+                            backgroundColor: "#007BFF",
+                            color: "#fff",
+                            cursor: "pointer",
+                            transition: "background-color 0.3s",
+                            marginLeft: "20px",
+                            display: "flex",
+                          }}
+                          onMouseEnter={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#47849e")
+                          }
+                          onMouseLeave={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#007BFF")
+                          }
+                        >
+                          <IoAddOutline />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
-                <input
-                  type="submit"
-                  className="vocabulary-submit"
-                  value="Thêm"
-                ></input>
               </form>
             </div>
           </div>

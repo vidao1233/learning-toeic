@@ -12,6 +12,7 @@ import classNames from "classnames/bind";
 import { UserContext } from "../../Context/UserContext";
 import { showDeleteWarning } from "../Common/Alert/Alert";
 import { useNavigate } from "react-router-dom";
+import { IoAddOutline } from "react-icons/io5";
 
 const cx = classNames.bind(styles);
 
@@ -47,7 +48,7 @@ function VocabularyUserManager() {
       const response = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/Vocabulary/DeleteVocabulary/${voc_topic_id}`,
+        }/VocList/DeleteVocList/${voc_topic_id}`,
         {
           method: "DELETE",
           headers: {
@@ -80,60 +81,119 @@ function VocabularyUserManager() {
           subtitle="VictoryU"
           title={`Tất cả danh sách từ vựng của ${user.username}`}
         />
+        <div
+          style={{
+            display: "grid",
+            gap: "3rem",
+            padding: "2rem",
+            width: "17rem",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div className={cx("item")}>
+            <button onClick={() => alert("pressed")}>
+              <IoAddOutline style={{ fontSize: "5rem" }} />
+              Tạo danh sách từ
+            </button>
+          </div>
+        </div>
         {isLoading ? <Loader /> : <></>}
         <div className={cx("wrapper")}>
-          <div className={cx("gridview")}>
-            {topics &&
-              topics.map((val, index) => {
-                return (
-                  <Link
-                    key={val.index}
-                    className={cx("item")}
-                    to={`/vocabulary-by-topic/${val.idVocList}`}
-                  >
-                    <div className={cx("content")}>
-                      <div className={cx("title")}>{val.title}</div>
-                      <p className={cx("description")}>{val.description}</p>
-                      <p className={cx("author")}>
-                        <AiOutlineUser />
-                        {val.author}
-                      </p>
-                      <p className={cx("quantity")}>
-                        <p className={cx("label")}>
-                          <MdOutlineFlipToFront /> Số lượng từ:
-                        </p>
-                        {val.quantity} từ{" "}
-                      </p>
-                      <p className={cx("createdate")}>
-                        <p className={cx("label")}>
-                          <CiCalendar /> Ngày tạo:
-                        </p>
-                        {val.createDate}
-                      </p>
-                    </div>
-                    <div className={cx("btn-wrapper")}>
-                      <button
-                        className={cx("delete-btn")}
-                        onClick={() =>
-                          showDeleteWarning(() =>
-                            DeleteVocabularyTopic(val.idVocList)
-                          )
-                        }
+          {topics && (
+            <div className={cx("gridview")}>
+              {topics && topics.length > 0 ? (
+                topics.map((val, index) => {
+                  return (
+                    <div>
+                      <Link
+                        key={val.idVocList}
+                        className={cx("item")}
+                        to={`/vocabulary-by-topic/${val.idVocList}`}
                       >
-                        Xóa
-                      </button>
-                      <button
-                        className={cx("update-btn")}
-                        onClick={() => {
-                          navigate(`/professor/vocabulary/${val.idVocList}`);
-                        }}
-                      >
-                        Sửa
-                      </button>
+                        <div className={cx("content")}>
+                          <div className={cx("title")}>{val.title}</div>
+                          <p className={cx("description")}>{val.description}</p>
+                          <p className={cx("author")}>
+                            <AiOutlineUser />
+                            {val.author}
+                          </p>
+                          <p className={cx("quantity")}>
+                            <span className={cx("label")}>
+                              <MdOutlineFlipToFront /> Số lượng từ:
+                            </span>
+                            {val.quantity} từ
+                          </p>
+                          <p className={cx("createdate")}>
+                            <span className={cx("label")}>
+                              <CiCalendar /> Ngày tạo:
+                            </span>
+                            {val.createDate}
+                          </p>
+                        </div>
+                      </Link>
+                      <div className={cx("btn-wrapper")}>
+                        <button
+                          className={cx("delete-btn")}
+                          onClick={() =>
+                            showDeleteWarning(() =>
+                              DeleteVocabularyTopic(val.idVocList)
+                            )
+                          }
+                        >
+                          Xóa
+                        </button>
+                        <button
+                          className={cx("update-btn")}
+                          onClick={() => {
+                            navigate(`/professor/vocabulary/${val.idVocList}`);
+                          }}
+                        >
+                          Sửa
+                        </button>
+                      </div>
                     </div>
-                  </Link>
-                );
-              })}
+                  );
+                })
+              ) : (
+                <div>Bạn chưa có danh sách từ</div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="modal-dialog modal-lg">
+        <div className="model-content">
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">x</span>
+          </button>
+          <div class="modal-body" id="form-modal-content">
+            <div class="contain">
+              <h1>Tạo danh sách từ</h1>
+              <form>
+                <div id="div_id_title" class="form-group">
+                  <label for="id_title" class="requiredField">
+                    "Tiêu đề"
+                    <span class="asteriskField">*</span>
+                  </label>
+                  <div class>
+                    <input
+                      type="text"
+                      name="title"
+                      maxLength="255"
+                      class="textinput textInput form-control"
+                      required
+                      id="id_title"
+                    ></input>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
