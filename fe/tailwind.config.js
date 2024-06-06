@@ -11,7 +11,6 @@ module.exports = {
     "./src/Component/AdminComponent/CommentManage/CheckReport.jsx",
     "./src/Component/Chatbot/Chatbot.jsx",
     "./src/Component/Chatbot/ChatMessage.jsx",
-    "./src/Component/Vocabulary/VocabularyManager.jsx",
   ],
   theme: {
     extend: {
