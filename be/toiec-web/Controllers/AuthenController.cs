@@ -159,11 +159,14 @@ namespace toeic_web.Controllers
             //Checking the user
             var user = await _userManager.FindByNameAsync(loginModel.Username);
             //Checking email confirm
-            if (!user.EmailConfirmed)
+            if(user != null)
             {
-                //ResendConfirmEmail(user.Email);
-                return StatusCode(StatusCodes.Status404NotFound,
-                     new Response { Status = "Error", Message = $"We have sent EmailConfirm to {user.Email}. Verified your email to Login!" });
+                if (!user.EmailConfirmed)
+                {
+                    //ResendConfirmEmail(user.Email);
+                    return StatusCode(StatusCodes.Status404NotFound,
+                         new Response { Status = "Error", Message = $"We have sent EmailConfirm to {user.Email}. Verified your email to Login!" });
+                }
             }
             //Checking the password
             if (user != null && await _userManager.CheckPasswordAsync(user, loginModel.Password))

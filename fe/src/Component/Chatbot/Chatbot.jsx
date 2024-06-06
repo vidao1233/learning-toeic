@@ -2,9 +2,13 @@ import React, { Fragment, useContext, useState } from "react";
 import { UserContext } from "../../Context/UserContext";
 import { OpenAIClient, AzureKeyCredential } from "@azure/openai";
 import ChatMessage from "./ChatMessage";
+import {
+  REACT_APP_OPENAI_API_KEY,
+  REACT_APP_OPENAI_ENDPOINT,
+} from "../../constant/baseVariable";
 const client = new OpenAIClient(
-  process.env.REACT_APP_OPENAI_ENDPOINT,
-  new AzureKeyCredential(process.env.REACT_APP_OPENAI_API_KEY)
+  REACT_APP_OPENAI_ENDPOINT,
+  new AzureKeyCredential(REACT_APP_OPENAI_API_KEY)
 );
 function Chatbot() {
   const { user } = useContext(UserContext);

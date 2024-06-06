@@ -67,11 +67,13 @@ function Header() {
                 TỪ VỰNG <i className="fas fa-caret-down"></i>
                 <div className="dropdown-menu">
                   <ul>
-                    <div className="dropdown-item">
-                      <Link to={`/vocabulary-by-user/${user.idUser}`}>
-                        Từ của bạn
-                      </Link>
-                    </div>
+                    {user.auth && (
+                      <div className="dropdown-item">
+                        <Link to={`/vocabulary-by-user/${user.idUser}`}>
+                          Từ của bạn
+                        </Link>
+                      </div>
+                    )}
                     <div className="dropdown-item">
                       <Link to={`/practice-vocabulary`}>Khám phá</Link>
                     </div>

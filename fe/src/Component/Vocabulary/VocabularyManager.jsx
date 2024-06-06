@@ -13,6 +13,7 @@ import { UserContext } from "../../Context/UserContext";
 import { showDeleteWarning } from "../Common/Alert/Alert";
 import { useNavigate } from "react-router-dom";
 import { IoAddOutline } from "react-icons/io5";
+import Modal from "./Modal";
 
 const cx = classNames.bind(styles);
 
@@ -21,6 +22,10 @@ function VocabularyUserManager() {
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
 
   async function fetchVocabularyTopic() {
     try {
@@ -72,7 +77,7 @@ function VocabularyUserManager() {
     fetchVocabularyTopic();
     window.scrollTo(0, 0);
   }, []);
-  console.log({ topics });
+  console.log(isModalOpen);
 
   return (
     <div className="vocabulary-topic-wrapper">
@@ -92,46 +97,44 @@ function VocabularyUserManager() {
           }}
         >
           <div className={cx("item")}>
-            <button onClick={() => alert("pressed")}>
+            <button onClick={handleOpenModal}>
               <IoAddOutline style={{ fontSize: "5rem" }} />
               Tạo danh sách từ
             </button>
           </div>
         </div>
         {isLoading ? <Loader /> : <></>}
-        <div className={cx("wrapper")}>
-          {topics && (
+        {topics && (
+          <div className={cx("wrapper")}>
             <div className={cx("gridview")}>
-              {topics && topics.length > 0 ? (
+              {topics &&
                 topics.map((val, index) => {
                   return (
-                    <div>
-                      <Link
-                        key={val.idVocList}
-                        className={cx("item")}
-                        to={`/vocabulary-by-topic/${val.idVocList}`}
-                      >
-                        <div className={cx("content")}>
-                          <div className={cx("title")}>{val.title}</div>
-                          <p className={cx("description")}>{val.description}</p>
-                          <p className={cx("author")}>
-                            <AiOutlineUser />
-                            {val.author}
+                    <Link
+                      key={val.index}
+                      className={cx("item")}
+                      to={`/vocabulary-by-topic/${val.idVocList}`}
+                    >
+                      <div className={cx("content")}>
+                        <div className={cx("title")}>{val.title}</div>
+                        <p className={cx("description")}>{val.description}</p>
+                        <p className={cx("author")}>
+                          <AiOutlineUser />
+                          {val.author}
+                        </p>
+                        <p className={cx("quantity")}>
+                          <p className={cx("label")}>
+                            <MdOutlineFlipToFront /> Số lượng từ:
                           </p>
-                          <p className={cx("quantity")}>
-                            <span className={cx("label")}>
-                              <MdOutlineFlipToFront /> Số lượng từ:
-                            </span>
-                            {val.quantity} từ
+                          {val.quantity} từ{" "}
+                        </p>
+                        <p className={cx("createdate")}>
+                          <p className={cx("label")}>
+                            <CiCalendar /> Ngày tạo:
                           </p>
-                          <p className={cx("createdate")}>
-                            <span className={cx("label")}>
-                              <CiCalendar /> Ngày tạo:
-                            </span>
-                            {val.createDate}
-                          </p>
-                        </div>
-                      </Link>
+                          {val.createDate}
+                        </p>
+                      </div>
                       <div className={cx("btn-wrapper")}>
                         <button
                           className={cx("delete-btn")}
@@ -145,58 +148,23 @@ function VocabularyUserManager() {
                         </button>
                         <button
                           className={cx("update-btn")}
-                          onClick={() => {
-                            navigate(`/professor/vocabulary/${val.idVocList}`);
-                          }}
+                          onClick={handleOpenModal}
                         >
                           Sửa
                         </button>
                       </div>
-                    </div>
+                    </Link>
                   );
-                })
-              ) : (
-                <div>Bạn chưa có danh sách từ</div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-      <div className="modal-dialog modal-lg">
-        <div className="model-content">
-          <button
-            type="button"
-            class="close"
-            data-dismiss="modal"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">x</span>
-          </button>
-          <div class="modal-body" id="form-modal-content">
-            <div class="contain">
-              <h1>Tạo danh sách từ</h1>
-              <form>
-                <div id="div_id_title" class="form-group">
-                  <label for="id_title" class="requiredField">
-                    "Tiêu đề"
-                    <span class="asteriskField">*</span>
-                  </label>
-                  <div class>
-                    <input
-                      type="text"
-                      name="title"
-                      maxLength="255"
-                      class="textinput textInput form-control"
-                      required
-                      id="id_title"
-                    ></input>
-                  </div>
-                </div>
-              </form>
+                })}
             </div>
           </div>
-        </div>
+        )}
       </div>
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={handleCloseModal}
+        contentLabel={"Nhập Thông Tin Danh Sách"}
+      ></Modal>
     </div>
   );
 }
