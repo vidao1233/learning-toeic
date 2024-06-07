@@ -4,7 +4,13 @@ import classNames from "classnames/bind";
 
 const cx = classNames.bind(styles);
 
-const Modal = ({ isOpen, onRequestClose, contentLabel, children }) => {
+const Modal = ({
+  isOpen,
+  onRequestClose,
+  onRequestSave,
+  contentLabel,
+  children,
+}) => {
   const [modalStyle, setModalStyle] = useState({
     display: isOpen ? "block" : "none",
     position: "fixed",
@@ -43,17 +49,23 @@ const Modal = ({ isOpen, onRequestClose, contentLabel, children }) => {
     onRequestClose();
   };
 
+  const handleSave = () => {
+    onRequestSave();
+  };
+
   return (
-    <div style={modalStyle}>
-      <div style={overlayStyle}>
-        <h2>{contentLabel}</h2>
+    <div className={cx("modal")} style={modalStyle}>
+      <div className={cx("overlay")} style={overlayStyle}>
+        <h2 className={cx("title")}>{contentLabel}</h2>
         {children}
-        <button className={cx("delete-btn")} onClick={handleClose}>
-          Đóng
-        </button>
-        <button className={cx("update-btn")} onClick={handleClose}>
-          Luu
-        </button>
+        <div className={cx("button-group")}>
+          <button className={cx("delete-btn")} onClick={handleClose}>
+            Đóng
+          </button>
+          <button className={cx("update-btn")} onClick={handleSave}>
+            Lưu
+          </button>
+        </div>
       </div>
     </div>
   );
