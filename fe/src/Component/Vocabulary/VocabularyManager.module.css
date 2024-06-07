@@ -43,11 +43,6 @@
     gap: 10px;
   }
   
-  .title {
-    font-size: 22px;
-    font-weight: 600;
-  }
-  
   .description {
     font-size: 15px;
     display: flex;
@@ -62,6 +57,13 @@
     display: flex;
     align-items: center;
     font-size: 18px;
+    gap: 5px;
+  }
+  .ispublic{
+    margin-right: 0.5rem;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
     gap: 5px;
   }
   .btn-wrapper {
@@ -97,26 +99,6 @@
     background: rgba(0, 164, 255, 0.9);
   }
 
-  .modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 2rem;
-    z-index: 1000;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 999;
-  }
   .input {
     background: none;
     border: none;
@@ -128,4 +110,74 @@
     color: #000;
   }
   
+/* -------------Modal------------ */
+.modal-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-form div {
+  margin-bottom: 15px;
+}
+
+.modal-form label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.modal-form input[type="text"],
+.modal-form input[type="checkbox"] {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.modal-form input[type="checkbox"] {
+  width: auto;
+}
+
+.modal-form button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal-form button:hover {
+  background-color: #0056b3;
+}
+
+.modal {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 600px;
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  z-index: 1001;
+}
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 4rem; /* Thêm khoảng cách giữa các nút, bạn có thể thay đổi giá trị này */
+}
   

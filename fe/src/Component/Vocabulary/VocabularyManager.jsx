@@ -23,9 +23,99 @@ function VocabularyUserManager() {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [idList, setIdList] = useState("");
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    createDate: new Date().toISOString(),
+    status: "-1",
+    isPublic: true,
+  });
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
+  const handleSubmit = async () => {
+    // Do something with formData, like sending it to an API
+    try {
+      const response = await fetch(
+        `${
+          process.env.REACT_APP_API_BASE_URL ?? "/api"
+        }/VocList/AddVocList?userId=${user.idUser}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: formData.title,
+            description: formData.description,
+            createDate: formData.createDate,
+            status: formData.status,
+            isPublic: formData.isPublic,
+          }),
+        }
+      );
+      setIsLoading(false);
+      if (!response.ok) {
+        toast.error(`Thêm danh sách thất bại`, {});
+      } else {
+        toast.success("Thêm danh sách thành công.");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(`${error}`);
+    }
+    console.log(formData);
+    console.log(user.idUser);
+    fetchVocabularyTopic();
+    handleCloseModal();
+  };
+
+  const handleUpdate = async () => {
+    // Do something with formData, like sending it to an API
+    try {
+      const response = await fetch(
+        `${
+          process.env.REACT_APP_API_BASE_URL ?? "/api"
+        }/VocList/UpdateVocList/${idList}&&${user.idUser}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: formData.title,
+            description: formData.description,
+            createDate: formData.createDate,
+            status: formData.status,
+            isPublic: formData.isPublic,
+          }),
+        }
+      );
+      setIsLoading(false);
+      if (!response.ok) {
+        toast.error(`Cập nhật danh sách thất bại`, {});
+      } else {
+        toast.success("Cập nhật danh sách thành công.");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(`${error}`);
+    }
+    console.log(formData);
+    console.log(user.idUser);
+    fetchVocabularyTopic();
+    handleCloseModal();
+  };
 
   async function fetchVocabularyTopic() {
     try {
@@ -138,17 +228,23 @@ function VocabularyUserManager() {
                       <div className={cx("btn-wrapper")}>
                         <button
                           className={cx("delete-btn")}
-                          onClick={() =>
+                          onClick={(e) => {
+                            e.preventDefault();
                             showDeleteWarning(() =>
                               DeleteVocabularyTopic(val.idVocList)
-                            )
-                          }
+                            );
+                          }}
                         >
                           Xóa
                         </button>
                         <button
                           className={cx("update-btn")}
-                          onClick={handleOpenModal}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setIsEdit(true);
+                            setIdList(val.idVocList);
+                            handleOpenModal();
+                          }}
                         >
                           Sửa
                         </button>
@@ -163,8 +259,46 @@ function VocabularyUserManager() {
       <Modal
         isOpen={isModalOpen}
         onRequestClose={handleCloseModal}
-        contentLabel={"Nhập Thông Tin Danh Sách"}
-      ></Modal>
+        onRequestSave={isEdit ? handleUpdate : handleSubmit}
+        contentLabel={
+          isEdit ? "Nhập Thông Tin Chỉnh Sửa" : "Nhập Thông Tin Danh Sách"
+        }
+      >
+        <form className={cx("modal-form")}>
+          <div>
+            <h2 className={cx("description")}>Tiêu đề:</h2>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value={formData.title}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div>
+            <h2 className={cx("description")}>Mô tả:</h2>
+            <input
+              type="text"
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div style={{ display: "flex" }}>
+            <h2 className={cx("ispublic")}>Công khai:</h2>
+            <input
+              type="checkbox"
+              id="isPublic"
+              name="isPublic"
+              checked={formData.isPublic}
+              onChange={handleInputChange}
+            />
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }
