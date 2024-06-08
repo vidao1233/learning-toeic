@@ -3,7 +3,7 @@ import { UserContext } from "../../../../Context/UserContext";
 import CommentItem from "./CommentItem";
 import { toast } from "react-toastify";
 import Loader from "../../../Common/Loader/Loader";
-import { THRESHOLDS } from "../../../../constant/thresholds";
+import { openAIClient } from "../../../../constant/chatbot";
 
 // Hàm tạo chuỗi định dạng ngày tháng từ đối tượng Date
 export function formatDateTime() {
@@ -30,30 +30,34 @@ function Comment({ id }) {
   const [input, setInput] = useState("");
 
   const checkValidateComment = async (content) => {
+    let result = true;
+    setIsLoading(true);
+
     try {
-      const response = await fetch(
-        "https://us-central1-lucid-vector-424107-f8.cloudfunctions.net/moderateText",
+      const response = await openAIClient.getCompletions(
+        "chat-gpt-35",
+        [content],
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ text: content }),
+          maxTokens: 500,
+          temperature: 0.7,
+          topP: 0.95,
+          presencePenalty: 0,
+          frequencyPenalty: 0,
         }
       );
-
-      const data = await response.json();
-      const result = data.result;
-      for (const category of result) {
-        if (category.confidence >= THRESHOLDS[category.name]) {
-          return false;
-        }
-      }
-      return true;
     } catch (error) {
-      console.error("Error analyzing sentiment:", error);
+      if (error?.status === 400) {
+        toast.warning("Bình luận của bạn chứa các nội dung không phù hợp!!");
+        result = false;
+      } else {
+        result = true;
+      }
+    } finally {
+      setIsLoading(false);
     }
+    return result;
   };
+
   const handleInsertNode = async (inserted_node) => {
     const checked = await checkValidateComment(inserted_node.content);
     if (checked)
@@ -87,10 +91,6 @@ function Comment({ id }) {
       } catch (error) {
         toast.error(`${error}`);
       }
-    else
-      toast.error(
-        `Bình luận "${inserted_node.content}" của bạn có nội dung không phù hợp.`
-      );
   };
 
   const handleEditNode = async (edited_comment) => {
@@ -127,10 +127,6 @@ function Comment({ id }) {
       } catch (error) {
         toast.error(`${error}`);
       }
-    else
-      toast.error(
-        `Bình luận "${edited_comment.content}" của bạn có nội dung không phù hợp.`
-      );
   };
 
   const handleDeleteNode = async (edited_id) => {
