@@ -153,6 +153,7 @@ const UserProvider = ({ children }) => {
   };
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("chatbot");
     setUser((user) => ({
       username: "",
       role: "",
