@@ -1,4 +1,4 @@
-import { CiCalendar } from "react-icons/ci";
+import { CiCalendar, CiUnlock } from "react-icons/ci";
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../Common/Loader/Loader";
@@ -24,10 +24,15 @@ function VocabularyUserManager() {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [idList, setIdList] = useState("");
+  const [idListSelected, setIdListSelected] = useState("");
+  const [errors, setErrors] = useState({});
+  const [listInfo, setListInfo] = useState();
 
   const handleOpenModal = () => setIsModalOpen(true);
-  const handleCloseModal = () => setIsModalOpen(false);
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setIsEdit(false);
+  };
 
   const [formData, setFormData] = useState({
     title: "",
@@ -36,12 +41,42 @@ function VocabularyUserManager() {
     status: "-1",
     isPublic: true,
   });
+
+  console.log({ formData });
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
+    const fieldValue = type === "checkbox" ? checked : value;
+
     setFormData({
       ...formData,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: fieldValue,
     });
+
+    validateField(name, fieldValue);
+  };
+  const validateField = (name, value) => {
+    let error = "";
+
+    if (name === "title") {
+      if (!value) {
+        error = "Tiêu đề là bắt buộc";
+      } else if (value.length < 5) {
+        error = "Tiêu đề phải có ít nhất 5 ký tự";
+      }
+    }
+
+    if (name === "description") {
+      if (!value) {
+        error = "Mô tả là bắt buộc";
+      } else if (value.length < 10) {
+        error = "Mô tả phải có ít nhất 10 ký tự";
+      }
+    }
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: error,
+    }));
   };
   const handleSubmit = async () => {
     // Do something with formData, like sending it to an API
@@ -86,7 +121,7 @@ function VocabularyUserManager() {
       const response = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/VocList/UpdateVocList/${idList}&&${user.idUser}`,
+        }/VocList/UpdateVocList/${idListSelected}&&${user.idUser}`,
         {
           method: "PUT",
           headers: {
@@ -111,8 +146,6 @@ function VocabularyUserManager() {
       console.log(error);
       toast.error(`${error}`);
     }
-    console.log(formData);
-    console.log(user.idUser);
     fetchVocabularyTopic();
     handleCloseModal();
   };
@@ -137,6 +170,28 @@ function VocabularyUserManager() {
       toast.error(`${error}`);
     }
   }
+  async function fetchListById() {
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `${
+          process.env.REACT_APP_API_BASE_URL ?? "/api"
+        }/VocList/GetVocListById/${idListSelected}`
+      );
+      console.log({ response });
+      setIsLoading(false);
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(`${errorData.message}`, {});
+      } else {
+        const data = await response.json();
+        setListInfo(data);
+      }
+    } catch (error) {
+      toast.error(`${error}`);
+    }
+  }
+
   async function DeleteVocabularyTopic(voc_topic_id) {
     try {
       setIsLoading(true);
@@ -163,12 +218,19 @@ function VocabularyUserManager() {
       toast.error(`${error}`);
     }
   }
+
   useEffect(() => {
     fetchVocabularyTopic();
     window.scrollTo(0, 0);
   }, []);
-  console.log(isModalOpen);
 
+  useEffect(() => {
+    if (idListSelected) fetchListById();
+    console.log("hello");
+  }, [idListSelected]);
+  console.log({ idListSelected });
+
+  console.log({ formData });
   return (
     <div className="vocabulary-topic-wrapper">
       <div className="container vocabulary-topic">
@@ -224,6 +286,12 @@ function VocabularyUserManager() {
                           </p>
                           {val.createDate}
                         </p>
+                        <p className={cx("createdate")}>
+                          <p className={cx("label")}>
+                            <CiUnlock /> Trạng thái:
+                          </p>
+                          {val.isPublic ? "Công khai" : "Riêng tư"}
+                        </p>
                       </div>
                       <div className={cx("btn-wrapper")}>
                         <button
@@ -238,11 +306,12 @@ function VocabularyUserManager() {
                           Xóa
                         </button>
                         <button
+                          type="button"
                           className={cx("update-btn")}
                           onClick={(e) => {
                             e.preventDefault();
                             setIsEdit(true);
-                            setIdList(val.idVocList);
+                            setIdListSelected(val.idVocList);
                             handleOpenModal();
                           }}
                         >
@@ -272,9 +341,13 @@ function VocabularyUserManager() {
               id="title"
               name="title"
               value={formData.title}
+              placeholder="Nhập tiêu đề ..."
               onChange={handleInputChange}
               required
             />
+            {errors.title && (
+              <span className={cx("error")}>{errors.title}</span>
+            )}
           </div>
           <div>
             <h2 className={cx("description")}>Mô tả:</h2>
@@ -283,9 +356,13 @@ function VocabularyUserManager() {
               id="description"
               name="description"
               value={formData.description}
+              placeholder="Nhập mô tả ..."
               onChange={handleInputChange}
               required
             />
+            {errors.description && (
+              <span className={cx("error")}>{errors.description}</span>
+            )}
           </div>
           <div style={{ display: "flex" }}>
             <h2 className={cx("ispublic")}>Công khai:</h2>

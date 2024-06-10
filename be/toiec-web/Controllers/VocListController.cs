@@ -27,7 +27,7 @@ namespace toeic_web.Controllers
         [Route("GetAllPublicVocList")]
         public async Task<IActionResult> GetAllVocTopic()
         {
-            var listTopic = await _vocTopicService.GetAllVocList();
+            var listTopic = await _vocTopicService.GetAllPublicVocList();
             if (listTopic == null)
             {
                 return StatusCode(StatusCodes.Status404NotFound,

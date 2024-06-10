@@ -62,6 +62,24 @@ namespace toeic_web.Services
             return listData;
         }
 
+        public async Task<IEnumerable<VocListViewModel>> GetAllPublicVocList()
+        {
+            var data = await _vocTopicRepository.GetAllVocList();
+            var listData = new List<VocListViewModel>();
+            if (data != null)
+            {
+                foreach (var item in data)
+                {
+                    if(item.isPublic == true)
+                    {
+                        var obj = _mapper.Map<VocListViewModel>(item);
+                        listData.Add(obj);
+                    }
+                }
+            }
+            return listData;
+        }
+
         public async Task<IEnumerable<VocListViewModel>> GetVocListByUser(string idUser)
         {
             var data = await _vocTopicRepository.GetVocListByUser(idUser);
