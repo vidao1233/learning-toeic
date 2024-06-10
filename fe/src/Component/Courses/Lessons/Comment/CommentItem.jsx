@@ -88,6 +88,9 @@ function CommentItem({
     };
   }, []);
 
+  useEffect(() => {
+    console.log(currentComent.content);
+  }, [currentComent]);
   return (
     currentComent && (
       <Fragment>
@@ -145,7 +148,7 @@ function CommentItem({
                           className="text-xs p-2 rounded-md text-gray-700 font-semibold cursor-pointer"
                           onClick={() => {
                             setEditMode(false);
-                            if (comment.content) handleEdit();
+                            if (currentComent.content) handleEdit();
                             else
                               setCurrentComent(comment.firstComment ?? comment);
                           }}

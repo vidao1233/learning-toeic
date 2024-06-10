@@ -1,28 +1,25 @@
-import React, { Fragment, useContext, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { UserContext } from "../../Context/UserContext";
-import { OpenAIClient, AzureKeyCredential } from "@azure/openai";
 import ChatMessage from "./ChatMessage";
 import {
-  REACT_APP_OPENAI_API_KEY,
-  REACT_APP_OPENAI_ENDPOINT,
-} from "../../constant/baseVariable";
-const client = new OpenAIClient(
-  REACT_APP_OPENAI_ENDPOINT,
-  new AzureKeyCredential(REACT_APP_OPENAI_API_KEY)
-);
-function Chatbot() {
+  AZURE_SEARCH_ENDPOINT,
+  AZURE_SEARCH_KEY,
+  openAIClient,
+} from "../../constant/chatbot";
+
+function Chatbot({ isTeacher }) {
   const { user } = useContext(UserContext);
-  const [openBot, setOpenBot] = useState(false);
-  const [expand, setExpand] = useState(false);
+  const [state, setState] = useState({
+    openBot: false,
+    expand: false,
+  });
+  const assistantAva = isTeacher
+    ? "https://img.icons8.com/?size=100&id=pa7hEyvlJkxa&format=png&color=000000"
+    : "https://img.icons8.com/?size=100&id=D7zLidTn6pHw&format=png&color=000000";
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [conversation, setConversation] = useState([
-    {
-      role: "assistant",
-      content: "Xin chào, đây là VictoryU. Bạn cần giúp đỡ gì ạ.",
-    },
-  ]);
+  const [conversation, setConversation] = useState([]);
 
   const submitQuestion = async () => {
     setConversation((prevConversation) => [
@@ -35,13 +32,25 @@ function Chatbot() {
     setInput("");
     setError("");
     setIsLoading(true);
-    client
+    openAIClient
       .getChatCompletions("chat-gpt-35", [{ role: "user", content: input }], {
-        maxTokens: 500,
         temperature: 0.7,
         topP: 0.95,
         presencePenalty: 0,
         frequencyPenalty: 0,
+        azureExtensionOptions: !isTeacher && {
+          extensions: [
+            {
+              type: "azure_search",
+              endpoint: AZURE_SEARCH_ENDPOINT,
+              indexName: "toeicweb",
+              authentication: {
+                type: "api_key",
+                key: AZURE_SEARCH_KEY,
+              },
+            },
+          ],
+        },
       })
       .then((response) => {
         setConversation((prevConversation) => [
@@ -51,58 +60,89 @@ function Chatbot() {
       })
       .catch((error) => {
         setError(
-          error.response?.status === 429
-            ? "Bạn đang gửi yêu cầu quá nhanh. Vui lòng đợi một chút và thử lại sau."
+          error.code === "429"
+            ? `Bạn đang gửi yêu cầu quá nhanh. Thử lại sau ${
+                error.message?.match(/retry after (\d+) seconds/)[1]
+              } giây.`
             : "Lỗi hệ thống"
         );
       })
       .finally(() => setIsLoading(false));
   };
+
+  useEffect(() => {
+    if (isTeacher && conversation.length)
+      localStorage.setItem("chatbot", JSON.stringify(conversation));
+  }, [isTeacher, conversation]);
+
+  useEffect(() => {
+    const userConversation = localStorage.getItem("chatbot");
+    if (userConversation) setConversation(JSON.parse(userConversation));
+    else
+      setConversation([
+        {
+          role: "assistant",
+          content: "Xin chào, đây là VictoryU. Bạn cần giúp đỡ gì ạ.",
+        },
+      ]);
+  }, []);
+
   return (
     <Fragment>
       <div
-        className="fixed bottom-8 right-8 z-10"
-        onClick={() => setOpenBot(!openBot)}
+        className={`fixed ${isTeacher ? "bottom-24" : "bottom-4"} right-4 z-10`}
+        onClick={() =>
+          setState((prevState) => ({
+            ...prevState,
+            openBot: !prevState.openBot,
+          }))
+        }
       >
-        <img
-          src="https://img.icons8.com/?size=100&id=D7zLidTn6pHw&format=png&color=000000"
-          alt=""
-          className="w-20 h-20"
-        />
+        <img src={assistantAva} alt="" className="w-16 h-16" />
       </div>
-      {openBot && (
+      {state.openBot && (
         <div
           className={`${
-            expand ? "h-[80vh] w-[60vw]" : "h-[65vh] w-[350px]"
+            state.expand ? "h-[80vh] w-[60vw]" : "h-[65vh] w-[350px]"
           } border border-gray-300 rounded-xl fixed bottom-0 right-4 z-20 bg-slate-100 shadow-lg flex flex-col`}
         >
           <div className="px-4 py-2 flex justify-between items-center bg-primary-300  rounded-t-xl">
             <div className="inline-flex items-center gap-2">
-              <img
-                src="https://img.icons8.com/?size=100&id=D7zLidTn6pHw&format=png&color=000000"
-                alt="avatar"
-                className="w-8 h-8"
-              />
+              <img src={assistantAva} alt="avatar" className="w-8 h-8" />
               <div className="font-semibold text-lg tracking-tight">
-                Trợ lý ảo VictoryU
+                {isTeacher ? "Giáo viên ảo VictoryU" : "Trợ lý ảo VictoryU"}
               </div>
             </div>
             <div className="flex gap-3 items-center">
-              {expand ? (
+              {state.expand ? (
                 <i
                   className="fa-solid fa-minimize fa-xl cursor-pointer"
-                  onClick={() => setExpand(!expand)}
+                  onClick={() =>
+                    setState((prevState) => ({
+                      ...prevState,
+                      expand: !prevState.expand,
+                    }))
+                  }
                 ></i>
               ) : (
                 <i
                   className="fa-solid fa-maximize fa-xl cursor-pointer"
-                  onClick={() => setExpand(!expand)}
+                  onClick={() =>
+                    setState((prevState) => ({
+                      ...prevState,
+                      expand: !prevState.expand,
+                    }))
+                  }
                 ></i>
               )}
-
               <i
                 className="fa-solid fa-minus fa-xl cursor-pointer"
-                onClick={() => setOpenBot(false)}
+                onClick={() =>
+                  setState((prevState) => ({
+                    ...prevState,
+                    openBot: false,
+                  }))
+                }
               ></i>
             </div>
           </div>
@@ -111,30 +151,26 @@ function Chatbot() {
               <ChatMessage
                 content={message.content}
                 role={message.role}
-                img={
-                  message.role === "assistant"
-                    ? "https://img.icons8.com/?size=100&id=D7zLidTn6pHw&format=png&color=000000"
-                    : user.ava
-                }
+                img={message.role === "assistant" ? assistantAva : user.ava}
               />
             ))}
             {isLoading && (
               <ChatMessage
                 content={"..."}
                 role="assistant"
-                img="https://img.icons8.com/?size=100&id=D7zLidTn6pHw&format=png&color=000000"
+                img={assistantAva}
               />
             )}
             {error && (
               <ChatMessage
                 content={
-                  <div className="flex gap-1 items-center">
-                    <i className="fa-solid fa-circle-info text-rose-900"></i>
+                  <div className="flex gap-2 items-start">
+                    <i className="pt-1 fa-solid fa-circle-info text-rose-900"></i>
                     <div>{error}</div>
                   </div>
                 }
                 role="assistant"
-                img="https://img.icons8.com/?size=100&id=D7zLidTn6pHw&format=png&color=000000"
+                img={assistantAva}
                 customClass={"!bg-rose-400"}
               />
             )}
