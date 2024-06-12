@@ -4,7 +4,7 @@ import classNames from "classnames/bind";
 
 const cx = classNames.bind(styles);
 
-const Modal = ({ isOpen, contentLabel, children }) => {
+const ModalUpdateVoc = ({ isOpen, contentLabel, children }) => {
   const [modalStyle, setModalStyle] = useState({
     display: isOpen ? "block" : "none",
     position: "fixed",
@@ -49,4 +49,4 @@ const Modal = ({ isOpen, contentLabel, children }) => {
   );
 };
 
-export default Modal;
+export default ModalUpdateVoc;

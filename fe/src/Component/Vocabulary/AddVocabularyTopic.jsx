@@ -44,7 +44,7 @@ function AddVocabularyTopic({ toggleModal, modal_on, wordId }) {
       setIsLoading(false);
       toggleModal();
       if (!response.ok) {
-        toast.error(`Thêm từ vựng thất bại`, {});
+        toast.error(`Thêm từ vựng thất bại`);
       } else {
         toast.success("Thêm từ vựng thành công.");
       }

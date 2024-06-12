@@ -40,7 +40,7 @@ namespace toeic_web
             builder.Services.AddDbContext<ToeicDbContext>(options =>
             {
                 options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("CusTomConnection"),
+                    builder.Configuration.GetConnectionString("CustomConnection"),
                     options => options.EnableRetryOnFailure(
                     maxRetryCount: 5,
                     maxRetryDelay: System.TimeSpan.FromSeconds(30),

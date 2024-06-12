@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-  useContext,
-} from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { useParams } from "react-router-dom";
 import {
   AiOutlineArrowLeft,
@@ -25,7 +19,10 @@ import styles from "./VocabularyTopic.module.css";
 import classNames from "classnames/bind";
 import { showDeleteWarning } from "../Common/Alert/Alert";
 import Modal from "./Modal";
+import ModalUpdateVoc from "./ModalUpdateVoc";
 import { IoAddOutline } from "react-icons/io5";
+import vocDefault from "../../assets/voc-default.png";
+import { base64ToFile } from "../../constant/convertBase64";
 
 const cx = classNames.bind(styles);
 
@@ -42,7 +39,7 @@ function VocabularyByTopic() {
   const [openAddModal, setOpenAddModal] = useState(false);
   const { user } = useContext(UserContext);
   const [wordId, setWordId] = useState("");
-  const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
+  const [isModalAddVocOpen, setIsModalAddVocOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [errors, setErrors] = useState({});
   const [vocSelected, setVocSelected] = useState("");
@@ -69,15 +66,16 @@ function VocabularyByTopic() {
         pronunciation: vocSelected.pronunciation,
         wordType: vocSelected.wordType,
         meaning: vocSelected.meaning,
-        image: vocSelected.image,
+        image: vocSelected.image ? base64ToFile(vocSelected.image) : null,
         example: vocSelected.example,
         status: vocSelected.status,
       });
+      console.log(vocSelected.image);
     }
   }, [isEdit, vocSelected]);
-  const handleOpenUpdateModal = () => setIsModalUpdateOpen(true);
+  const handleOpenUpdateModal = () => setIsModalAddVocOpen(true);
   const handleCloseUpdateModal = () => {
-    setIsModalUpdateOpen(false);
+    setIsModalAddVocOpen(false);
     setIsEdit(false);
     setFormData({
       idList: id,
@@ -150,8 +148,8 @@ function VocabularyByTopic() {
     }));
   };
 
-  const handleSubmit = async () => {
-    // Do something with formData, like sending it to an API
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     try {
       const formDataToSend = new FormData();
 
@@ -180,19 +178,20 @@ function VocabularyByTopic() {
       console.log(error);
       toast.error(`${error}`);
     }
-    fetchVocabularyTopic();
+    fetchVocabulary();
     handleCloseUpdateModal();
   };
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (event) => {
     // Do something with formData, like sending it to an API
+    event.preventDefault();
     try {
       const formDataToSend = new FormData();
 
       for (const key in formData) {
         formDataToSend.append(key, formData[key]);
       }
-      const response = await fetch(
+      const updated = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL ?? "/api"
         }/Vocabulary/UpdateVocabulary/${wordId}`,
@@ -205,7 +204,7 @@ function VocabularyByTopic() {
         }
       );
       setIsLoading(false);
-      if (!response.ok) {
+      if (!updated.ok) {
         toast.error(`Cập nhật từ vựng thất bại`);
       } else {
         toast.success("Cập nhật từ vựng thành công.");
@@ -218,7 +217,7 @@ function VocabularyByTopic() {
     handleCloseUpdateModal();
   };
 
-  const fetchVocabulary = useCallback(async () => {
+  async function fetchVocabulary() {
     try {
       setIsLoading(true);
       const response = await fetch(
@@ -237,9 +236,9 @@ function VocabularyByTopic() {
     } catch (error) {
       console.log(error);
     }
-  }, [id]);
+  }
 
-  const fetchVocabularyTopic = useCallback(async () => {
+  async function fetchVocabularyTopic() {
     try {
       setIsLoading(true);
       const response = await fetch(
@@ -258,34 +257,45 @@ function VocabularyByTopic() {
     } catch (error) {
       console.log(error);
     }
-  }, [id]);
-
-  const fetchVocabularyById = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(
-        `${
-          process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/Vocabulary/GetVocabularyById/${wordId}`
-      );
-      setIsLoading(false);
-      if (!response.ok) {
-        const errorData = await response.json();
-        toast.error(`${errorData.message}`);
-      } else {
-        const data = await response.json();
-        setVocSelected(data);
-      }
-    } catch (error) {
-      console.log(error);
+  }
+  useEffect(() => {
+    for (const fieldName in formData) {
+      validateField(fieldName, formData[fieldName]);
     }
+  }, [formData]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (wordId) {
+        try {
+          setIsLoading(true);
+          const response = await fetch(
+            `${
+              process.env.REACT_APP_API_BASE_URL ?? "/api"
+            }/Vocabulary/GetVocabularyById/${wordId}`
+          );
+          setIsLoading(false);
+          if (!response.ok) {
+            const errorData = await response.json();
+            toast.error(`${errorData.message}`);
+          } else {
+            const data = await response.json();
+            setVocSelected(data);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+
+    fetchData();
   }, [wordId]);
 
   useEffect(() => {
     fetchVocabulary();
     fetchVocabularyTopic();
     window.scrollTo(0, 0);
-  }, [fetchVocabulary, fetchVocabularyTopic]);
+  }, []);
 
   async function DeleteVocabulary(idList, idVoc) {
     try {
@@ -332,6 +342,9 @@ function VocabularyByTopic() {
   if (isLoading) {
     return <Loader />;
   }
+  console.log("edit:", isEdit);
+  console.log("add", isModalAddVocOpen);
+  console.log("sect", vocSelected);
   return (
     <div className="vocabulary-wrapper">
       <div className="container vocabulary-card">
@@ -365,7 +378,7 @@ function VocabularyByTopic() {
             words.map((word, index) => {
               return (
                 <div
-                  key={index}
+                  key={word.idVoc}
                   className={index === currentSlide ? "slide current" : "slide"}
                 >
                   <label>
@@ -434,27 +447,31 @@ function VocabularyByTopic() {
             })}
         </div>
         <div className="vocabulary-list-wrapper">
-          <button
-            style={{
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "5px",
-              backgroundColor: "#007BFF",
-              color: "#fff",
-              fontWeight: "bold",
-              fontSize: "16px",
-              cursor: "pointer",
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-              transition: "background-color 0.3s",
-              marginLeft: "90%",
-              marginBottom: "1rem",
-              display: "flex",
-            }}
-            onClick={handleOpenUpdateModal}
-          >
-            <IoAddOutline style={{ fontSize: "1.5rem" }} />
-            Thêm từ mới
-          </button>
+          {user.auth && user.idUser == listInfo.idUser ? (
+            <button
+              style={{
+                padding: "10px 20px",
+                border: "none",
+                borderRadius: "5px",
+                backgroundColor: "#007BFF",
+                color: "#fff",
+                fontWeight: "bold",
+                fontSize: "16px",
+                cursor: "pointer",
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+                transition: "background-color 0.3s",
+                marginLeft: "90%",
+                marginBottom: "1rem",
+                display: "flex",
+              }}
+              onClick={handleOpenUpdateModal}
+            >
+              <IoAddOutline style={{ fontSize: "1.5rem" }} />
+              Thêm từ mới
+            </button>
+          ) : (
+            <div />
+          )}
           <div className="vocabulary-list">
             {words &&
               words.map((word, key) => {
@@ -463,7 +480,7 @@ function VocabularyByTopic() {
                     <div className="vocabulary__item-content">
                       <div>
                         <img
-                          src={word.image}
+                          src={word.image || vocDefault}
                           alt="vocabulary image"
                           style={{ width: "200px", height: "170px" }}
                         />
@@ -502,10 +519,6 @@ function VocabularyByTopic() {
                             onClick={() => {
                               setWordId(word.idVoc);
                               setIsEdit(true);
-                              fetchVocabularyById();
-                              console.log("edit", isEdit);
-                              console.log("selct", vocSelected);
-                              setIsModalUpdateOpen(true);
                             }}
                             style={{ color: "blue" }}
                           >
@@ -530,7 +543,6 @@ function VocabularyByTopic() {
                             onClick={() => {
                               setWordId(word.idVoc);
                               setOpenAddModal(true);
-                              fetchVocabularyTopic();
                             }}
                           >
                             Thêm vào danh sách
@@ -548,22 +560,15 @@ function VocabularyByTopic() {
         toggleModal={setOpenAddModal}
         wordId={wordId}
       />
-      <Modal
-        isOpen={isModalUpdateOpen}
-        onRequestClose={handleCloseUpdateModal}
-        onRequestSave={isEdit ? handleUpdate : handleSubmit}
-        contentLabel={
-          isEdit ? "Nhập Thông Tin Chỉnh Sửa" : "Nhập Thông Tin Từ Vựng"
-        }
-      >
-        <form className={cx("modal-form")}>
+      <Modal isOpen={isModalAddVocOpen} contentLabel={"Nhập Thông Tin Từ Vựng"}>
+        <form className={cx("modal-form")} onSubmit={handleSubmit}>
           <div>
             <h2 className={cx("description")}>Chủ đề:</h2>
             <input
               type="text"
               id="topic"
               name="topic"
-              value={isEdit ? vocSelected.topic : formData.topic}
+              value={formData.topic}
               placeholder="ví dụ: Giao thông, ..."
               onChange={handleInputChange}
               required
@@ -640,7 +645,7 @@ function VocabularyByTopic() {
               name="image"
               onChange={handleInputChange}
               ref={fileInputRef}
-              required
+              //required
             />
             {errors.image && (
               <span className={cx("error")}>{errors.image}</span>
@@ -661,8 +666,128 @@ function VocabularyByTopic() {
               <span className={cx("error")}>{errors.example}</span>
             )}
           </div>
+          <div className={cx("button-group")}>
+            <button type="submit">Lưu</button>
+            <button type="button" onClick={handleCloseUpdateModal}>
+              Đóng
+            </button>
+          </div>
         </form>
       </Modal>
+      <ModalUpdateVoc isOpen={isEdit} contentLabel={"Nhập Thông Tin Chỉnh Sửa"}>
+        <form className={cx("modal-form")} onSubmit={handleUpdate}>
+          <div>
+            <h2 className={cx("description")}>Chủ đề:</h2>
+            <input
+              type="text"
+              id="topic"
+              name="topic"
+              value={formData.topic}
+              placeholder="ví dụ: Giao thông, ..."
+              onChange={handleInputChange}
+              required
+            />
+            {errors.topic && (
+              <span className={cx("error")}>{errors.topic}</span>
+            )}
+          </div>
+          <div>
+            <h2 className={cx("description")}>Từ tiếng anh:</h2>
+            <input
+              type="text"
+              id="engWord"
+              name="engWord"
+              value={formData.engWord}
+              placeholder="ví dụ: motorbike ..."
+              onChange={handleInputChange}
+              required
+            />
+            {errors.engWord && (
+              <span className={cx("error")}>{errors.engWord}</span>
+            )}
+          </div>
+          <div>
+            <h2 className={cx("description")}>Phiên âm:</h2>
+            <input
+              type="text"
+              id="pronunciation"
+              name="pronunciation"
+              value={formData.pronunciation}
+              placeholder="ví dụ: mo-tor-bike /məʊtəbaɪk/"
+              onChange={handleInputChange}
+              required
+            />
+            {errors.pronunciation && (
+              <span className={cx("error")}>{errors.pronunciation}</span>
+            )}
+          </div>
+          <div>
+            <h2 className={cx("description")}>Từ loại:</h2>
+            <input
+              type="text"
+              id="wordType"
+              name="wordType"
+              value={formData.wordType}
+              placeholder="ví dụ: noun [countable]"
+              onChange={handleInputChange}
+              required
+            />
+            {errors.wordType && (
+              <span className={cx("error")}>{errors.wordType}</span>
+            )}
+          </div>
+          <div>
+            <h2 className={cx("description")}>Nghĩa của từ:</h2>
+            <input
+              type="text"
+              id="meaning"
+              name="meaning"
+              value={formData.meaning}
+              placeholder="ví dụ: xe máy"
+              onChange={handleInputChange}
+              required
+            />
+            {errors.meaning && (
+              <span className={cx("error")}>{errors.meaning}</span>
+            )}
+          </div>
+          <div>
+            <h2 className={cx("description")}>Ảnh minh họa:</h2>
+            <input
+              type="file"
+              id="image"
+              name="image"
+              onChange={handleInputChange}
+              ref={fileInputRef}
+              //required
+            />
+            {errors.image && (
+              <span className={cx("error")}>{errors.image}</span>
+            )}
+          </div>
+          <div>
+            <h2 className={cx("description")}>Ví dụ:</h2>
+            <input
+              type="text"
+              id="example"
+              name="example"
+              value={formData.example}
+              placeholder="ví dụ: Yesterday we had one working motorbike."
+              onChange={handleInputChange}
+              required
+            />
+            {errors.example && (
+              <span className={cx("error")}>{errors.example}</span>
+            )}
+          </div>
+          <div className={cx("button-group")}>
+            <button type="submit">Lưu</button>
+            <button type="button" onClick={handleCloseUpdateModal}>
+              Đóng
+            </button>
+          </div>
+        </form>
+      </ModalUpdateVoc>
     </div>
   );
 }
