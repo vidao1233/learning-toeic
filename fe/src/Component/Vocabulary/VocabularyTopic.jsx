@@ -82,7 +82,7 @@ function VocabularyTopic() {
               topics.map((val, index) => {
                 return (
                   <Link
-                    key={val.index}
+                    key={val.idVocList}
                     className={cx("item")}
                     to={`/vocabulary-by-topic/${val.idVocList}`}
                   >

@@ -66,11 +66,8 @@ namespace toeic_web.Repository
             var data = await Entities.OrderBy(item => item.title).ToListAsync();
             foreach (var item in data)
             {
-                if (item.isPublic)
-                {
-                    var obj = _mapper.Map<VocListModel>(item);
-                    listData.Add(obj);
-                }
+                var obj = _mapper.Map<VocListModel>(item);
+                listData.Add(obj);
             }
             return listData;
 

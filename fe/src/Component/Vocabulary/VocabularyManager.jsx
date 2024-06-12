@@ -1,4 +1,4 @@
-import { CiCalendar } from "react-icons/ci";
+import { CiCalendar, CiUnlock } from "react-icons/ci";
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../Common/Loader/Loader";
@@ -11,24 +11,22 @@ import { MdOutlineFlipToFront } from "react-icons/md";
 import classNames from "classnames/bind";
 import { UserContext } from "../../Context/UserContext";
 import { showDeleteWarning } from "../Common/Alert/Alert";
-import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { IoAddOutline } from "react-icons/io5";
 import Modal from "./Modal";
 
 const cx = classNames.bind(styles);
 
 function VocabularyUserManager() {
+  const { id } = useParams();
   const [topics, setTopic] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useContext(UserContext);
-  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [idList, setIdList] = useState("");
-
-  const handleOpenModal = () => setIsModalOpen(true);
-  const handleCloseModal = () => setIsModalOpen(false);
-
+  const [errors, setErrors] = useState({});
+  const [listInfo, setListInfo] = useState("");
+  const [idListSelected, setIdListSelected] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -36,20 +34,71 @@ function VocabularyUserManager() {
     status: "-1",
     isPublic: true,
   });
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+
+  useEffect(() => {
+    if (isEdit && idListSelected) {
+      setFormData({
+        title: listInfo.title,
+        description: listInfo.description,
+        createDate: new Date().toISOString(),
+        status: listInfo.status,
+        isPublic: listInfo.isPublic,
+      });
+    }
+  }, [isEdit, idListSelected, listInfo]);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setIdListSelected("");
     setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
+      title: "",
+      description: "",
+      createDate: new Date().toISOString(),
+      status: "-1",
+      isPublic: true,
     });
   };
-  const handleSubmit = async () => {
-    // Do something with formData, like sending it to an API
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    const fieldValue = type === "checkbox" ? checked : value;
+
+    setFormData({
+      ...formData,
+      [name]: fieldValue,
+    });
+
+    validateField(name, fieldValue);
+  };
+
+  const validateField = (name, value) => {
+    let error = "";
+
+    if (name === "title") {
+      if (!value) {
+        error = "Tiêu đề là bắt buộc";
+      }
+    }
+
+    if (name === "description") {
+      if (!value) {
+        error = "Mô tả là bắt buộc";
+      }
+    }
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: error,
+    }));
+  };
+  const handleSave = async (event) => {
+    event.preventDefault();
     try {
       const response = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/VocList/AddVocList?userId=${user.idUser}`,
+        }/VocList/AddVocList?userId=${id}`,
         {
           method: "POST",
           headers: {
@@ -66,27 +115,26 @@ function VocabularyUserManager() {
       );
       setIsLoading(false);
       if (!response.ok) {
+        console.log("Thêm danh sách thất bại", response);
         toast.error(`Thêm danh sách thất bại`, {});
       } else {
         toast.success("Thêm danh sách thành công.");
+        fetchVocabularyTopic();
+        handleCloseModal();
       }
     } catch (error) {
-      console.log(error);
       toast.error(`${error}`);
     }
-    console.log(formData);
-    console.log(user.idUser);
-    fetchVocabularyTopic();
-    handleCloseModal();
   };
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (event) => {
     // Do something with formData, like sending it to an API
+    event.preventDefault();
     try {
       const response = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/VocList/UpdateVocList/${idList}&&${user.idUser}`,
+        }/VocList/UpdateVocList/${idListSelected}&&${id}`,
         {
           method: "PUT",
           headers: {
@@ -106,15 +154,12 @@ function VocabularyUserManager() {
         toast.error(`Cập nhật danh sách thất bại`, {});
       } else {
         toast.success("Cập nhật danh sách thành công.");
+        fetchVocabularyTopic();
+        handleCloseModal();
       }
     } catch (error) {
-      console.log(error);
       toast.error(`${error}`);
     }
-    console.log(formData);
-    console.log(user.idUser);
-    fetchVocabularyTopic();
-    handleCloseModal();
   };
 
   async function fetchVocabularyTopic() {
@@ -123,7 +168,7 @@ function VocabularyUserManager() {
       const response = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/VocList/GetVocListByUser/${user.idUser}`
+        }/VocList/GetVocListByUser/${id}`
       );
       setIsLoading(false);
       if (!response.ok) {
@@ -137,6 +182,7 @@ function VocabularyUserManager() {
       toast.error(`${error}`);
     }
   }
+
   async function DeleteVocabularyTopic(voc_topic_id) {
     try {
       setIsLoading(true);
@@ -164,11 +210,44 @@ function VocabularyUserManager() {
     }
   }
   useEffect(() => {
+    const fetchData = async () => {
+      if (idListSelected) {
+        try {
+          setIsLoading(true);
+          const response = await fetch(
+            `${
+              process.env.REACT_APP_API_BASE_URL ?? "/api"
+            }/VocList/GetVocListById/${idListSelected}`
+          );
+          setIsLoading(false);
+          if (!response.ok) {
+            const errorData = await response.json();
+            toast.error(`${errorData.message}`);
+          } else {
+            const data = await response.json();
+            setListInfo(data);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    fetchData();
+  }, [idListSelected]);
+
+  useEffect(() => {
     fetchVocabularyTopic();
     window.scrollTo(0, 0);
   }, []);
-  console.log(isModalOpen);
-
+  useEffect(() => {
+    for (const fieldName in formData) {
+      validateField(fieldName, formData[fieldName]);
+    }
+  }, [formData]);
+  console.log("selected:", idListSelected);
+  console.log("selected lits:", listInfo);
+  console.log("user:", user.idUser);
+  console.log("id:", id);
   return (
     <div className="vocabulary-topic-wrapper">
       <div className="container vocabulary-topic">
@@ -187,7 +266,12 @@ function VocabularyUserManager() {
           }}
         >
           <div className={cx("item")}>
-            <button onClick={handleOpenModal}>
+            <button
+              onClick={() => {
+                setIsEdit(false);
+                handleOpenModal();
+              }}
+            >
               <IoAddOutline style={{ fontSize: "5rem" }} />
               Tạo danh sách từ
             </button>
@@ -201,7 +285,7 @@ function VocabularyUserManager() {
                 topics.map((val, index) => {
                   return (
                     <Link
-                      key={val.index}
+                      key={val.idVocList}
                       className={cx("item")}
                       to={`/vocabulary-by-topic/${val.idVocList}`}
                     >
@@ -224,6 +308,12 @@ function VocabularyUserManager() {
                           </p>
                           {val.createDate}
                         </p>
+                        <p className={cx("createdate")}>
+                          <p className={cx("label")}>
+                            <CiUnlock /> Trạng thái:
+                          </p>
+                          {val.isPublic ? "Công khai" : "Riêng tư"}
+                        </p>
                       </div>
                       <div className={cx("btn-wrapper")}>
                         <button
@@ -238,11 +328,12 @@ function VocabularyUserManager() {
                           Xóa
                         </button>
                         <button
+                          type="button"
                           className={cx("update-btn")}
                           onClick={(e) => {
                             e.preventDefault();
                             setIsEdit(true);
-                            setIdList(val.idVocList);
+                            setIdListSelected(val.idVocList);
                             handleOpenModal();
                           }}
                         >
@@ -258,13 +349,14 @@ function VocabularyUserManager() {
       </div>
       <Modal
         isOpen={isModalOpen}
-        onRequestClose={handleCloseModal}
-        onRequestSave={isEdit ? handleUpdate : handleSubmit}
         contentLabel={
           isEdit ? "Nhập Thông Tin Chỉnh Sửa" : "Nhập Thông Tin Danh Sách"
         }
       >
-        <form className={cx("modal-form")}>
+        <form
+          className={cx("modal-form")}
+          onSubmit={isEdit ? handleUpdate : handleSave}
+        >
           <div>
             <h2 className={cx("description")}>Tiêu đề:</h2>
             <input
@@ -272,9 +364,13 @@ function VocabularyUserManager() {
               id="title"
               name="title"
               value={formData.title}
+              placeholder="Nhập tiêu đề ..."
               onChange={handleInputChange}
               required
             />
+            {errors.title && (
+              <span className={cx("error")}>{errors.title}</span>
+            )}
           </div>
           <div>
             <h2 className={cx("description")}>Mô tả:</h2>
@@ -283,9 +379,13 @@ function VocabularyUserManager() {
               id="description"
               name="description"
               value={formData.description}
+              placeholder="Nhập mô tả ..."
               onChange={handleInputChange}
               required
             />
+            {errors.description && (
+              <span className={cx("error")}>{errors.description}</span>
+            )}
           </div>
           <div style={{ display: "flex" }}>
             <h2 className={cx("ispublic")}>Công khai:</h2>
@@ -296,6 +396,12 @@ function VocabularyUserManager() {
               checked={formData.isPublic}
               onChange={handleInputChange}
             />
+          </div>
+          <div className={cx("button-group")}>
+            <button type="submit">Lưu</button>
+            <button type="button" onClick={handleCloseModal}>
+              Đóng
+            </button>
           </div>
         </form>
       </Modal>

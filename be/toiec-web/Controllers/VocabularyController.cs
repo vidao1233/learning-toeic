@@ -58,15 +58,15 @@ namespace toeic_web.Controllers
                 return StatusCode(StatusCodes.Status404NotFound,
                     new Response { Status = "Fail", Message = "Data not found !" });
             }
-            if (voc.image != null)
-            {
-                var url = Url.Action(nameof(GetImage), "Vocabulary", new { id = voc.idVoc }, Request.Scheme);
-                if (url != null && url.Contains("http://backend"))
-                {
-                    url = url.Replace("http://backend", "https://toeic.workon.space");
-                }
-                voc.image = url;
-            }
+            //if (voc.image != null)
+            //{
+            //    var url = Url.Action(nameof(GetImage), "Vocabulary", new { id = voc.idVoc }, Request.Scheme);
+            //    if (url != null && url.Contains("http://backend"))
+            //    {
+            //        url = url.Replace("http://backend", "https://toeic.workon.space");
+            //    }
+            //    voc.image = url;
+            //}
             return Ok(voc);
         }
 

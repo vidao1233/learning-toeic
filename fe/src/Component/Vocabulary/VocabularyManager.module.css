@@ -66,6 +66,13 @@
     align-items: center;
     gap: 5px;
   }
+  .error {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    color: red;
+    gap: 5px;
+  }
   .btn-wrapper {
     width: 100%;
     display: flex;
