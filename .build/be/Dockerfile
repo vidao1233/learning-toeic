@@ -15,12 +15,7 @@ WORKDIR /src
 COPY ["be/toiec-web/toeic-web.csproj", "toiec-web/"]
 RUN dotnet restore "toiec-web/toeic-web.csproj"
 
-# Copy and restore the test project
-COPY ["be/UnitTest/UnitTest.csproj", "tests/"]
-RUN dotnet restore "UnitTest/UnitTest.csproj"
-
 COPY be/toiec-web toiec-web/
-COPY be/UnitTest tests/
 
 WORKDIR "/src/toiec-web"
 RUN dotnet build "toeic-web.csproj" -c Release -o /app/build

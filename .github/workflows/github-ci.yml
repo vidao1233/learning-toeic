@@ -1,9 +1,5 @@
 name: github ci/cd
 
-env:
-  DOTNET_VERSION: "6.0" # set this to the .NET Core version to use
-  WORKING_DIRECTORY: "./src" #define the root folder path
-
 on:
   push:
     branches:
@@ -11,6 +7,10 @@ on:
 
 jobs:
   build-and-push-be:
+    env:
+      BUILD_CONFIG: 'Release'
+      SOLUTION: 'be/toiec-web.sln'
+
     name: Build and Push Docker Image BE
     runs-on: ubuntu-latest
 
@@ -18,31 +18,28 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Setup .NET Core
+      - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+          dotnet-version: 6.x
 
-      - name: Setup test loggers
-        shell: pwsh
-        run: |
-          foreach ($file in Get-ChildItem -Path .src/tests/UnitTest.csproj -Recurse)
-          {
-            dotnet add $file package JunitXml.TestLogger --source 'https://api.nuget.org/v3/index.json'
-          }
+      - name: Restore dependencies
+      run: dotnet restore $SOLUTION
 
-      - name: Run unit tests
-        shell: bash
-        working-directory: ./src
-        run: |
-          dotnet test toiec-web.sln --logger 'junit;LogFileName=TestResults.xml' \
-            --verbosity normal --results-directory ./_test-results
-
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          junit_files: ./src/_test-results/*.xml
+    - name: Build
+      run: dotnet build $SOLUTION --configuration $BUILD_CONFIG
+      
+    - name: Test
+      run: dotnet test $SOLUTION --configuration $BUILD_CONFIG --logger "trx;LogFileName=test-results.trx" || true
+      
+    - name: Test Report
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: DotNET Tests
+        path: "**/test-results.trx"                            
+        reporter: dotnet-trx
+        fail-on-error: true
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
