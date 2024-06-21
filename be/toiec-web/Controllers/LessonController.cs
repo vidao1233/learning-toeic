@@ -32,7 +32,7 @@ namespace toeic_web.Controllers
             var lessonList = await _lessonService.GetAllLessons();
             if (lessonList == null)
             {
-                return StatusCode(StatusCodes.Status404NotFound);
+                return NotFound(StatusCodes.Status404NotFound);
             }
             return Ok(lessonList);
         }
@@ -44,7 +44,7 @@ namespace toeic_web.Controllers
             var lesson = await _lessonService.GetLessonById(id);
             if (lesson == null)
             {
-                return StatusCode(StatusCodes.Status404NotFound);
+                return NotFound(StatusCodes.Status404NotFound);
             }
             return Ok(lesson);
         }
@@ -56,7 +56,7 @@ namespace toeic_web.Controllers
             var lesson = await _lessonService.GetAllLessonByCourse(id);
             if (lesson == null)
             {
-                return StatusCode(StatusCodes.Status404NotFound);
+                return NotFound(StatusCodes.Status404NotFound);
             }
             return Ok(lesson);
         }
@@ -69,10 +69,10 @@ namespace toeic_web.Controllers
             var response = await _lessonService.AddLesson(model);
             if(response == true)
             {
-                return StatusCode(StatusCodes.Status200OK);
+                return Ok(response);
             }
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return BadRequest("An issue when add lesson.");
         }
 
         [Authorize(Roles = "Professor")]
@@ -83,10 +83,10 @@ namespace toeic_web.Controllers
             var response = await _lessonService.UpdateLesson(model, id);
             if (response == true)
             {
-                return StatusCode(StatusCodes.Status200OK);
+                return Ok(response);
             }
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return BadRequest("An issue when update lesson.");
         }
 
         [Authorize(Roles = "Professor")]
@@ -100,7 +100,7 @@ namespace toeic_web.Controllers
                 return Ok(response);
             }
             else
-                return StatusCode(StatusCodes.Status404NotFound);
+                return BadRequest("An issue when delete lesson.");
         }
 
         [HttpPost("upload")]
