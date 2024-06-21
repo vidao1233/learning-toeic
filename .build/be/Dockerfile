@@ -46,34 +46,34 @@
 # COPY --from=publish /app/publish .
 # ENTRYPOINT ["dotnet", "toeic-web.dll"]
 
-# Stage 1: Build and test the application
+# Stage 1: Build the application
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
-# Copy the project file and restore dependencies
-COPY ["be/toiec-web/toeic-web.csproj", "toiec-web/"]
-RUN dotnet restore "toiec-web/toeic-web.csproj"
+# Copy csproj and restore as distinct layers
+COPY .build/be/toiec-web/*.csproj ./
+RUN dotnet restore
 
-# Copy the remaining source code and build the application
-COPY be/toiec-web toiec-web/
-WORKDIR "/src/toiec-web"
-RUN dotnet build "toeic-web.csproj" -c Release -o /app/build
+# Copy the main application code
+COPY .build/be/toiec-web/ ./
+
+# Build the application in release mode
+RUN dotnet build -c Release --no-restore
 
 # Run tests and publish test results
 RUN dotnet test "UnitTest.csproj" --no-build --logger:trx --results-directory /app/build/test-results
 
-# Stage 2: Publish the application
-FROM build AS publish
-RUN dotnet publish "toeic-web.csproj" -c Release -o /app/publish /p:UseAppHost=false
+# Publish the application
+RUN dotnet publish "toeic-web.csproj" -c Release -o /app/publish --no-restore /p:UseAppHost=false
 
-# Stage 3: Final image with published application
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+# Stage 2: Create the runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
 WORKDIR /app
-COPY --from=publish /app/publish .
-
-# Expose ports
 EXPOSE 80
 EXPOSE 443
 
-# Set entry point
+# Copy built artifacts from the 'build' stage
+COPY --from=build /app/publish .
+
+# Entrypoint for the container
 ENTRYPOINT ["dotnet", "toeic-web.dll"]

@@ -43,6 +43,9 @@ jobs:
       - name: Build FE Docker Image
         run: docker build -t tranngobichdu/toeic-learning-website:v1 -f .build/fe/Dockerfile .
 
+      - name: Run Tests
+        run: docker run vidao1233/toeic-web:v1 dotnet test --no-build --logger:trx --results-directory /app/build/test-results
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
