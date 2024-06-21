@@ -9,8 +9,7 @@ on:
       - main
 
 jobs:
-  build-and-push-be:   
-
+build-and-push-be:
     name: Build and Push Docker Image BE
     runs-on: ubuntu-latest
 
@@ -24,22 +23,22 @@ jobs:
           dotnet-version: 6.x
 
       - name: Restore dependencies
-      run: dotnet restore $SOLUTION
+        run: dotnet restore $SOLUTION
 
-    - name: Build
-      run: dotnet build $SOLUTION --configuration $BUILD_CONFIG
-      
-    - name: Test
-      run: dotnet test $SOLUTION --configuration $BUILD_CONFIG --logger "trx;LogFileName=test-results.trx" || true
-      
-    - name: Test Report
-      uses: dorny/test-reporter@v1
-      if: always()
-      with:
-        name: DotNET Tests
-        path: "**/test-results.trx"                            
-        reporter: dotnet-trx
-        fail-on-error: true
+      - name: Build
+        run: dotnet build $SOLUTION --configuration $BUILD_CONFIG
+
+      - name: Test
+        run: dotnet test $SOLUTION --configuration $BUILD_CONFIG --logger "trx;LogFileName=test-results.trx" || true
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: DotNET Tests
+          path: "**/test-results.trx"
+          reporter: dotnet-trx
+          fail-on-error: true
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -55,7 +54,7 @@ jobs:
 
       - name: Push Docker Image
         run: docker push vidao1233/toeic-web:v1
-
+        
   build-and-push-fe:
     name: Build and Push Docker Image FE
     runs-on: ubuntu-latest
