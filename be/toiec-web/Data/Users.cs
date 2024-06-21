@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using toiec_web.Data;
 
 namespace toeic_web.Models
 {
@@ -15,5 +16,6 @@ namespace toeic_web.Models
         public virtual ICollection<Report> Reports { get; set; }
         public virtual ICollection<VocList> VocTopics { get; set; }
         public virtual ICollection<Vocabulary> Vocabulary { get; set;}
+        public virtual ICollection<UserRoute> UserRoutes { get; set; }
     }
 }

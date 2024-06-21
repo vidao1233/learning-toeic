@@ -52,7 +52,7 @@ namespace toeic_web.Repository
             {
                 if (course.idCourse == courseId)
                 {
-                    CourseModel data = _mapper.Map<CourseModel>(course);
+                    var data = _mapper.Map<CourseModel>(course);
                     return data;
                 }
             }

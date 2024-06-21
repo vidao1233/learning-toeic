@@ -6,6 +6,7 @@ namespace toeic_web.ViewModels.VocTopic
     {
         public Guid idVocList { get; set; }
         public string idUser { get; set; }
+        public string? idRoadMap { get; set; }
         public string title { get; set; }
         public string description { get; set; }
         public string author { get; set; }

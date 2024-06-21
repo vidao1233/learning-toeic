@@ -21,7 +21,7 @@ namespace toiec_web.Controllers
             var response = await _commentService.GetCommentFalseCheck();
             if (response == null)
             {
-                return StatusCode(StatusCodes.Status404NotFound);
+                return NotFound(StatusCodes.Status404NotFound);
             }
             return Ok(response);
         }
@@ -33,7 +33,7 @@ namespace toiec_web.Controllers
             var response = await _commentService.GetCommentByLesson(idLesson);
             if (response == null)
             {
-                return StatusCode(StatusCodes.Status404NotFound);
+                return NotFound(StatusCodes.Status404NotFound);
             }
             return Ok(response);
         }
@@ -45,10 +45,10 @@ namespace toiec_web.Controllers
             var response = await _commentService.AddComment(model);
             if (response == true)
             {
-                return StatusCode(StatusCodes.Status200OK);
+                return Ok(response);
             }
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return BadRequest("An issue when add comment.");
         }
 
         [HttpPut]
@@ -58,10 +58,10 @@ namespace toiec_web.Controllers
             var response = await _commentService.UpdateComment(model, idComment);
             if (response == true)
             {
-                return StatusCode(StatusCodes.Status200OK);
+                return Ok(response);
             }
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return BadRequest("An issue when update comment.");
         }
 
         [HttpDelete]
@@ -71,10 +71,10 @@ namespace toiec_web.Controllers
             var response = await _commentService.DeleteComment(idComment, idUser);
             if (response == true)
             {
-                return StatusCode(StatusCodes.Status200OK);
+                return Ok(response);
             }
             else
-                return StatusCode(StatusCodes.Status403Forbidden);
+                return BadRequest("An issue when delete comment.");
         }
     }
 }

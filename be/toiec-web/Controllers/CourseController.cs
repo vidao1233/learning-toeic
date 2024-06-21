@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using toeic_web.Models;
 using toeic_web.Services.IService;
 using toeic_web.ViewModels.Course;
 
@@ -22,7 +23,7 @@ namespace toeic_web.Controllers
             var courseList = await _courseService.GetAllCourses();
             if (courseList == null)
             {
-                return StatusCode(StatusCodes.Status404NotFound);
+                return Ok("No data!");
             }
             return Ok(courseList);
         }
@@ -34,7 +35,7 @@ namespace toeic_web.Controllers
             var course = await _courseService.GetCourseById(id);
             if (course == null)
             {
-                return StatusCode(StatusCodes.Status404NotFound);
+                return Ok("No data!");
             }
             return Ok(course);
         }
@@ -47,7 +48,7 @@ namespace toeic_web.Controllers
             var response = await _courseService.AddCourse(model);
             if (response == true)
             {
-                return StatusCode(StatusCodes.Status200OK);
+                return Ok(response);
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
@@ -61,7 +62,7 @@ namespace toeic_web.Controllers
             var response = await _courseService.UpdateCourse(model, id);
             if (response == true)
             {
-                return StatusCode(StatusCodes.Status200OK);
+                return Ok(response);
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
