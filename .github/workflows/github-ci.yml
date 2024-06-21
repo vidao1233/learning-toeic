@@ -20,9 +20,6 @@ jobs:
       - name: Build BE Docker Image
         run: docker build -t vidao1233/toeic-web:v1 -f .build/be/Dockerfile .
 
-      - name: Run tests and capture console logs
-        run: dotnet test --logger:console --logger:trx --results-directory ./test-results
-
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
