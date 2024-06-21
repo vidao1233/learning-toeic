@@ -26,7 +26,7 @@ jobs:
       - name: Setup test loggers
         shell: pwsh
         run: |
-          foreach ($file in Get-ChildItem -Path .src/tests/*Tests.csproj -Recurse)
+          foreach ($file in Get-ChildItem -Path .src/tests/UnitTest.csproj -Recurse)
           {
             dotnet add $file package JunitXml.TestLogger --source 'https://api.nuget.org/v3/index.json'
           }
