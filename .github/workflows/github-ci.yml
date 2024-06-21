@@ -1,5 +1,9 @@
 name: github ci/cd
 
+env:
+  DOTNET_VERSION: "6.0" # set this to the .NET Core version to use
+  WORKING_DIRECTORY: "./src" #define the root folder path
+
 on:
   push:
     branches:
@@ -14,22 +18,31 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up .NET SDK
+      - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: "6.0.x" # adjust to your .NET version
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Navigate to project directory
-        run: cd be/UnitTest
+      - name: Setup test loggers
+        shell: pwsh
+        run: |
+          foreach ($file in Get-ChildItem -Path .src/tests/*Tests.csproj -Recurse)
+          {
+            dotnet add $file package JunitXml.TestLogger --source 'https://api.nuget.org/v3/index.json'
+          }
 
-      - name: Restore NuGet packages
-        run: dotnet restore
+      - name: Run unit tests
+        shell: bash
+        working-directory: ./src
+        run: |
+          dotnet test toiec-web.sln --logger 'junit;LogFileName=TestResults.xml' \
+            --verbosity normal --results-directory ./_test-results
 
-      - name: Build project
-        run: dotnet build --configuration Release --no-restore
-
-      - name: Test project
-        run: dotnet test --configuration Release --no-build --verbosity normal
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          junit_files: ./src/_test-results/*.xml
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
