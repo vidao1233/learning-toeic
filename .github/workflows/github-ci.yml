@@ -1,7 +1,7 @@
 name: github ci/cd
 env:
-      BUILD_CONFIG: 'Release'
-      SOLUTION: 'be/toiec-web.sln'
+  BUILD_CONFIG: "Release"
+  SOLUTION: "be/toiec-web.sln"
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-build-and-push-be:
+  build-and-push-be:
     name: Build and Push Docker Image BE
     runs-on: ubuntu-latest
 
@@ -54,7 +54,7 @@ build-and-push-be:
 
       - name: Push Docker Image
         run: docker push vidao1233/toeic-web:v1
-        
+
   build-and-push-fe:
     name: Build and Push Docker Image FE
     runs-on: ubuntu-latest
