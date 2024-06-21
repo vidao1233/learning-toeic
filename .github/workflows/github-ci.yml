@@ -1,4 +1,7 @@
 name: github ci/cd
+env:
+      BUILD_CONFIG: 'Release'
+      SOLUTION: 'be/toiec-web.sln'
 
 on:
   push:
@@ -6,10 +9,7 @@ on:
       - main
 
 jobs:
-  build-and-push-be:
-    env:
-      BUILD_CONFIG: 'Release'
-      SOLUTION: 'be/toiec-web.sln'
+  build-and-push-be:   
 
     name: Build and Push Docker Image BE
     runs-on: ubuntu-latest
