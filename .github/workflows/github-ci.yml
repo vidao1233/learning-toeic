@@ -19,11 +19,17 @@ jobs:
         with:
           dotnet-version: "6.0.x" # adjust to your .NET version
 
-      - name: Build and Test
-        run: |
-          dotnet restore
-          dotnet build --configuration Release
-          dotnet test --configuration Release --no-build --verbosity normal
+      - name: Navigate to project directory
+        run: cd be/UnitTest
+
+      - name: Restore NuGet packages
+        run: dotnet restore
+
+      - name: Build project
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test project
+        run: dotnet test --configuration Release --no-build --verbosity normal
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
