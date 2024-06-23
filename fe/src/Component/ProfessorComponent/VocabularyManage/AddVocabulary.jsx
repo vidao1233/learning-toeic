@@ -165,7 +165,7 @@ function AddVocabulary({
     }
   }, [modal_on]);
   if (isLoading) {
-    return <Loader />;
+    return <Loader fullLoad={true} />;
   }
   return (
     <Fragment>

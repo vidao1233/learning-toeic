@@ -22,8 +22,7 @@ namespace toiec_web.Controllers
             var response = await _reportService.GetAllReports();
             if (response == null)
             {
-                return StatusCode(StatusCodes.Status404NotFound,
-                    new Response { Status = "Fail", Message = "Data not found!" });
+                return NotFound("Data not found");
             }
             return Ok(response);
         }
@@ -34,8 +33,7 @@ namespace toiec_web.Controllers
             var response = await _reportService.GetAllFalseReports(check);
             if (response == null)
             {
-                return StatusCode(StatusCodes.Status404NotFound,
-                    new Response { Status = "Fail", Message = "Data not found!" });
+                return NotFound("Data not found");
             }
             return Ok(response);
         }

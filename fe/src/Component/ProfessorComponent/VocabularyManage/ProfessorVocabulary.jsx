@@ -83,7 +83,6 @@ function ProfessorVocabulary() {
     }
   };
   const handleDeleteVocabulary = async (idVoc) => {
-    setIsLoading(true);
     try {
       const response = await fetch(
         `${
@@ -107,7 +106,6 @@ function ProfessorVocabulary() {
     } catch (error) {
       toast.error(`${error}`);
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {

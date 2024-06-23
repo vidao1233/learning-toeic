@@ -5,10 +5,12 @@
     "\\be\\toiec-web",
     "\\be\\toiec-web\\Controllers",
     "\\be\\toiec-web\\Repository",
+    "\\be\\toiec-web\\Services",
     "\\be\\toiec-web\\ViewModels",
     "\\be\\toiec-web\\ViewModels\\Test",
-    "\\be\\toiec-web\\ViewModels\\Vocabulary"
+    "\\be\\toiec-web\\ViewModels\\Vocabulary",
+    "\\be\\UnitTest"
   ],
-  "SelectedNode": "\\be\\toiec-web\\Program.cs",
+  "SelectedNode": "\\be\\UnitTest\\CourseUnitTest.cs",
   "PreviewInSolutionExplorer": false
 }

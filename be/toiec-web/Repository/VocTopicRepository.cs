@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using toeic_web.Infrastructure;
 using toeic_web.Models;
 using toeic_web.Repository.IRepository;
+using toiec_web.Data;
+using toiec_web.Models;
 
 namespace toeic_web.Repository
 {
@@ -88,5 +90,15 @@ namespace toeic_web.Repository
             return listData;
         }
 
+        public Task<VocListModel> GetVocListId(Guid idList)
+        {
+            var data = GetById(idList);
+            if (data == null)
+            {
+                return Task.FromResult<VocListModel>(null);
+            }
+            var vocList = _mapper.Map<VocListModel>(data);
+            return Task.FromResult(vocList);
+        }
     }
 }

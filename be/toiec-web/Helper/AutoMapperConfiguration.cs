@@ -21,6 +21,8 @@ using toiec_web.Models;
 using toiec_web.ViewModels.Comment;
 using Microsoft.EntityFrameworkCore.Internal;
 using toiec_web.ViewModels.Report;
+using toiec_web.Data;
+using toiec_web.ViewModels.RoadMap;
 
 namespace toeic_web.Helper
 {
@@ -47,6 +49,11 @@ namespace toeic_web.Helper
             CreateMap<ReportModel, ReportUpdateModel>().ReverseMap();
             #region Report
 
+            #endregion
+
+            #region RoadMap
+            CreateMap<RoadMap, RoadMapModel>().ReverseMap();
+            CreateMap<RoadMapModel, RoadMapUpdateModel>().ReverseMap();
             #endregion
 
             #region User

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using toeic_web.Data;
+using toiec_web.Data;
 
 namespace toeic_web.Models
 {
@@ -38,6 +39,8 @@ namespace toeic_web.Models
         public virtual DbSet<VocList> VocList { get; set; }
         public virtual DbSet<ResetPassword> ResetPasswords { get; set; }
         public virtual DbSet<ScoreParam> ScoreParams { get; set; }
+        public virtual DbSet<RoadMap> RoadMaps { get; set; }
+        public virtual DbSet<UserRoute> UserRoutes { get; set; }
 
         #endregion
 
@@ -78,6 +81,10 @@ namespace toeic_web.Models
                     .HasForeignKey(s => s.idProfessor)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_CourseOfProfessor");
+                entity.HasOne(s => s.RoadMap).WithMany(s => s.Courses)
+                    .HasForeignKey(s => s.idRoadMap)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_CourseOfRoadMap");
 
             });
             modelBuilder.Entity<Lesson>(entity =>
@@ -154,6 +161,22 @@ namespace toeic_web.Models
                     .HasConstraintName("FK_ReportOfComment");
 
             });
+            modelBuilder.Entity<RoadMap>(entity =>
+            {
+                entity.HasKey(s => s.Id);
+            });
+            modelBuilder.Entity<UserRoute>(entity =>
+            {
+                entity.HasKey(s => s.Id);
+                entity.HasOne(s => s.RoadMap).WithMany(s => s.UserRoutes)
+                    .HasForeignKey(s => s.IdRoadMap)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_UserRouteOfRoadMap");
+                entity.HasOne(s => s.Users).WithMany(s => s.UserRoutes)
+                    .HasForeignKey(s => s.IdUser)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_UserRouteOfUser");
+            });
             modelBuilder.Entity<Student>(entity =>
             {
                 entity.HasKey(s => s.idStudent);
@@ -173,6 +196,10 @@ namespace toeic_web.Models
                     .HasForeignKey(s => s.idProfessor)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("TestOfProfessor");
+                entity.HasOne(s => s.RoadMap).WithMany(s => s.Tests)
+                    .HasForeignKey(s => s.idRoadMap)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("TestOfRoadMap");
             });
             modelBuilder.Entity<TestPart>(entity =>
             {
@@ -267,6 +294,10 @@ namespace toeic_web.Models
                     .HasForeignKey(s => s.idUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TopicOfUser");
+                entity.HasOne(s => s.RoadMap).WithMany(s => s.VocLists)
+                    .HasForeignKey(s => s.idRoadMap)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TopicOfRoadMap");
             });
             modelBuilder.Entity<ScoreParam>(entity =>
             {

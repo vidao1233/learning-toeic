@@ -67,8 +67,8 @@ namespace toeic_web.Controllers
             return StatusCode(StatusCodes.Status404NotFound,
                     new Response { Status = "Fail", Message = "Data not found." });
         }
-            //[Authorize]
-            [HttpPost]
+        //[Authorize]
+        [HttpPost]
         [Route("AddVocList")]
         public async Task<IActionResult> AddVocList(VocListAddModel model, string userId)
         {

@@ -1,4 +1,4 @@
-import { CiCalendar, CiUnlock } from "react-icons/ci";
+import { CiCalendar, CiUnlock, CiLock } from "react-icons/ci";
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../Common/Loader/Loader";
@@ -310,7 +310,8 @@ function VocabularyUserManager() {
                         </p>
                         <p className={cx("createdate")}>
                           <p className={cx("label")}>
-                            <CiUnlock /> Trạng thái:
+                            {val.isPublic ? <CiUnlock /> : <CiLock />} Trạng
+                            thái:
                           </p>
                           {val.isPublic ? "Công khai" : "Riêng tư"}
                         </p>
