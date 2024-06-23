@@ -139,7 +139,7 @@ const UserProvider = ({ children }) => {
       if (!response.ok) {
         toast.error(`Get User Profile failed`, {});
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         if (data.imageURL) {
           setUser((prevState) => ({
             ...prevState,

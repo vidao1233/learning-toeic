@@ -14,6 +14,11 @@ body {
   background-color: #fff;
   border-radius: 2rem;
 }
+.text-truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 .overlay {
   width: 100vw;
   height: 100vh;
@@ -22,7 +27,10 @@ body {
   right: 0;
   bottom: 0;
   position: fixed;
-  background: rgba(49, 49, 49, 0.3);
+  background: rgba(49, 49, 49, 0.6);
+}
+.custom-input {
+  @apply h-10 w-full bg-white flex items-center justify-evenly py-2 px-4 border-[1px] border-primary-900 rounded-xl;
 }
 button {
   border: none;

@@ -37,7 +37,7 @@ function ForgotPassword() {
       if (!response.ok) {
         toast.error(`Gửi OTP không thành công`, {});
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         toast.success(`${data.message}`);
         setEmailClick(true);
       }

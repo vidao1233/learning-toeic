@@ -9,6 +9,7 @@ module.exports = {
     "./src/Component/AdminComponent/CommentManage/CommentManage.jsx",
     "./src/Component/AdminComponent/CommentManage/ReportItem.jsx",
     "./src/Component/AdminComponent/CommentManage/CheckReport.jsx",
+    "./src/Component/ProfessorComponent/VocabularyManage/AddVocabulary.jsx",
     "./src/Component/Chatbot/Chatbot.jsx",
     "./src/Component/Chatbot/ChatMessage.jsx",
   ],

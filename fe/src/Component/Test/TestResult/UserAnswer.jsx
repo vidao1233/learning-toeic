@@ -45,10 +45,10 @@ function UserAnswer({ id }) {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`, {});
       }
-      const data = await response.json();
+      const data = await response?.json();
       setUserAnswers(data);
     } catch (error) {
       console.log(error);
@@ -92,7 +92,7 @@ function UserAnswer({ id }) {
                 <a
                   href="/"
                   onClick={(e) => {
-                    e.preventDefault()
+                    e.preventDefault();
                     setQuestion_num(index + 1);
                     setCurentAnswer(userAnswer);
                     toggleModal();

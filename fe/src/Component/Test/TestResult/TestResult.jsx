@@ -43,10 +43,10 @@ function TestResult() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         let idUser = data.idUser;
         setRecord(data.record);
         setrecord_user((prevUser) => ({ ...prevUser, idUser }));
@@ -71,10 +71,10 @@ function TestResult() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`, {});
       }
-      const data = await response.json();
+      const data = await response?.json();
       setrecord_user(data);
     } catch (error) {
       console.log(error);
@@ -88,10 +88,10 @@ function TestResult() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       }
-      const data = await response.json();
+      const data = await response?.json();
       setTest(data);
     } catch (error) {
       toast.error(`${error}`);

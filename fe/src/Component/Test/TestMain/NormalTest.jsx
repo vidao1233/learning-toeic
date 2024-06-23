@@ -118,10 +118,10 @@ function NormalTest({ id }) {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         setTestdata(data.parts);
       }
     } catch (error) {
@@ -138,10 +138,10 @@ function NormalTest({ id }) {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         setParts(data);
       }
     } catch (error) {
@@ -158,7 +158,7 @@ function NormalTest({ id }) {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       } else {
         const data = await response.text();
@@ -186,11 +186,11 @@ function NormalTest({ id }) {
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`, {});
       } else {
         localStorage.removeItem(`test_answer_${user.idUser}`);
-        const data = await response.json();
+        const data = await response?.json();
         navigate(`/test/result/${data.idRecord}`);
       }
     } catch (error) {

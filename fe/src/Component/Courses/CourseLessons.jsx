@@ -17,52 +17,58 @@ function CourseLessons() {
   const [other_courses, setOtherCourses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  async function fetchLessons() {
+    try {
+      const response = await fetch(
+        `${
+          process.env.REACT_APP_API_BASE_URL ?? "/api"
+        }/Lesson/GetAllLessonByCourse/${id}`
+      );
+      if (!response.ok) {
+        const errorData = await response?.json();
+        toast.error(`${errorData.message}`);
+      } else {
+        const data = await response?.json();
+        setLessons(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async function fetchOtherCourses() {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL ?? "/api"}/Course/GetAllCourses`
+      );
+      if (!response.ok) {
+        const errorData = await response?.json();
+        toast.error(`${errorData.message}`);
+      } else {
+        const data = await response?.json();
+        setCurrentCourse(data.find((course) => course.idCourse === id));
+        setOtherCourses(data.filter((course) => course.idCourse !== id));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
   useEffect(() => {
-    async function fetchLessons() {
+    const fetchData = async () => {
+      setIsLoading(true);
       try {
-        setIsLoading(true);
-        const response = await fetch(
-          `${
-            process.env.REACT_APP_API_BASE_URL ?? "/api"
-          }/Lesson/GetAllLessonByCourse/${id}`
-        );
-        setIsLoading(false);
-        if (!response.ok) {
-          const errorData = await response.json();
-          toast.error(`${errorData.message}`);
-        } else {
-          const data = await response.json();
-          setLessons(data);
-        }
+        await Promise.all([fetchLessons(), fetchOtherCourses()]);
       } catch (error) {
-        console.log(error);
-      }
-    }
-    async function fetchOtherCourses() {
-      try {
-        setIsLoading(true);
-        const response = await fetch(
-          `${process.env.REACT_APP_API_BASE_URL ?? "/api"}/Course/GetAllCourses`
-        );
+        console.error(error);
+      } finally {
         setIsLoading(false);
-        if (!response.ok) {
-          const errorData = await response.json();
-          toast.error(`${errorData.message}`);
-        } else {
-          const data = await response.json();
-          setCurrentCourse(data.find((course) => course.idCourse === id));
-          setOtherCourses(data.filter((course) => course.idCourse !== id));
-        }
-      } catch (error) {
-        console.log(error);
       }
-    }
-    fetchLessons();
-    fetchOtherCourses();
-  }, [id]);
+    };
+    fetchData();
+  }, []);
   if (current_course?.isVip && user.idUser && user.role[1] !== "VipStudent") {
     navigate("/vippackage");
   }
+  if (isLoading) return <Loader />;
   return (
     <div>
       <div className="course-lesson-wrapper">
@@ -70,7 +76,7 @@ function CourseLessons() {
         {isLoading ? (
           <Loader />
         ) : (
-          <div className="container course-lesson-card">
+          <div className="course-lesson-card">
             <div className="list-lesson-wrapper">
               <div className="list-lesson">
                 {lessons &&

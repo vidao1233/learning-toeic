@@ -66,7 +66,7 @@ function Login() {
       setIsLoading(false);
       if (!response.ok) {
         if (response.status === 404) {
-          const errorData = await response.json();
+          const errorData = await response?.json();
           toast.warning(`${errorData.message}`);
         } else {
           toast.error("Đăng nhập không thành công", {
@@ -74,7 +74,7 @@ function Login() {
           });
         }
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         if (data.token !== undefined) {
           loginContext(data.token);
           const returnPath = localStorage.getItem("returnPath");
@@ -114,10 +114,10 @@ function Login() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`, {});
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         toast.success(`${data.message}`);
         SwitchSignUpMode(false);
       }
@@ -145,10 +145,10 @@ function Login() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         toast.success(`${data.message}`);
       }
     } catch (error) {
@@ -173,7 +173,7 @@ function Login() {
       );
       setIsLoading(false);
       if (response.ok) {
-        const data = await response.json();
+        const data = await response?.json();
         if (data.token !== undefined) {
           loginContext(data.token);
           const returnPath = localStorage.getItem("returnPath");

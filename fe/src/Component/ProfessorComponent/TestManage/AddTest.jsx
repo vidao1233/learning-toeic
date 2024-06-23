@@ -26,10 +26,10 @@ function AddTest({ toggleModal, modal_on }) {
         }/TestType/GetAllTestTypes`
       );
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`, {});
       }
-      const data = await response.json();
+      const data = await response?.json();
       setTestType(data);
       setIsLoading(false);
     } catch (error) {

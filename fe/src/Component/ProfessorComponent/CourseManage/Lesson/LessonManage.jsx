@@ -32,10 +32,10 @@ function LessonManage() {
         }/Course/GetCourseById/${id}`
       );
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData}`);
       }
-      const data = await response.json();
+      const data = await response?.json();
       // setCurrentCourse(data);
       setValue("idCourse", data.idCourse);
       setValue("name", data.name);
@@ -87,10 +87,10 @@ function LessonManage() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         setLessons(data);
       }
     } catch (error) {

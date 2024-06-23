@@ -33,10 +33,10 @@ function ProfessorTestManage() {
         }/Test/GetAllTestByProfessor/${user.idUser}`
       );
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       }
-      const data = await response.json();
+      const data = await response?.json();
       setTest(data);
       setIsLoading(false);
     } catch (error) {
