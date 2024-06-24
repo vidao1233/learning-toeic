@@ -11,7 +11,9 @@ function RecordByTest() {
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
   const [records, setRecords] = useState([]);
+  const [test, setTest] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
   async function fetchRecordByUserTest() {
     try {
       setIsLoading(true);
@@ -29,19 +31,47 @@ function RecordByTest() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         setRecords(data);
       }
     } catch (error) {
       toast.error(`${error}`);
     }
   }
+  async function fetchTest() {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL ?? "/api"}/Test/GetTestById/${id}`
+      );
+      if (!response.ok) {
+        const errorData = await response?.json();
+        toast.error(`${errorData.message}`);
+      } else {
+        const data = await response?.json();
+        setTest(data);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      toast.error(`${error}`);
+    }
+  }
+
   useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        await Promise.all([fetchRecordByUserTest(), fetchTest()]);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
     if (user.idUser) {
-      fetchRecordByUserTest();
+      fetchData();
     }
   }, [user.idUser]);
 
@@ -50,7 +80,7 @@ function RecordByTest() {
   }
   return (
     <div className="record-by-test-wrapper">
-      <Heading title={records[0] && records[0].testName}></Heading>
+      <Heading title={test.name}></Heading>
       <div className="test-result-wrapper">
         <div className="test-record-list">
           <div
@@ -64,7 +94,7 @@ function RecordByTest() {
             <button
               className="do-test"
               onClick={() => {
-                 navigate(`/do-test/${id}`);
+                navigate(`/do-test/${id}`);
               }}
             >
               Làm bài thi ngay

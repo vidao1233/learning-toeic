@@ -83,7 +83,7 @@ function Comment({ id }) {
         );
         setIsLoading(false);
         if (!response.ok) {
-          const errorData = await response.json();
+          const errorData = await response?.json();
           toast.error(`${errorData.message}`);
         } else {
           handleSetCommentData();
@@ -119,7 +119,7 @@ function Comment({ id }) {
         );
         setIsLoading(false);
         if (!response.ok) {
-          const errorData = await response.json();
+          const errorData = await response?.json();
           toast.error(`${errorData.message}`);
         } else {
           handleSetCommentData();
@@ -145,7 +145,7 @@ function Comment({ id }) {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       } else {
         handleSetCommentData();
@@ -165,10 +165,10 @@ function Comment({ id }) {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         return data;
       }
     } catch (error) {

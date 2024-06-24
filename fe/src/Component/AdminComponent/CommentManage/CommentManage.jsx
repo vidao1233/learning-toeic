@@ -5,6 +5,7 @@ import CheckReport from "./CheckReport";
 
 function CommentManage() {
   const [reports, setReports] = useState([]);
+  const [currentReport, setCurrentReport] = useState([]);
   const [displayReports, setDisplayReports] = useState([]);
 
   const [selectedCheckbox, setSelectedCheckbox] = useState("All");
@@ -34,10 +35,10 @@ function CommentManage() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData}`);
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         setReports(data);
       }
     } catch (error) {
@@ -59,10 +60,10 @@ function CommentManage() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData}`);
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         setReports(data);
       }
     } catch (error) {
@@ -85,7 +86,7 @@ function CommentManage() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData}`);
       } else {
         toast.success("Xóa báo cáo thành công");
@@ -129,6 +130,12 @@ function CommentManage() {
   if (isLoading) return <Loader />;
   return (
     <Fragment>
+      <CheckReport
+        modal_on={modal}
+        toggleModal={toggleModal}
+        report={currentReport}
+        fetchReport={fetchReports}
+      />
       <div className="mt-5 flex justify-between">
         <h2 className="text-2xl font-semibold leading-tight">
           Danh sách báo cáo bình luận
@@ -213,12 +220,6 @@ function CommentManage() {
             <tbody>
               {displayReports?.map((report, index) => (
                 <Fragment key={index}>
-                  <CheckReport
-                    modal_on={modal}
-                    toggleModal={toggleModal}
-                    report={report}
-                    fetchReport={fetchReports}
-                  />
                   <tr className="w-full grid grid-cols-12">
                     <td className="flex items-center justify-center col-span-2 p-3 border-b border-gray-200 bg-white text-sm">
                       <p className="text-gray-900 whitespace-no-wrap">
@@ -266,7 +267,7 @@ function CommentManage() {
                           type="checkbox"
                           className="filter-btn w-full h-full absolute top-0 right-0 z-1 opacity-0 peer cursor-pointer"
                         />
-                        {report.isCheck ? (
+                        {!report.isCheck ? (
                           <div
                             className="hidden peer-checked:block absolute top-3 right-5 w-28 px-4 py-3 bg-rose-800 rounded-xl text-center text-base text-white font-semibold hover:shadow-lg border-[1px] cursor-pointer"
                             onClick={() => {
@@ -278,7 +279,10 @@ function CommentManage() {
                         ) : (
                           <div
                             className="hidden peer-checked:block absolute top-3 right-5 w-28 px-4 py-3 bg-primary-900 rounded-xl text-white text-center text-base font-semibold hover:shadow-lg border-[1px] cursor-pointer"
-                            onClick={toggleModal}
+                            onClick={() => {
+                              toggleModal();
+                              setCurrentReport(report);
+                            }}
                           >
                             Xác nhận
                           </div>

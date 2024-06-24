@@ -43,7 +43,7 @@ function Chatbot({ isTeacher }) {
             {
               type: "azure_search",
               endpoint: AZURE_SEARCH_ENDPOINT,
-              indexName: "toeicweb",
+              indexName: "chatbotdata",
               authentication: {
                 type: "api_key",
                 key: AZURE_SEARCH_KEY,

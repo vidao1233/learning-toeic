@@ -52,29 +52,28 @@
 
 .professor-vocabulary-wrapper .vocabulary-title {
   width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: large;
+  font-size: 20px;
   font-weight: 600;
   text-align: center;
 }
 
-.vocabulary-title-detail{
+.vocabulary-title-detail {
   width: 100%;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   font-size: medium;
   font-weight: 400;
   text-align: justify;
-  white-space: normal;
 }
-.vocabulary-title-detail-description{
+.vocabulary-title-detail-description {
   width: 100%;
-  white-space: nowrap;
-  font-size: medium;
   font-weight: 400;
   text-align: center;
-  white-space: normal;
-  font-size: 12px;
+  font-size: 13px;
+  font-style: italic;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 3em; /* 1.5em per line x 2 lines */
+  line-height: 1.5em;
 }

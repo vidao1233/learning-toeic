@@ -6,25 +6,16 @@
   flex-direction: column;
 }
 
-.professor-vocabulary .professor-add-button-wrapper{
+.professor-vocabulary .professor-add-button-wrapper {
   justify-content: space-between;
-}
-.professor-vocabulary .input-field {
-  height: 50px;
-  width: 100%;
-  background: #f4f4f4;
-  border: 2px solid #003150;
-  border-radius: 50px;
-  display: flex;
   align-items: center;
-  justify-content: space-evenly;
-  padding: 10px;
 }
-.professor-vocabulary .update-voc-topic {
+.professor-vocabulary .topic-title {
   display: flex;
   gap: 1rem;
   margin: 1.5rem 3rem;
   justify-content: center;
+  text-transform: uppercase;
 }
 .professor-vocabulary input {
   background: none;
@@ -58,23 +49,31 @@
 .professor-add-button-wrapper {
   display: flex;
   justify-content: flex-end;
+  gap: 0.5rem;
 }
 .wordList-wrapper {
   margin: 2rem 0;
 }
-
-.wordList-item {
-  font-size: 18px;
-  color: #535353;
-  padding: 1rem;
+.wordList-item-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+  gap: 1rem;
   background-color: #fff;
   border-bottom: 1px solid #e8eaf1;
-  display: grid;
-  grid-template-columns: 1fr 1fr 2fr 1fr 1fr;
+  padding: 0.5rem 1rem;
 }
-.wordList-item:hover {
+.wordList-item-wrapper:hover {
   transform: translateZ(1px);
   box-shadow: 0 6px 6px #e8eaf1;
+}
+.wordList-item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+}
+.word-item-field {
+  font-size: 14px;
+  color: #535353;
 }
 .professor-vocabulary .btn-wrapper {
   width: 100%;
@@ -93,9 +92,9 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
-.professor-vocabulary .delete-btn:hover{
+.professor-vocabulary .delete-btn:hover {
   width: 130%;
 }
-.professor-vocabulary .update-btn:hover{
+.professor-vocabulary .update-btn:hover {
   width: 130%;
 }

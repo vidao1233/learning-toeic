@@ -5,7 +5,7 @@ import { UserContext } from "../../../Context/UserContext";
 import { toast } from "react-toastify";
 import Loader from "../../Common/Loader/Loader";
 
-function AddVocabularyTopic({ toggleModal, modal_on }) {
+function AddVocabularyTopic({ toggleModal, modal_on, initTopic }) {
   const { user } = useContext(UserContext);
   const [isloading, setIsLoading] = useState(false);
   const {
@@ -13,10 +13,11 @@ function AddVocabularyTopic({ toggleModal, modal_on }) {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm();
 
-  const currentDate = new Date().toISOString();
-  async function handleAddVocabularyTopic(data) {
+  const handleAddVocabularyTopic = async (data) => {
+    const currentDate = new Date().toISOString();
     setIsLoading(true);
     try {
       const response = await fetch(
@@ -35,7 +36,7 @@ function AddVocabularyTopic({ toggleModal, modal_on }) {
             description: data.description,
             createDate: currentDate,
             status: "0",
-            isPublic: true,
+            isPublic: data.isPublic,
           }),
         }
       );
@@ -51,9 +52,50 @@ function AddVocabularyTopic({ toggleModal, modal_on }) {
       console.log(error);
       toast.error(`${error}`);
     }
-  }
+  };
+  const handleUpdateVocabularyTopic = async (data) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `${
+          process.env.REACT_APP_API_BASE_URL ?? "/api"
+        }/VocList/UpdateVocList/${initTopic?.idVocList}&&${user.idUser}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+          body: JSON.stringify({
+            title: data.title,
+            description: data.description,
+            isPublic: data.isPublic,
+            status: initTopic.status,
+          }),
+        }
+      );
+      setIsLoading(false);
+      toggleModal();
+      if (!response.ok) {
+        toast.error("Chỉnh sửa chủ đề từ vựng thất bại", {});
+      } else {
+        toast.success("Chỉnh sửa chủ đề từ vựng thành công");
+      }
+    } catch (error) {
+      toast.error(`${error}`);
+    }
+  };
+
   useEffect(() => {
-    reset();
+    if (initTopic) {
+      console.log(initTopic);
+      setValue("title", initTopic.title);
+      setValue("description", initTopic?.description);
+      setValue("isPublic", initTopic?.isPublic);
+    }
+  }, [initTopic, setValue]);
+  useEffect(() => {
+    if (!modal_on) reset();
   }, [modal_on]);
   if (isloading) {
     return <Loader />;
@@ -85,9 +127,15 @@ function AddVocabularyTopic({ toggleModal, modal_on }) {
                   ></path>
                 </svg>
               </div>
-              <form onSubmit={handleSubmit(handleAddVocabularyTopic)}>
+              <form
+                onSubmit={handleSubmit(
+                  initTopic
+                    ? handleUpdateVocabularyTopic
+                    : handleAddVocabularyTopic
+                )}
+              >
                 <div className="add-vocabulary-topic-title">
-                  <h2>Tạo danh sách từ vựng</h2>
+                  <h2>{initTopic ? "Cập nhật" : "Tạo"} danh sách từ vựng</h2>
                 </div>
                 <div className="input-field">
                   <input
@@ -111,10 +159,20 @@ function AddVocabularyTopic({ toggleModal, modal_on }) {
                   {errors.decription?.type === "required" &&
                     "Không được để trống mô tả"}
                 </error>
+                <div style={{ display: "flex", width: "fit-content", gap: 4 }}>
+                  <input
+                    style={{ height: 26, width: 26 }}
+                    type="checkbox"
+                    {...vocabulary_topic("isPublic")}
+                  />
+                  <div style={{ padding: 4, fontSize: 16, fontWeight: 600 }}>
+                    Công khai?
+                  </div>
+                </div>
                 <input
                   type="submit"
                   className="vocabulary-submit"
-                  value="Tạo"
+                  value={initTopic ? "Cập nhật" : "Tạo"}
                 ></input>
               </form>
             </div>

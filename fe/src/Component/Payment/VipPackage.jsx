@@ -29,7 +29,7 @@ function VipPackage() {
       if (!response.ok) {
         toast.error(`Fetch API Failed`, {});
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         setVipPackages(data);
       }
     } catch (error) {
@@ -55,7 +55,7 @@ function VipPackage() {
       if (!response.ok) {
         toast.error(`Fetch Failed`, {});
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         setVipExpire(data.vipExpire);
       }
     } catch (error) {

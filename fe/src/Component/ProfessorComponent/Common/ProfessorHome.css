@@ -99,14 +99,14 @@ body.active-modal {
 .professor-managment-title {
   padding: 10px 50px 10px 10px;
   background-color: #c5e2e7;
-  min-width: 300px;
+  min-width: 400px;
   clip-path: polygon(0 0, 80% 0, 100% 100%, 0 100%);
   display: flex;
   align-items: center;
 }
 .professor-managment-sub-title {
   padding: 10px 50px 10px 10px;
-  max-width: 350px;
+  max-width: 400px;
   background-color: #c5e2e7;
   clip-path: polygon(0 0, 80% 0, 100% 100%, 0 100%);
   display: flex;

@@ -36,10 +36,10 @@ function Lesson() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         setCurrentLesson(data);
       }
     } catch (error) {
@@ -59,10 +59,10 @@ function Lesson() {
         );
         setIsLoading(false);
         if (!response.ok) {
-          const errorData = await response.json();
+          const errorData = await response?.json();
           toast.error(`${errorData.message}`);
         } else {
-          const data = await response.json();
+          const data = await response?.json();
           setOtherLesson(data.filter((lesson) => lesson.idLesson !== id));
         }
       }
@@ -81,10 +81,10 @@ function Lesson() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         setQuizes(data);
         if (data[0]) {
           setCurrentQuizID(data[0].idQuiz);
@@ -105,10 +105,10 @@ function Lesson() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         setQuizData(data);
       }
     } catch (error) {

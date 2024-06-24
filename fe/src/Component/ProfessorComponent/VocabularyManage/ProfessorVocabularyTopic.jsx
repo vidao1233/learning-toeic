@@ -10,8 +10,8 @@ import { UserContext } from "../../../Context/UserContext";
 function ProfessorVocabularyTopic() {
   const { user } = useContext(UserContext);
   const [topics, setTopic] = useState([]);
+  const [currentTopic, setCurrentTopic] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
   const [modal, setModal] = useState(false);
 
   const toggleModal = () => {
@@ -33,10 +33,10 @@ function ProfessorVocabularyTopic() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`, {});
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         setTopic(data);
       }
     } catch (error) {
@@ -74,7 +74,7 @@ function ProfessorVocabularyTopic() {
     window.scrollTo(0, 0);
   }, []);
   useEffect(() => {
-    if (!modal) {
+    if (modal) {
       fetchVocabularyTopic();
     }
   }, [modal]);
@@ -83,13 +83,23 @@ function ProfessorVocabularyTopic() {
   }
   return (
     <>
-      <AddVocabularyTopic toggleModal={toggleModal} modal_on={modal} />
+      <AddVocabularyTopic
+        toggleModal={toggleModal}
+        modal_on={modal}
+        initTopic={currentTopic}
+      />
       <div className="professor-vocabulary-wrapper">
         <div className="professor-board-header">
           <div className="professor-managment-title">
             <h3>QUẢN LÝ DANH SÁCH TỪ VỰNG</h3>
           </div>
-          <div className="professor-add-button" onClick={toggleModal}>
+          <div
+            className="professor-add-button"
+            onClick={() => {
+              toggleModal();
+              setCurrentTopic(null);
+            }}
+          >
             <img
               width="34"
               height="34"
@@ -100,60 +110,81 @@ function ProfessorVocabularyTopic() {
           </div>
         </div>
         <div className="vocabulary-grid-wrapper">
-          <div className="vocabulary-grid">
-            <div>
-              {topics && topics.length > 0 ? (
-                topics.map((topic, index) => (
-                  <div key={index} className="vocabulary-item">
-                    <div className="vocabulary-title">{topic.title}</div>
-                    <div className="vocabulary-title-detail-description">
-                      {topic.description}
-                    </div>
-                    <div className="vocabulary-title-detail">
-                      Ngày tạo: {topic.createDate}
-                    </div>
-                    <div className="vocabulary-title-detail">
-                      Số lượng từ: {topic.quantity} từ
-                    </div>
-                    <div className="vocabulary-title-detail">
-                      Trạng thái: {topic.isPublic ? "công khai" : "riêng tư"}
-                    </div>
-                    <div className="btn-wrapper">
-                      <button
-                        className="delete-btn"
-                        onClick={() =>
-                          showDeleteWarning(() =>
-                            DeleteVocabularyTopic(topic.idVocList)
-                          )
-                        }
-                      >
-                        Xóa
-                      </button>
-                      <button
-                        className="update-btn"
-                        onClick={() => {
-                          navigate(`/professor/vocabulary/${topic.idVocList}`);
-                        }}
-                      >
-                        Sửa
-                      </button>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div
-                  style={{
-                    width: "10cm",
-                    marginLeft: "18cm",
-                    marginTop: "5cm",
-                    fontSize: "17px",
-                  }}
+          {topics && topics.length > 0 ? (
+            <div className="vocabulary-grid">
+              {topics.map((topic, index) => (
+                <a
+                  key={index}
+                  className="vocabulary-item"
+                  href={`/professor/vocabulary/${topic.idVocList}`}
                 >
-                  Chưa có danh sách từ vựng, hãy tạo mới!
-                </div>
-              )}
+                  <div className="vocabulary-title text-truncate">
+                    {topic.title}
+                  </div>
+                  <div className="vocabulary-title-detail-description">
+                    {topic.description}
+                  </div>
+                  <div className="vocabulary-title-detail">
+                    Ngày tạo: {topic.createDate}
+                  </div>
+                  <div className="vocabulary-title-detail text-truncate">
+                    Số lượng từ: {topic.quantity} từ
+                  </div>
+                  <div className="vocabulary-title-detail">
+                    Trạng thái: {topic.isPublic ? "công khai" : "riêng tư"}
+                  </div>
+                  <div className="btn-wrapper">
+                    <button
+                      className="delete-btn"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        showDeleteWarning(() =>
+                          DeleteVocabularyTopic(topic.idVocList)
+                        );
+                      }}
+                    >
+                      Xóa
+                    </button>
+                    <button
+                      className="update-btn"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentTopic(topic);
+                        toggleModal();
+                      }}
+                    >
+                      Sửa
+                    </button>
+                  </div>
+                </a>
+              ))}
             </div>
-          </div>
+          ) : (
+            <div
+              style={{
+                width: "100%",
+                marginTop: 16,
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                style={{
+                  padding: "8px 16px",
+                  fontSize: 16,
+                  fontWeight: 600,
+                  background: "#E7FFFC",
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: 8,
+                  alignItems: "center",
+                }}
+              >
+                <i class="fa-solid fa-circle-info"></i>
+                Chưa có danh sách từ vựng, hãy tạo mới!
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>

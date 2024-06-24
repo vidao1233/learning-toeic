@@ -40,7 +40,7 @@ function UpdateVipPackage() {
       if (!response.ok) {
         toast.error(`Get gói VIP thất bại`);
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         setVipPackage(data);
         setData(data);
       }

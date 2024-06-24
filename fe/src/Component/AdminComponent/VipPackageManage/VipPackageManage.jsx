@@ -31,7 +31,7 @@ function VipPackageManage() {
       if (!response.ok) {
         toast.error(`Lấy thông tin gói VIP thất bại`);
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         setVipPackages(data);
       }
     } catch (error) {
