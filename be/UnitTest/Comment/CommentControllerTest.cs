@@ -6,13 +6,13 @@ using toiec_web.Models;
 using toiec_web.Services.IService;
 using toiec_web.ViewModels.Comment;
 
-namespace UnitTest
+namespace UnitTest.Comment
 {
-    public class CommentUnitTest
+    public class CommentControllerTest
     {
         private readonly CommentController _commentController;
         private readonly Mock<ICommentService> _mockCommentService;
-        public CommentUnitTest()
+        public CommentControllerTest()
         {
             _mockCommentService = new Mock<ICommentService>();
             _commentController = new CommentController(_mockCommentService.Object);
@@ -21,8 +21,8 @@ namespace UnitTest
         public async Task GetAllFalse_Comments_Success()
         {
             //Arrange
-            var expected = new List<CommentModel> 
-            { 
+            var expected = new List<CommentModel>
+            {
                 new CommentModel(),
                 new CommentModel()
             };
@@ -45,7 +45,8 @@ namespace UnitTest
             var idLesson = Guid.NewGuid();
             var expected_1 = new CommentViewModel
             {
-                FirstComment = new FirstCommentViewModel {
+                FirstComment = new FirstCommentViewModel
+                {
                     idComment = Guid.NewGuid(),
                     idLesson = idLesson,
                     idUser = "001",

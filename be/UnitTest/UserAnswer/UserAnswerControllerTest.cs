@@ -12,13 +12,13 @@ using toeic_web.Models;
 using toeic_web.Services.IService;
 using toeic_web.ViewModels.UserAnswer;
 
-namespace UnitTest
+namespace UnitTest.UserAnswer
 {
-    public class UserAnswerUnitTest
+    public class UserAnswerControllerTest
     {
         private readonly UserAnswerController _controller;
         private readonly Mock<IUserAnswerService> _mockUserAnswerService;
-        public UserAnswerUnitTest()
+        public UserAnswerControllerTest()
         {
             _mockUserAnswerService = new Mock<IUserAnswerService>();
             _controller = new UserAnswerController(_mockUserAnswerService.Object);

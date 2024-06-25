@@ -40,6 +40,7 @@ namespace toeic_web.Infrastructure
             services.AddTransient(typeof(ICommentRepository), typeof(CommentRepository));
             services.AddTransient(typeof(IReportRepository), typeof(ReportRepository));
             services.AddTransient(typeof(IRoadMapRepository), typeof(RoadMapRepository));
+            services.AddTransient(typeof(IChatBotAvailableRepository), typeof(ChatBotAvailableRepository));
             return services;
 
         }
@@ -74,6 +75,7 @@ namespace toeic_web.Infrastructure
             services.AddTransient<ICommentService, CommentService>();
             services.AddTransient<IReportService, ReportService>();
             services.AddTransient<IRoadMapService, RoadMapService>();
+            services.AddTransient<IChatBotAvailableService, ChatBotAvailableService>();
             return services;
         }
     }

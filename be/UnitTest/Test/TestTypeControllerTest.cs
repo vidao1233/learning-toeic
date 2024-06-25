@@ -12,13 +12,13 @@ using toeic_web.Models;
 using toeic_web.Services.IService;
 using toeic_web.ViewModels.TestType;
 
-namespace UnitTest
+namespace UnitTest.Test
 {
-    public class TestTypeUnitTest
+    public class TestTypeControllerTest
     {
         private readonly TestTypeController _controller;
         private readonly Mock<ITestTypeService> _mockTestTypeService;
-        public TestTypeUnitTest()
+        public TestTypeControllerTest()
         {
             _mockTestTypeService = new Mock<ITestTypeService>();
             _controller = new TestTypeController(_mockTestTypeService.Object);
@@ -27,7 +27,7 @@ namespace UnitTest
         public async Task GetAllTestTypes_ReturnsOkResult_WithListOfTestTypes()
         {
             // Arrange
-            var mockTypes = new List<TestTypeViewModel> { new (), new () };
+            var mockTypes = new List<TestTypeViewModel> { new(), new() };
             _mockTestTypeService.Setup(service => service.GetAllTestTypes())
                                 .ReturnsAsync(mockTypes);
 

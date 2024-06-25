@@ -41,6 +41,7 @@ namespace toeic_web.Models
         public virtual DbSet<ScoreParam> ScoreParams { get; set; }
         public virtual DbSet<RoadMap> RoadMaps { get; set; }
         public virtual DbSet<UserRoute> UserRoutes { get; set; }
+        public virtual DbSet<UserChatBot> UserChatBots { get; set; }
 
         #endregion
 
@@ -54,6 +55,11 @@ namespace toeic_web.Models
             modelBuilder.Entity<Admin>(entity =>
             {
                 entity.HasKey(s => s.idAdmin);
+
+            });
+            modelBuilder.Entity<UserChatBot>(entity =>
+            {
+                entity.HasKey(s => s.idUser);
 
             });
             modelBuilder.Entity<AnswerQuestion>(entity =>

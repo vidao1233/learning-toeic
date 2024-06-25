@@ -5,13 +5,13 @@ using toeic_web.Services.IService;
 using toeic_web.ViewModels.DoTest;
 using toeic_web.ViewModels.Question;
 
-namespace UnitTest
+namespace UnitTest.Question
 {
-    public class QuestionUnitTest
+    public class QuestionControllerTest
     {
         private readonly Mock<IQuestionService> _mockQuestionService;
         private readonly QuestionController _questionController;
-        public QuestionUnitTest()
+        public QuestionControllerTest()
         {
             _mockQuestionService = new Mock<IQuestionService>();
             _questionController = new QuestionController(_mockQuestionService.Object);
@@ -20,7 +20,7 @@ namespace UnitTest
         public async Task GetAll_Questions_Success()
         {
             // Arrange
-            var expected = new List<QuestionViewModel> 
+            var expected = new List<QuestionViewModel>
             {
                 new QuestionViewModel(),
                 new QuestionViewModel()
@@ -57,7 +57,7 @@ namespace UnitTest
         {
             // Arrange
             var questionId = Guid.NewGuid();
-            var expected = new QuestionViewModel 
+            var expected = new QuestionViewModel
             {
                 idQuestion = questionId,
                 idProfessor = Guid.NewGuid(),
@@ -104,8 +104,8 @@ namespace UnitTest
         {
             // Arrange
             var quizId = Guid.NewGuid();
-            var expected = new List<QuestionViewModel> 
-            { 
+            var expected = new List<QuestionViewModel>
+            {
                 new QuestionViewModel
                 {
                 idQuestion = Guid.NewGuid(),
@@ -154,8 +154,8 @@ namespace UnitTest
         {
             // Arrange
             var unitId = Guid.NewGuid();
-            var expected = new List<QuestionViewModel> 
-            { 
+            var expected = new List<QuestionViewModel>
+            {
                 new QuestionViewModel
                 {
                 idQuestion = Guid.NewGuid(),
@@ -204,8 +204,8 @@ namespace UnitTest
         {
             // Arrange
             var userId = "id";
-            var expected = new List<QuestionViewModel> 
-            { 
+            var expected = new List<QuestionViewModel>
+            {
                 new QuestionViewModel
                 {
                     idQuestion = Guid.NewGuid(),
@@ -323,7 +323,7 @@ namespace UnitTest
             // Arrange
             var questionId = Guid.NewGuid();
             var userId = "someUserId";
-            var model = new QuestionUpdateModel 
+            var model = new QuestionUpdateModel
             {
                 idQuiz = Guid.NewGuid(),
                 idUnit = Guid.NewGuid(),
@@ -352,7 +352,7 @@ namespace UnitTest
             // Arrange
             var questionId = Guid.NewGuid();
             var userId = "someUserId";
-            var model = new QuestionUpdateModel 
+            var model = new QuestionUpdateModel
             {
                 idQuiz = Guid.NewGuid(),
                 idUnit = Guid.NewGuid(),

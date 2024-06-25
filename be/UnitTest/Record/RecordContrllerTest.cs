@@ -6,13 +6,13 @@ using toiec_web.Controllers;
 using toiec_web.Services.IService;
 using toiec_web.ViewModels.Report;
 
-namespace UnitTest
+namespace UnitTest.Record
 {
-    public class RecordUnitTest
+    public class RecordContrllerTest
     {
         private readonly Mock<IReportService> _mockReportService;
         private readonly ReportController _reportController;
-        public RecordUnitTest()
+        public RecordContrllerTest()
         {
             _mockReportService = new Mock<IReportService>();
             _reportController = new ReportController(_mockReportService.Object);
@@ -21,7 +21,7 @@ namespace UnitTest
         public async Task GetAllReports_Success()
         {
             // Arrange
-            var reportList = new List<ReportViewModel> 
+            var reportList = new List<ReportViewModel>
             {
                 new ReportViewModel (),
                 new ReportViewModel ()
@@ -117,7 +117,7 @@ namespace UnitTest
         public async Task AddReport_Failure()
         {
             // Arrange
-            var model = new ReportAddModel ();
+            var model = new ReportAddModel();
             _mockReportService.Setup(service => service.AddReport(model))
                 .ReturnsAsync(false);
 
@@ -157,7 +157,7 @@ namespace UnitTest
         {
             // Arrange
             var idReport = Guid.NewGuid();
-            var model = new ReportUpdateModel ();
+            var model = new ReportUpdateModel();
             _mockReportService.Setup(service => service.UpdateReport(model, idReport))
                 .ReturnsAsync(false);
 

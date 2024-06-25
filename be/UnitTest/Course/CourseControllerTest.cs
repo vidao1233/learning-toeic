@@ -4,13 +4,13 @@ using toeic_web.Controllers;
 using toeic_web.Services.IService;
 using toeic_web.ViewModels.Course;
 
-namespace UnitTest
+namespace UnitTest.Course
 {
-    public class CourseUnitTest
+    public class CourseControllerTest
     {
         private readonly CourseController _courseController;
         private readonly Mock<ICourseService> _mockCourseService;
-        public CourseUnitTest()
+        public CourseControllerTest()
         {
             _mockCourseService = new Mock<ICourseService>();
             _courseController = new CourseController(_mockCourseService.Object);
@@ -33,7 +33,7 @@ namespace UnitTest
             //Assert
             Assert.NotNull(result);
             Assert.Equal(200, resultType.StatusCode);
-            Assert.IsType<List<CourseViewModel>>(resultList);   
+            Assert.IsType<List<CourseViewModel>>(resultList);
             Assert.Equal(2, resultList.Count);
         }
         [Fact]
@@ -90,10 +90,10 @@ namespace UnitTest
             _mockCourseService.Setup(service => service.UpdateCourse(input, idCourse)).ReturnsAsync(true);
 
             //Act
-            var result = await _courseController.UpdateCourse(input, idCourse) as ObjectResult;            
+            var result = await _courseController.UpdateCourse(input, idCourse) as ObjectResult;
 
             //Assert
-            Assert.NotNull (result);
+            Assert.NotNull(result);
             Assert.Equal(200, result.StatusCode);
             var updated = Assert.IsType<bool>(result.Value);
             Assert.Equal(expected, updated);

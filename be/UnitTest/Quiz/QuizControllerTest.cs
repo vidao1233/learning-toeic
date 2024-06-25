@@ -4,13 +4,13 @@ using toeic_web.Controllers;
 using toeic_web.Services.IService;
 using toeic_web.ViewModels.Quiz;
 
-namespace UnitTest
+namespace UnitTest.Quiz
 {
-    public class QuizUnitTest
+    public class QuizControllerTest
     {
         private readonly Mock<IQuizService> _mockQuizService;
         private readonly QuizController _quizController;
-        public QuizUnitTest() 
+        public QuizControllerTest()
         {
             _mockQuizService = new Mock<IQuizService>();
             _quizController = new QuizController(_mockQuizService.Object);
@@ -90,7 +90,7 @@ namespace UnitTest
         {
             // Arrange
             var lessonId = Guid.NewGuid();
-            var quizList = new List<QuizViewModel> ();
+            var quizList = new List<QuizViewModel>();
             _mockQuizService.Setup(service => service.GetAllQuizByLesson(lessonId))
                 .ReturnsAsync(quizList);
 
@@ -123,7 +123,7 @@ namespace UnitTest
         public async Task AddQuiz_Success()
         {
             // Arrange
-            var model = new QuizAddModel ();
+            var model = new QuizAddModel();
             _mockQuizService.Setup(service => service.AddQuiz(model))
                 .ReturnsAsync(true);
 
@@ -139,7 +139,7 @@ namespace UnitTest
         public async Task AddQuiz_Failed()
         {
             // Arrange
-            var model = new QuizAddModel ();
+            var model = new QuizAddModel();
             _mockQuizService.Setup(service => service.AddQuiz(model))
                 .ReturnsAsync(false);
 
@@ -156,7 +156,7 @@ namespace UnitTest
         {
             // Arrange
             var quizId = Guid.NewGuid();
-            var model = new QuizUpdateModel ();
+            var model = new QuizUpdateModel();
             _mockQuizService.Setup(service => service.UpdateQuiz(model, quizId))
                 .ReturnsAsync(true);
 
@@ -173,7 +173,7 @@ namespace UnitTest
         {
             // Arrange
             var quizId = Guid.NewGuid();
-            var model = new QuizUpdateModel ();
+            var model = new QuizUpdateModel();
             _mockQuizService.Setup(service => service.UpdateQuiz(model, quizId))
                 .ReturnsAsync(false);
 

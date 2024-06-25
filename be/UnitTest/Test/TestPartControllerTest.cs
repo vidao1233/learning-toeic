@@ -10,13 +10,13 @@ using toeic_web.Controllers;
 using toeic_web.Services.IService;
 using toeic_web.ViewModels.TestPart;
 
-namespace UnitTest
+namespace UnitTest.Test
 {
-    public class TestPartUnitTest
+    public class TestPartControllerTest
     {
         private readonly Mock<ITestPartService> _mockTestPartService;
         private readonly TestPartController _testPartController;
-        public TestPartUnitTest()
+        public TestPartControllerTest()
         {
             _mockTestPartService = new Mock<ITestPartService>();
             _testPartController = new TestPartController(_mockTestPartService.Object);
@@ -25,7 +25,7 @@ namespace UnitTest
         public async Task GetAllTestParts_ReturnsOkResult_WithListOfTestParts()
         {
             // Arrange
-            var testPartList = new List<TestPartViewModel> { new TestPartViewModel() }; 
+            var testPartList = new List<TestPartViewModel> { new TestPartViewModel() };
             _mockTestPartService.Setup(service => service.GetAllTestParts()).ReturnsAsync(testPartList);
 
             // Act

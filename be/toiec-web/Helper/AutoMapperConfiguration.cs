@@ -56,6 +56,10 @@ namespace toeic_web.Helper
             CreateMap<RoadMapModel, RoadMapUpdateModel>().ReverseMap();
             #endregion
 
+            #region ChatBot
+            CreateMap<UserChatBot, ChatAvailableModel>().ReverseMap();
+            #endregion
+
             #region User
             CreateMap<Users, UserModel>().ReverseMap();
             CreateMap<Users, UserViewModel>().ReverseMap();

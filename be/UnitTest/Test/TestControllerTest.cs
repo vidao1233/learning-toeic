@@ -5,13 +5,13 @@ using toeic_web.Controllers;
 using toeic_web.Services.IService;
 using toeic_web.ViewModels.Test;
 
-namespace UnitTest
+namespace UnitTest.Test
 {
-    public class TestUnitTest
+    public class TestControllerTest
     {
         private readonly Mock<ITestService> _mockTestService;
         private readonly TestController _testController;
-        public TestUnitTest() 
+        public TestControllerTest()
         {
             _mockTestService = new Mock<ITestService>();
             _testController = new TestController(_mockTestService.Object);
@@ -20,10 +20,10 @@ namespace UnitTest
         public async Task GetAllTests_ReturnsOkResult()
         {
             // Arrange
-            var testList = new List<TestViewModel> { 
+            var testList = new List<TestViewModel> {
                 new(),
                 new()
-            }; 
+            };
             _mockTestService.Setup(service => service.GetAllTests()).ReturnsAsync(testList);
 
             // Act
@@ -86,7 +86,7 @@ namespace UnitTest
         {
             // Arrange
             var userId = "professorId";
-            var testList = new List<TestViewModel> { new TestViewModel() }; 
+            var testList = new List<TestViewModel> { new TestViewModel() };
             _mockTestService.Setup(service => service.GetAllTestByProfessor(userId)).ReturnsAsync(testList);
 
             // Act
@@ -118,7 +118,7 @@ namespace UnitTest
         {
             // Arrange
             var typeName = "testType";
-            var testList = new List<TestViewModel> { new TestViewModel() }; 
+            var testList = new List<TestViewModel> { new TestViewModel() };
             _mockTestService.Setup(service => service.GetAllTestByType(typeName)).ReturnsAsync(testList);
 
             // Act
@@ -149,7 +149,7 @@ namespace UnitTest
         public async Task AddTest_ReturnsOkResult()
         {
             // Arrange
-            var testModel = new TestAddModel(); 
+            var testModel = new TestAddModel();
             var userId = "professorId";
             _mockTestService.Setup(service => service.AddTest(testModel, userId)).ReturnsAsync(true);
 
@@ -165,7 +165,7 @@ namespace UnitTest
         public async Task AddTest_ReturnsInternalServerError()
         {
             // Arrange
-            var testModel = new TestAddModel(); 
+            var testModel = new TestAddModel();
             var userId = "professorId";
             _mockTestService.Setup(service => service.AddTest(testModel, userId)).ReturnsAsync(false);
 
@@ -183,7 +183,7 @@ namespace UnitTest
             // Arrange
             var testId = Guid.NewGuid();
             var userId = "professorId";
-            var testModel = new TestUpdateModel(); 
+            var testModel = new TestUpdateModel();
             _mockTestService.Setup(service => service.UpdateTest(testModel, testId, userId)).ReturnsAsync(true);
 
             // Act

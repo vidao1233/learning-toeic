@@ -9,16 +9,16 @@ using toeic_web.Services.IService;
 using toeic_web.ViewModels.Lesson;
 using toiec_web.Services.IService;
 
-namespace UnitTest
+namespace UnitTest.Lesson
 {
-    public class LessonUnitTest
+    public class LessonControllerTest
     {
         private readonly Mock<ILessonService> _mockLessonService;
         private readonly Mock<IWebHostEnvironment> _mockWebHostEnvironment;
         private readonly ToeicDbContext _dbContext;
         private readonly Mock<IExcelHelperService> _mockExcelHelperService;
         private readonly LessonController _lessonController;
-        public LessonUnitTest()
+        public LessonControllerTest()
         {
             _mockLessonService = new Mock<ILessonService>();
             _mockWebHostEnvironment = new Mock<IWebHostEnvironment>();
@@ -36,7 +36,7 @@ namespace UnitTest
         public async Task GetAll_Lessons_Success()
         {
             // Arrange
-            var expected = new List<LessonViewModel> 
+            var expected = new List<LessonViewModel>
             {
                 new LessonViewModel(),
                 new LessonViewModel()
@@ -73,7 +73,7 @@ namespace UnitTest
         {
             // Arrange
             var lessonId = Guid.NewGuid();
-            var expected = new LessonViewModel 
+            var expected = new LessonViewModel
             {
                 idLesson = lessonId,
                 idCourse = Guid.NewGuid(),
@@ -113,7 +113,7 @@ namespace UnitTest
         {
             // Arrange
             var courseId = Guid.NewGuid();
-            var expected = new List<LessonViewModel> 
+            var expected = new List<LessonViewModel>
             {
                 new LessonViewModel
                 {

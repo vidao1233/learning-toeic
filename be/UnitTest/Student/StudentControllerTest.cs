@@ -4,13 +4,13 @@ using Moq;
 using toeic_web.Controllers;
 using toeic_web.Services.IService;
 
-namespace UnitTest
+namespace UnitTest.Student
 {
-    public class StudentUnitTest
+    public class StudentControllerTest
     {
         private readonly Mock<IStudentService> _mockStudentService;
         private readonly StudentController _studentController;
-        public StudentUnitTest() 
+        public StudentControllerTest()
         {
             _mockStudentService = new Mock<IStudentService>();
             _studentController = new StudentController(_mockStudentService.Object);
@@ -20,7 +20,7 @@ namespace UnitTest
         {
             // Arrange
             var userId = "validUserId";
-            var expectedFreeTest = true; 
+            var expectedFreeTest = true;
             _mockStudentService.Setup(service => service.CheckFreeTest(userId))
                                .ReturnsAsync(expectedFreeTest);
 
@@ -38,7 +38,7 @@ namespace UnitTest
         {
             // Arrange
             var userId = "invalidUserId";
-            var expectedFreeTest = false; 
+            var expectedFreeTest = false;
             _mockStudentService.Setup(service => service.CheckFreeTest(userId))
                                .ReturnsAsync(expectedFreeTest);
 

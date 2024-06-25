@@ -5,14 +5,14 @@ using toeic_web.Controllers;
 using toeic_web.Services.IService;
 using toeic_web.ViewModels.TestQuestionUnit;
 
-namespace UnitTest
+namespace UnitTest.Test
 {
-    public class TestQuestionUnitUnitTest
+    public class TestQuestionUnitControllerTest
     {
         private readonly Mock<ITestQuestionUnitService> _mockTestQuestionUnitService;
         private readonly Mock<IUploadFileService> _mockUploadFileService;
         private readonly TestQuestionUnitController _controller;
-        public TestQuestionUnitUnitTest()
+        public TestQuestionUnitControllerTest()
         {
             _mockTestQuestionUnitService = new Mock<ITestQuestionUnitService>();
             _mockUploadFileService = new Mock<IUploadFileService>();
@@ -73,7 +73,7 @@ namespace UnitTest
         {
             // Arrange
             var testId = Guid.NewGuid();
-            var mockUnits = new List<TestQuestionUnitViewModel> { new (), new () };
+            var mockUnits = new List<TestQuestionUnitViewModel> { new(), new() };
             _mockTestQuestionUnitService.Setup(service => service.GetAllTestQuestionUnitByTest(testId))
                                         .ReturnsAsync(mockUnits);
 
@@ -109,7 +109,7 @@ namespace UnitTest
             // Arrange
             var partId = Guid.NewGuid();
             var testId = Guid.NewGuid();
-            var mockUnits = new List<TestQuestionUnitViewModel> { new (), new () };
+            var mockUnits = new List<TestQuestionUnitViewModel> { new(), new() };
             _mockTestQuestionUnitService.Setup(service => service.GetAllTestQuestionUnitByPart(partId, testId))
                                         .ReturnsAsync(mockUnits);
 
