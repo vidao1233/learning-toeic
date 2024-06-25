@@ -107,10 +107,10 @@ function UpdateUnit() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       }
-      const data = await response.json();
+      const data = await response?.json();
 
       setImage(data.image);
       setAudio(data.audio);
@@ -197,10 +197,10 @@ function UpdateUnit() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       }
-      const data = await response.json();
+      const data = await response?.json();
       setQuestions(data);
     } catch (error) {
       toast.error(`${error}`);

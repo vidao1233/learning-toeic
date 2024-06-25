@@ -29,11 +29,12 @@ function CourseManageIndex() {
         `${process.env.REACT_APP_API_BASE_URL ?? "/api"}/Course/GetAllCourses`
       );
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`, {});
+      } else {
+        const data = await response?.json();
+        setCourses(data);
       }
-      const data = await response.json();
-      setCourses(data);
       setIsLoading(false);
     } catch (error) {
       toast.error(`${error}`);

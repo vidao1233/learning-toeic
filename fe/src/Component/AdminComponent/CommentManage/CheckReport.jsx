@@ -34,7 +34,7 @@ function CheckReport({ toggleModal, modal_on, report, fetchReport }) {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       } else {
         toast.success("Đã xác nhận");
@@ -49,9 +49,9 @@ function CheckReport({ toggleModal, modal_on, report, fetchReport }) {
     return <Loader />;
   }
   return (
-    <div className="professor-add-test">
+    <div>
       {modal_on && (
-        <div className="w-screen h-screen top-0 left-0 right-0 bottom-0 fixed">
+        <div className="w-screen h-screen top-0 left-0 right-0 bottom-0 fixed z-20">
           <div onClick={toggleModal} className="overlay"></div>
           <div className="w-full h-full flex justify-center items-center">
             <div className=" absolute h-auto bg-slate-100 py-6 px-4 rounded-lg w-[40vw]">

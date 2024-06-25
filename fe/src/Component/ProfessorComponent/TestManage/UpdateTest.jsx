@@ -36,10 +36,10 @@ function UpdateTest() {
         }/TestType/GetAllTestTypes`
       );
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`, {});
       }
-      const data = await response.json();
+      const data = await response?.json();
       setTestType(data);
       setIsLoading(false);
     } catch (error) {
@@ -55,10 +55,10 @@ function UpdateTest() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       }
-      const data = await response.json();
+      const data = await response?.json();
       setTest({
         name: data.name,
         idType: data.idType,
@@ -78,10 +78,10 @@ function UpdateTest() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       }
-      const data = await response.json();
+      const data = await response?.json();
       setParts(data);
       setCurrentPart(data[0].partId);
     } catch (error) {
@@ -98,10 +98,10 @@ function UpdateTest() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       }
-      const data = await response.json();
+      const data = await response?.json();
       setTestUnits(data);
     } catch (error) {
       toast.error(`${error}`);

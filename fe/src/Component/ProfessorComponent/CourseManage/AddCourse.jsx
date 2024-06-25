@@ -93,11 +93,11 @@ function AddCourse({ toggleModal, modal_on }) {
                 </error>
                 <div style={{ display: "flex", width: "fit-content", gap: 4 }}>
                   <input
-                    style={{ height: 36, width: 26 }}
+                    style={{ height: 26, width: 26 }}
                     type="checkbox"
                     {...new_course("isVip")}
                   />
-                  <div style={{ padding: 4 }}>Is VIP?</div>
+                  <div style={{ padding: 4, fontSize: 16 }}>Is VIP?</div>
                 </div>
                 <div className="input-field" style={{ height: "7rem" }}>
                   <textarea

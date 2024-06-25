@@ -34,10 +34,10 @@ export default function VipPackageCheckout() {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`, {});
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         setPayments(data);
       }
     } catch (error) {
@@ -65,10 +65,10 @@ export default function VipPackageCheckout() {
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData}`, {});
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         loginContext(data.token);
       }
 

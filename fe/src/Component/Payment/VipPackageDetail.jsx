@@ -30,10 +30,10 @@ function VipPackageDetail() {
         );
         setIsLoading(false);
         if (!response.ok) {
-          const errorData = await response.json();
+          const errorData = await response?.json();
           toast.error(`${errorData.message}`);
         } else {
-          const data = await response.json();
+          const data = await response?.json();
           setVipPackage(data);
         }
       } catch (error) {
@@ -65,10 +65,10 @@ function VipPackageDetail() {
         }
       );
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`, {});
       }
-      const data = await response.json();
+      const data = await response?.json();
       window.location = data.payUrl;
     } catch (error) {
       toast.error(`${error}`);
@@ -94,10 +94,10 @@ function VipPackageDetail() {
         }
       );
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`, {});
       }
-      const data = await response.json();
+      const data = await response?.json();
       window.location = data.payUrl;
     } catch (error) {
       toast.error(`${error}`);

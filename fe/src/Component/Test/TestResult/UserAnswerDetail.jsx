@@ -22,10 +22,10 @@ function UserAnswerDetail({ toggleModal, userAnswer, index }) {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         setUnit(data);
       }
     } catch (error) {
@@ -42,10 +42,10 @@ function UserAnswerDetail({ toggleModal, userAnswer, index }) {
       );
       setIsLoading(false);
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response?.json();
         toast.error(`${errorData.message}`);
       } else {
-        const data = await response.json();
+        const data = await response?.json();
         setQuestion(data);
       }
     } catch (error) {
@@ -176,7 +176,9 @@ function UserAnswerDetail({ toggleModal, userAnswer, index }) {
                     D. {question.choice_4}
                   </div>
                 </div>
-                <div>{userAnswer.userChoice === "-1"? "Không chọn đáp án":""}</div>
+                <div>
+                  {userAnswer.userChoice === "-1" ? "Không chọn đáp án" : ""}
+                </div>
               </div>
             </div>
             <div>{question.explaination && `=> ${question.explaination}`}</div>

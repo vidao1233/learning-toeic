@@ -29,10 +29,10 @@ function VocabularyTopic() {
         );
         setIsLoading(false);
         if (!response.ok) {
-          const errorData = await response.json();
+          const errorData = await response?.json();
           toast.error(`${errorData.message}`);
         }
-        const data = await response.json();
+        const data = await response?.json();
         setTopic(data);
       } catch (error) {
         console.log(error);
