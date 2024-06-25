@@ -951,6 +951,22 @@ namespace toiec_web.Migrations
                     b.ToTable("RoadMaps");
                 });
 
+            modelBuilder.Entity("toiec_web.Data.UserChatBot", b =>
+                {
+                    b.Property<string>("idUser")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("availableChat")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("lastReset")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("idUser");
+
+                    b.ToTable("UserChatBots");
+                });
+
             modelBuilder.Entity("toiec_web.Data.UserRoute", b =>
                 {
                     b.Property<Guid>("Id")
