@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using toeic_web.Infrastructure;
 using toeic_web.Models;
@@ -12,10 +13,13 @@ namespace toiec_web.Repository
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
-        public ChatBotAvailableRepository(ToeicDbContext dbContext, IUnitOfWork uow, IMapper mapper) : base (dbContext)
+        private readonly UserManager<Users> _userManager;
+        public ChatBotAvailableRepository(ToeicDbContext dbContext, IUnitOfWork uow, IMapper mapper,
+            UserManager<Users> userManager) : base (dbContext)
         {
             _uow = uow;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         public Task<bool> AddAvailable(string idUser)
@@ -38,15 +42,25 @@ namespace toiec_web.Repository
 
         public async Task<ChatAvailableModel> GetBotAvailableAsync(string idUser)
         {
-            var available = await Entities.FirstOrDefaultAsync(avail => avail.idUser == idUser);
-            if (available != null)
+            var user = await _userManager.FindByIdAsync(idUser);
+            if (user == null)
             {
-                await ResetAvailable(idUser);
-                var resetAvail = GetById(idUser);
-                var response = _mapper.Map<ChatAvailableModel>(resetAvail);
-                return response;
+                throw new Exception("User doesn't exist.");
             }
-            return null;
+            var available = await Entities.FirstOrDefaultAsync(avail => avail.idUser == idUser);
+            if (available == null)
+            {
+                var add = await AddAvailable(idUser);
+                if (!add) throw new Exception("An issue when add available.");
+            }
+            var resetAvail = await ResetAvailable(idUser);
+            if (!resetAvail)
+            {
+                throw new Exception("An issue when reset available.");
+            }
+            var availReady = GetById(idUser);
+            var response = _mapper.Map<ChatAvailableModel>(availReady);
+            return response;
         }
 
         public Task<bool> ResetAvailable(string idUser)
@@ -74,36 +88,20 @@ namespace toiec_web.Repository
         {
             // Check if the user exists
             var existingUser = GetById(idUser);
-
-            if (existingUser == null)
+            if (existingUser != null)
             {
-                var action = await AddAvailable(idUser);
-                if (action)
+                await ResetAvailable(idUser);
+                var response = GetById(idUser);
+                // User exists, update availableChat if it's between 1 and 10
+                if (response.availableChat > 0 && response.availableChat <= 10)
                 {
-                    var userChatBot = GetById(idUser);
-                    // User exists, update availableChat if it's between 1 and 10
-                    if (userChatBot.availableChat > 0 && userChatBot.availableChat <= 10)
-                    {
-                        userChatBot.availableChat -= 1;
-                    }
+                    response.availableChat -= 1;
                     // Update the user in the database
-                    Entities.Update(userChatBot);
+                    Entities.Update(response);
                     _uow.SaveChanges();
                     return true;
                 }
-            }
-            else
-            {
-                // User exists, update availableChat if it's between 1 and 10
-                if (existingUser.availableChat > 0 && existingUser.availableChat <= 10)
-                {
-                    existingUser.availableChat -= 1;                    
-                }
-                // Update the user in the database
-                Entities.Update(existingUser);
-                _uow.SaveChanges();
-                return true;
-            }
+            }                  
             return false;
         }
     }
