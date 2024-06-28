@@ -14,8 +14,7 @@ function UserLayout({ children }) {
     return (
       <div className="user-layout">
         <Header />
-        {user.idUser && <Chatbot isTeacher={true} />}
-        <Chatbot isTeacher={false}/>
+        {user.idUser && <Chatbot />}
         {children}
         <Footer />
       </div>
