@@ -1,71 +1,72 @@
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { UserContext } from "../../Context/UserContext";
 import ChatMessage from "./ChatMessage";
-import { OPENAI_API_KEY } from "../../constant/chatbot";
+import {
+  AZURE_SEARCH_ENDPOINT,
+  AZURE_SEARCH_KEY,
+  openAIClient,
+} from "../../constant/chatbot";
 import { toast } from "react-toastify";
 
-function Chatbot() {
+function Chatbot({ isTeacher }) {
   const { user } = useContext(UserContext);
   const [state, setState] = useState({
     openBot: false,
     expand: false,
   });
-  const assistantAva =
-    "https://img.icons8.com/?size=100&id=D7zLidTn6pHw&format=png&color=000000";
+  const assistantAva = isTeacher
+    ? "https://img.icons8.com/?size=100&id=pa7hEyvlJkxa&format=png&color=000000"
+    : "https://img.icons8.com/?size=100&id=D7zLidTn6pHw&format=png&color=000000";
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [conversation, setConversation] = useState([]);
 
   const submitChatbot = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(
-        "https://230902.openai.azure.com/openai/deployments/chat-gpt-35/chat/completions?api-version=2024-02-15-preview",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "api-key": OPENAI_API_KEY,
-          },
-          body: JSON.stringify({
-            messages: [...conversation, { role: "user", content: input }],
-            temperature: 0.7,
-            top_p: 0.95,
-            frequency_penalty: 0,
-            presence_penalty: 0,
-            max_tokens: 800,
-          }),
-        }
-      );
-      if (response.status === 200) {
-        const data = await response.json();
+    setIsLoading(true);
+    openAIClient
+      .getChatCompletions("chat-gpt-35", [{ role: "user", content: input }], {
+        temperature: 0.7,
+        topP: 0.95,
+        presencePenalty: 0,
+        frequencyPenalty: 0,
+        azureExtensionOptions: !isTeacher && {
+          extensions: [
+            {
+              type: "azure_search",
+              endpoint: AZURE_SEARCH_ENDPOINT,
+              indexName: "chatbotdata",
+              authentication: {
+                type: "api_key",
+                key: AZURE_SEARCH_KEY,
+              },
+            },
+          ],
+        },
+      })
+      .then((response) => {
         setConversation((prevConversation) => [
           ...prevConversation,
           {
             role: "assistant",
-            content: data?.choices[0].message.content,
+            content: response?.choices[0].message.content,
           },
         ]);
-      } else {
-        const data = await response.json();
-        console.log(data);
+      })
+      .catch((errors) => {
+        console.log(errors);
         setError(
-          response.status === 429
+          errors.code === 429
             ? `Bạn đang gửi yêu cầu quá nhanh. Thử lại sau ${
-                data.error.message?.match(/retry after (\d+) seconds/)[1]
+                errors.message?.match(/retry after (\d+) seconds/)[1]
               } giây.`
             : "Lỗi hệ thống"
         );
-      }
-    } catch (error) {
-      console.log(error);
-      setError("Lỗi hệ thống");
-    } finally {
-      setIsLoading(false);
-    }
+      })
+      .finally(() => setIsLoading(false));
   };
   const checkAvalable = async () => {
+    if (!isTeacher) return true;
     if (user.role[1] === "VipStudent") return true;
     else {
       try {
@@ -131,7 +132,7 @@ function Chatbot() {
     const check = await checkAvalable();
     if (check) {
       submitChatbot();
-      if (user.role[1] !== "VipStudent") UpdateAvalable();
+      if (user.role[1] !== "VipStudent" && isTeacher) UpdateAvalable();
     } else {
       setConversation((prevConversation) => [
         ...prevConversation,
@@ -144,13 +145,14 @@ function Chatbot() {
   };
 
   useEffect(() => {
-    if (conversation.length)
+    if (isTeacher && conversation.length)
       localStorage.setItem("chatbot", JSON.stringify(conversation));
-  }, [conversation]);
+  }, [isTeacher, conversation]);
 
   useEffect(() => {
     const userConversation = localStorage.getItem("chatbot");
-    if (userConversation) setConversation(JSON.parse(userConversation));
+    if (userConversation && isTeacher)
+      setConversation(JSON.parse(userConversation));
     else
       setConversation([
         {
@@ -161,24 +163,16 @@ function Chatbot() {
   }, []);
 
   useEffect(() => {
-    const uncheckFilerInputs = (e) => {
-      if (!(e.target instanceof HTMLInputElement)) {
-        const filerInputs = document.querySelectorAll("input.filter-btn");
-        filerInputs.forEach((input) => {
-          input.checked = false;
-        });
-      }
-    };
-    document.body.addEventListener("click", uncheckFilerInputs);
-    return () => {
-      document.body.removeEventListener("click", uncheckFilerInputs);
-    };
-  }, []);
+    console.log(error);
+  }, [error]);
+  useEffect(() => {
+    console.log(conversation);
+  }, [conversation]);
 
   return (
     <Fragment>
       <div
-        className={`fixed bottom-4 right-4 z-10`}
+        className={`fixed ${isTeacher ? "bottom-24" : "bottom-4"} right-4 z-10`}
         onClick={() =>
           setState((prevState) => ({
             ...prevState,
@@ -198,7 +192,7 @@ function Chatbot() {
             <div className="inline-flex items-center gap-2">
               <img src={assistantAva} alt="avatar" className="w-8 h-8" />
               <div className="font-semibold text-lg tracking-tight">
-                Trợ lý ảo VictoryU
+                {isTeacher ? "Giáo viên ảo VictoryU" : "Trợ lý ảo VictoryU"}
               </div>
             </div>
             <div className="flex gap-3 items-center">
@@ -260,39 +254,15 @@ function Chatbot() {
           </div>
           <hr />
           <div className="w-full px-4 py-2 flex justify-between bg-white">
-            <div className="w-full flex items-center gap-2">
-              <div className="relative w-fit">
-                <i class="fa-solid fa-ellipsis fa-lg absolute top-0 left-0 cursor-pointer"></i>
-                <input
-                  type="checkbox"
-                  className="filter-btn absolute -top-2 left-0 w-6 h-6 z-1 opacity-0 peer cursor-pointer"
-                />
-                <div
-                  className="hidden peer-checked:flex absolute -top-16 left-2 w-32 p-4 bg-white drop-shadow-[0_6px_6px_rgba(0,0,0,0.35)] items-center gap-4 cursor-pointer text-md font-semibold text-rose-900"
-                  onClick={() => {
-                    localStorage.removeItem("chatbot");
-                    setConversation([
-                      {
-                        role: "assistant",
-                        content:
-                          "Xin chào, đây là VictoryU. Bạn cần giúp đỡ gì ạ.",
-                      },
-                    ]);
-                  }}
-                >
-                  Xóa lịch sử
-                </div>
-              </div>
-              <input
-                className="w-full text-sm leading-5 pl-4 outline-none"
-                onChange={(e) => setInput(e.currentTarget.value)}
-                value={input}
-                onKeyUp={(e) => {
-                  if (e.key === "Enter") submitQuestion();
-                }}
-                autoFocus
-              />
-            </div>
+            <input
+              className="w-full text-sm leading-5 outline-none"
+              onChange={(e) => setInput(e.currentTarget.value)}
+              value={input}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") submitQuestion();
+              }}
+              autoFocus
+            />
             <img
               className="h-8 max-w-8"
               src="https://img.icons8.com/fluency/48/filled-sent.png"
