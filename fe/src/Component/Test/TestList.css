@@ -21,7 +21,7 @@
 }
 .test-list .test-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1.5rem;
 }
 .test-list .test-item {
@@ -66,4 +66,33 @@
 }
 .test-list .test-info-item {
   color: #505050;
+}
+
+@media (max-width: 750px) {
+  .test-index-wrapper {
+    background-color: #fff;
+    margin: 1rem;
+  }
+  .test-list .test-grid-wrapper {
+    padding: 1rem;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+  .test-list .test-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 480px) {
+  .test-index-wrapper {
+    background-color: #fff;
+    margin: 0.5rem;
+  }
+  .test-list .test-grid-wrapper {
+    padding: 1rem;
+    max-height: 45vh;
+    overflow-y: auto;
+  }
+  .test-list .test-grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
 }

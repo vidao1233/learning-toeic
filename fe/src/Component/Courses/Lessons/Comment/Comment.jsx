@@ -163,7 +163,6 @@ function Comment({ id }) {
           process.env.REACT_APP_API_BASE_URL ?? "/api"
         }/Comment/GetComment?idLesson=${id}`
       );
-      setIsLoading(false);
       if (!response.ok) {
         const errorData = await response?.json();
         toast.error(`${errorData.message}`);
@@ -173,6 +172,8 @@ function Comment({ id }) {
       }
     } catch (error) {
       toast.error(`${error}`);
+    } finally {
+      setIsLoading(false);
     }
   };
   const handleSetCommentData = async () => {
@@ -186,51 +187,53 @@ function Comment({ id }) {
   if (isLoading) return <Loader />;
 
   return (
-    <div className=" w-full ">
-      <div className="w-full flex gap-3 items-center">
-        <div className="h-14 w-14 border-gray-500 rounded-full overflow-hidden m-1">
+    <div className="w-full flex justify-end">
+      <div className="lg:w-3/4 w-full px-5 mb-10 max-w-[830px]-mb-0">
+        <div className="w-full flex gap-3 items-center">
+          <div className="h-14 w-14 border-gray-500 rounded-full overflow-hidden m-1">
+            <img
+              className="h-14 w-14"
+              src={
+                user.ava ??
+                "https://img.icons8.com/ios/100/user-male-circle--v1.png"
+              }
+              alt=""
+            />
+          </div>
+          <textarea
+            type="text"
+            className="w-full p-2 flex border border-gray-300 items-center justify-between rounded-md bg-primary-50"
+            autoFocus
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="type..."
+          />
           <img
-            className="h-14 w-14"
-            src={
-              user.ava ??
-              "https://img.icons8.com/ios/100/user-male-circle--v1.png"
-            }
-            alt=""
+            className="h-12 max-w-12"
+            src="https://img.icons8.com/fluency/48/filled-sent.png"
+            alt="filled-sent"
+            onClick={() => {
+              handleInsertNode({
+                idLesson: id,
+                idUser: user.idUser,
+                content: input,
+              });
+              setInput("");
+            }}
           />
         </div>
-        <textarea
-          type="text"
-          className="w-full p-2 flex border border-gray-300 items-center justify-between rounded-md bg-primary-50"
-          autoFocus
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="type..."
-        />
-        <img
-          className="h-12 max-w-12"
-          src="https://img.icons8.com/fluency/48/filled-sent.png"
-          alt="filled-sent"
-          onClick={() => {
-            handleInsertNode({
-              idLesson: id,
-              idUser: user.idUser,
-              content: input,
-            });
-            setInput("");
-          }}
-        />
+        {commentsData?.map((comment) => {
+          return (
+            <CommentItem
+              key={comment.firstComment.idComment ?? comment.idComment}
+              handleInsertNode={handleInsertNode}
+              handleEditNode={handleEditNode}
+              handleDeleteNode={handleDeleteNode}
+              comment={comment}
+            />
+          );
+        })}
       </div>
-      {commentsData?.map((comment) => {
-        return (
-          <CommentItem
-            key={comment.firstComment.idComment ?? comment.idComment}
-            handleInsertNode={handleInsertNode}
-            handleEditNode={handleEditNode}
-            handleDeleteNode={handleDeleteNode}
-            comment={comment}
-          />
-        );
-      })}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 .lesson-main {
   display: flex;
   gap: 2rem;
-  margin: 40px;
+  margin: 0 40px 40px 40px;
 }
 
 /* ---------RIGHT---------- */
@@ -31,7 +31,7 @@
   width: 50%;
 }
 .lesson-content {
-  margin: 1.5rem .5rem;
+  margin: 1.5rem 0.5rem;
   height: 300px;
   text-align: justify;
   white-space: nowrap;
@@ -151,7 +151,7 @@
   border-radius: 0.5rem;
   border: 2px solid #000;
 }
-.lesson-quiz-current{
+.lesson-quiz-current {
   background: #70a2ab;
   color: #fff;
 }
@@ -159,4 +159,10 @@
   cursor: pointer;
   border: 2px solid #70a2ab;
   font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .lesson-quiz-list {
+    grid-template-columns: 1fr;
+  }
 }

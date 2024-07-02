@@ -46,8 +46,15 @@
 .aboutHome .item:hover p {
   color: #fff;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1100px) {
   .about-card-wrapper {
     flex-direction: column;
+  }
+  .left {
+    display: flex;
+    justify-content: center;
+  }
+  .aboutHome .left img {
+    width: 70%;
   }
 }

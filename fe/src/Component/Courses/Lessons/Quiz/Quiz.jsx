@@ -23,7 +23,7 @@ function Quiz({ quizData, quizTitle }) {
     setclickedList(Array.from({ length: quizData.length }, () => 0));
   }, [quizData]);
   useEffect(() => {
-    if (!showResult) {
+    if (!showResult && clickedOption !== 0) {
       setclickedList(
         clickedList.map((clickedItem, index) =>
           currentQuestion === index ? clickedOption : clickedItem
@@ -31,6 +31,9 @@ function Quiz({ quizData, quizTitle }) {
       );
     }
   }, [clickedOption]);
+  useEffect(() => {
+    console.log(clickedList);
+  }, [clickedList]);
 
   useEffect(() => {
     if (showResult) {

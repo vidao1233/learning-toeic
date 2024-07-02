@@ -5,37 +5,29 @@ import logo from "../../../assets/logo-header.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { UserContext } from "../../../Context/UserContext";
-import { toast } from "react-toastify";
-import Loader from "../Loader/Loader";
 import { GoogleLogout } from "react-google-login";
 import { loadGapiInsideDOM } from "gapi-script";
 
 function Header() {
   const [click, setClick] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isVip, setIsVIP] = useState(false);
-  // const [testType, setTestType] = useState([]);
   const { user, logout } = useContext(UserContext);
   const navigate = useNavigate();
   function handleLogout() {
     logout();
     navigate("/");
-    window.location.reload();
   }
-  useEffect(() => {
-    (async () => {
-      await loadGapiInsideDOM();
-    })();
-  }, []);
-  useEffect(() => {
-    if (user.role[1] === "VipStudent") {
-      setIsVIP(true);
+  const initGapi = async () => {
+    try {
+      const resp = await loadGapiInsideDOM();
+      if (resp) console.log("Google API loaded successfully!");
+    } catch (error) {
+      console.log("Error loading Google API:", error);
     }
-  }, [user.role]);
+  };
+  useEffect(() => {
+    initGapi();
+  }, []);
 
-  if (isLoading) {
-    return <Loader />;
-  }
   return (
     <div className="header">
       <Head />
@@ -57,14 +49,17 @@ function Header() {
                 style={{ width: "78px" }}
                 src={logo}
                 alt=""
+                data-testid="logo-image"
               ></img>
             </li>
             <li>
               <Link to="/courses">KHÓA HỌC</Link>
             </li>
             <li>
-              <Link to="/practice-vocabulary">
-                TỪ VỰNG <i className="fas fa-caret-down"></i>
+              <div>
+                <div onClick={() => navigate("/practice-vocabulary")}>
+                  TỪ VỰNG <i className="fas fa-caret-down"></i>
+                </div>
                 <div className="dropdown-menu">
                   <ul>
                     {user.auth && (
@@ -79,23 +74,15 @@ function Header() {
                     </div>
                   </ul>
                 </div>
-              </Link>
+              </div>
             </li>
             <li>
-              <Link to="/test">
-                ĐỀ THI THỬ <i className="fas fa-caret-down"></i>
+              <div>
+                <div onClick={() => navigate("/test")}>
+                  ĐỀ THI THỬ <i className="fas fa-caret-down"></i>
+                </div>
                 <div className="dropdown-menu">
                   <ul>
-                    {/* {testType &&
-                      testType.map((type, index) => {
-                        return (
-                          <div key={index} className="dropdown-item">
-                            <Link to={`/test/type/${type.typeName}`}>
-                              {type.typeName}
-                            </Link>
-                          </div>
-                        );
-                      })} */}
                     <div className="dropdown-item">
                       <Link to={`/test/type/MiniTest`}>MiniTest</Link>
                     </div>
@@ -104,37 +91,30 @@ function Header() {
                     </div>
                   </ul>
                 </div>
-              </Link>
+              </div>
             </li>
             {user.auth && (
-              <>
-                <li style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                  <Link to="/vippackage">GET PRO</Link>
-                  <img
-                    width="32"
-                    height="32"
-                    src="https://img.icons8.com/fluency/48/crown.png"
-                    alt="crown"
-                  />
-                </li>
-              </>
+              <li style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                <Link to="/vippackage">GET PRO</Link>
+                <img
+                  width="32"
+                  height="32"
+                  src="https://img.icons8.com/fluency/48/crown.png"
+                  alt="crown"
+                />
+              </li>
             )}
           </ul>
-          {!user.auth ? (
-            <div className="start">
-              <div className="login-button">
-                <Link to="/login">LOGIN</Link>
-              </div>
-            </div>
-          ) : (
+          {user.auth ? (
             <div className="navbar-user">
               <div className="navbar-user-infor">
-                {isVip ? (
+                {user.role[1] === "VipStudent" ? (
                   <img
                     width="64"
                     height="64"
                     src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-vip-music-festival-flaticons-flat-flat-icons.png"
                     alt=""
+                    data-testid="vip-image"
                   />
                 ) : (
                   <></>
@@ -179,6 +159,12 @@ function Header() {
                     />
                   </div>
                 </ul>
+              </div>
+            </div>
+          ) : (
+            <div className="start">
+              <div className="login-button">
+                <Link to="/login">ĐĂNG NHẬP</Link>
               </div>
             </div>
           )}

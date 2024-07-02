@@ -9,7 +9,7 @@
 .courses-list-gridview {
   display: grid;
   gap: 1.5rem;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 .courses-list-item {
   font-family: "Poppins", sans-serif;
@@ -17,7 +17,7 @@
   border-radius: 2rem;
   background: #fff;
   scroll-snap-align: start;
-  box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
   border: 1px solid #d7d7d7;
 }
 
@@ -52,4 +52,33 @@
   font-weight: 400;
   color: #333;
   text-align: justify;
+}
+
+@media (max-width: 750px) {
+  .test-index-wrapper {
+    background-color: #fff;
+    margin: 1rem;
+  }
+  .courses-list-grid-wrapper {
+    padding: 1rem;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+  .courses-list-gridview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 480px) {
+  .test-index-wrapper {
+    background-color: #fff;
+    margin: 0.5rem;
+  }
+  .courses-list-grid-wrapper {
+    padding: 1rem;
+    max-height: 45vh;
+    overflow-y: auto;
+  }
+  .courses-list-gridview {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
 }

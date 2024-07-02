@@ -180,7 +180,7 @@ function ProfessorVocabularyTopic() {
                   alignItems: "center",
                 }}
               >
-                <i class="fa-solid fa-circle-info"></i>
+                <i className="fa-solid fa-circle-info"></i>
                 Chưa có danh sách từ vựng, hãy tạo mới!
               </div>
             </div>

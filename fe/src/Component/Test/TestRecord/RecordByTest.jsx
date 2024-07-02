@@ -129,6 +129,7 @@ function RecordByTest() {
           <div style={{ fontSize: "18px" }}>{user.username}</div>
           <button
             className="test-history"
+            data-testid="test-history"
             onClick={() => {
               navigate("/test/record");
             }}

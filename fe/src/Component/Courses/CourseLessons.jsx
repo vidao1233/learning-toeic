@@ -14,7 +14,7 @@ function CourseLessons() {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const [current_course, setCurrentCourse] = useState({});
-  const [other_courses, setOtherCourses] = useState([]);
+  const [courses, setCourses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   async function fetchLessons() {
@@ -22,7 +22,7 @@ function CourseLessons() {
       const response = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/Lesson/GetAllLessonByCourse/${id}`
+        }/Lesson/GetAllLessonByCourse/${current_course.idCourse ?? id}`
       );
       if (!response.ok) {
         const errorData = await response?.json();
@@ -46,33 +46,40 @@ function CourseLessons() {
       } else {
         const data = await response?.json();
         setCurrentCourse(data.find((course) => course.idCourse === id));
-        setOtherCourses(data.filter((course) => course.idCourse !== id));
+        setCourses(data);
       }
     } catch (error) {
       console.log(error);
     }
   }
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      await Promise.all([fetchLessons(), fetchOtherCourses()]);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        await Promise.all([fetchLessons(), fetchOtherCourses()]);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
     fetchData();
   }, []);
-  if (current_course?.isVip && user.idUser && user.role[1] !== "VipStudent") {
+
+  useEffect(() => {
+    if (current_course) fetchLessons();
+  }, [current_course]);
+
+  if (current_course?.isVip && user.role[1] !== "VipStudent") {
     navigate("/vippackage");
   }
   if (isLoading) return <Loader />;
   return (
     <div>
       <div className="course-lesson-wrapper">
-        <Heading subtitle={current_course.name} />
+        <div data-testid="course-title">
+          <Heading subtitle={current_course.name} />
+        </div>
         {isLoading ? (
           <Loader />
         ) : (
@@ -82,13 +89,15 @@ function CourseLessons() {
                 {lessons &&
                   lessons.map((lesson, index) => {
                     return (
-                      <div key={index} className="list-lesson-item">
-                        <Link to={`/lesson/${lesson.idLesson}`}>
-                          <div className="list-lesson-name">{lesson.title}</div>
-                        </Link>
+                      <div
+                        key={index}
+                        className="list-lesson-item"
+                        onClick={() => navigate(`/lesson/${lesson.idLesson}`)}
+                      >
+                        <div className="list-lesson-name">{lesson.title}</div>
                         {lesson.isVip ? (
                           <div
-                            style={{ position: "absolute", top: 12, right: 0 }}
+                            style={{ position: "absolute", top: 12, right: 8 }}
                           >
                             <img
                               width="34"
@@ -107,15 +116,21 @@ function CourseLessons() {
               <div className="other-course-wrapper">
                 <div className="title">Các khóa học khác</div>
                 <div className="other-course-list">
-                  {other_courses &&
-                    other_courses.map((other_course, index) => {
-                      return (
-                        <div key={index} className="course-item">
-                          <Link to={`/course-lessons/${other_course.idCourse}`}>
+                  {courses &&
+                    courses.map((other_course, index) => {
+                      if (other_course.idCourse !== current_course.idCourse) {
+                        return (
+                          <div
+                            key={index}
+                            className="course-item"
+                            onClick={() => setCurrentCourse(other_course)}
+                          >
                             {other_course.name}
-                          </Link>
-                        </div>
-                      );
+                          </div>
+                        );
+                      } else {
+                        return null;
+                      }
                     })}
                 </div>
               </div>

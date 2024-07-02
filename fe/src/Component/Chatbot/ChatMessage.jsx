@@ -3,6 +3,7 @@ import React from "react";
 function ChatMessage({ img, content, role, customClass }) {
   return (
     <div
+      data-testid="chat-msg"
       className={`flex gap-x-2 items-start ${
         role === "user" ? "flex-row-reverse" : ""
       }`}
