@@ -12,8 +12,9 @@ function ChatMessage({ img, content, role, customClass }) {
         className={`w-fit ${
           role === "assistant" ? "bg-white" : "bg-blue-600 text-white"
         } border border-gray-200 rounded-2xl py-2 px-3 text-sm text-left ${customClass}`}
+        dangerouslySetInnerHTML={{ __html: content }}
       >
-        {content}
+        {/* {content} */}
       </div>
     </div>
   );
