@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NgrokApi;
+using System.Diagnostics;
 using toeic_web.Models;
 using toeic_web.Services.IService;
 using toeic_web.ViewModels.Vocabulary;
@@ -13,11 +14,13 @@ namespace toeic_web.Controllers
     {
         private readonly IVocabularyService _vocabularyService;
         private readonly IMapper _mapper;
-        
-        public VocabularyController(IVocabularyService vocabularyService, IMapper mapper)
+        private readonly ILogger<VocabularyController> _logger;
+
+        public VocabularyController(IVocabularyService vocabularyService, IMapper mapper, ILogger<VocabularyController> logger)
         {
             _vocabularyService = vocabularyService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -80,8 +83,8 @@ namespace toeic_web.Controllers
                 return StatusCode(StatusCodes.Status404NotFound,
                     new Response { Status = "Fail", Message = "Data not found !" });
             }
-            var response = new List<VocabularyViewModel>();
-            foreach (var item in listVoc)
+
+            var response = listVoc.Select(item =>
             {
                 var obj = _mapper.Map<VocabularyViewModel>(item);
                 if (item.image != null)
@@ -93,10 +96,12 @@ namespace toeic_web.Controllers
                     }
                     obj.image = url;
                 }
-                response.Add(obj);
-            }
+                return obj;
+            });
+
             return Ok(response);
         }
+
 
         [HttpGet]
         [Route("GetVocabularyByTopic/{topic}")]
@@ -190,14 +195,26 @@ namespace toeic_web.Controllers
         [HttpGet("GetImage/{id:guid}")]
         public async Task<IActionResult> GetImage(Guid id)
         {
+            _logger.LogInformation("GetImage started");
+
+            var stopwatch = Stopwatch.StartNew();
             var vocabulary = await _vocabularyService.GetVocabularyById(id);
+            stopwatch.Stop();
+            _logger.LogInformation($"GetVocabularyById took {stopwatch.ElapsedMilliseconds} ms");
+
             if (vocabulary == null || string.IsNullOrEmpty(vocabulary.image))
             {
                 return StatusCode(StatusCodes.Status404NotFound,
                     new Response { Status = "Fail", Message = "Data not found!" });
             }
+
+            stopwatch = Stopwatch.StartNew();
             byte[] imageBytes = Convert.FromBase64String(vocabulary.image);
+            stopwatch.Stop();
+            _logger.LogInformation($"Base64 to byte[] conversion took {stopwatch.ElapsedMilliseconds} ms");
+
             return File(imageBytes, "image/png");
         }
+
     }
 }

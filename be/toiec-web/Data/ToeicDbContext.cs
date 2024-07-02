@@ -288,10 +288,18 @@ namespace toeic_web.Models
             modelBuilder.Entity<Vocabulary>(entity =>
             {
                 entity.HasKey(s => s.idVoc);
-                entity.HasOne(s => s.VocTopic).WithMany(s => s.Vocabularies)
+
+                // Define foreign key and cascade delete behavior
+                entity.HasOne(s => s.VocTopic)
+                    .WithMany(s => s.Vocabularies)
                     .HasForeignKey(s => s.idList)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_VocOfTopic");
+
+                // Create index on idVoc column
+                entity.HasIndex(s => s.idVoc)
+                    .IsUnique(); // Optional: If idVoc is unique, specify it
+                entity.HasIndex(v => v.idList);
             });
             modelBuilder.Entity<VocList>(entity =>
             {

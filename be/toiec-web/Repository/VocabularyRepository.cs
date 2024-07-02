@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.SqlServer.Management.Smo;
 using toeic_web.Infrastructure;
 using toeic_web.Models;
@@ -12,13 +13,17 @@ namespace toeic_web.Repository
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
         private readonly ToeicDbContext _toeicDbContext;
+        private readonly IMemoryCache _cache;
+        private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(5);
 
-        public VocabularyRepository(ToeicDbContext dbContext, IUnitOfWork uow, IMapper mapper, ToeicDbContext toeicDbContext) 
+        public VocabularyRepository(ToeicDbContext dbContext, IUnitOfWork uow, IMapper mapper, 
+            ToeicDbContext toeicDbContext, IMemoryCache cache) 
             : base(dbContext)
         {
             _uow = uow;
             _mapper = mapper;
             _toeicDbContext = toeicDbContext;
+            _cache = cache;
         }
 
         public async Task<bool> AddVocabulary(VocabularyModel model, string userId)
@@ -78,6 +83,16 @@ namespace toeic_web.Repository
             }
             return listData;
         }
+        public async Task<IEnumerable<VocabularyModel>> GetAllVocabulariesByListId(Guid listId)
+        {
+            var listData = await Entities
+                .Where(v => v.idList == listId)
+                .OrderBy(v => v.engWord)
+                .ToListAsync();
+
+            return _mapper.Map<IEnumerable<VocabularyModel>>(listData);
+        }
+
 
         public async Task<IEnumerable<VocabularyModel>> GetAllVocabularyByTopic(string topic)
         {
@@ -96,16 +111,17 @@ namespace toeic_web.Repository
 
         public async Task<VocabularyModel> GetVocabularyById(Guid vocId)
         {
-            IAsyncEnumerable<Vocabulary> vocs = Entities.AsAsyncEnumerable();
-            await foreach (var voc in vocs)
+            var cacheKey = $"Vocabulary_{vocId}";
+            if (!_cache.TryGetValue(cacheKey, out VocabularyModel vocabulary))
             {
-                if (voc.idVoc == vocId)
+                var voc = await Entities.FirstOrDefaultAsync(v => v.idVoc == vocId);
+                if (voc != null)
                 {
-                    VocabularyModel data = _mapper.Map<VocabularyModel>(voc);
-                    return data;
+                    vocabulary = _mapper.Map<VocabularyModel>(voc);
+                    _cache.Set(cacheKey, vocabulary, _cacheDuration);
                 }
             }
-            return null;
+            return vocabulary;
         }
 
         public async Task<bool> RemoveVocabularyFromList(Guid listId, Guid vocabularyId)

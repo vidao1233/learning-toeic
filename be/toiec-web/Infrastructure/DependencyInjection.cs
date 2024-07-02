@@ -1,4 +1,5 @@
-﻿using toeic_web.Repository;
+﻿using Microsoft.Extensions.Caching.Memory;
+using toeic_web.Repository;
 using toeic_web.Repository.IRepository;
 using toeic_web.Services;
 using toeic_web.Services.IService;
@@ -40,7 +41,7 @@ namespace toeic_web.Infrastructure
             services.AddTransient(typeof(ICommentRepository), typeof(CommentRepository));
             services.AddTransient(typeof(IReportRepository), typeof(ReportRepository));
             services.AddTransient(typeof(IRoadMapRepository), typeof(RoadMapRepository));
-            services.AddTransient(typeof(IChatBotAvailableRepository), typeof(ChatBotAvailableRepository));
+            services.AddTransient(typeof(IChatBotAvailableRepository), typeof(ChatBotAvailableRepository));            
             return services;
 
         }

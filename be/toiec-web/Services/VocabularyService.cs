@@ -67,20 +67,8 @@ namespace toeic_web.Services
 
         public async Task<IEnumerable<VocabularyViewModel>> GetAllVocabularyByList(Guid listId)
         {
-            var data = await _vocabularyRepository.GetAllVocabularies();
-            var listData = new List<VocabularyViewModel>();
-            if (data != null)
-            {
-                foreach (var item in data)
-                {
-                    if (item.idList == listId)
-                    {
-                        var obj = _mapper.Map<VocabularyViewModel>(item);
-                        listData.Add(obj);
-                    }
-                }
-            }
-            return listData;
+            var data = await _vocabularyRepository.GetAllVocabulariesByListId(listId);
+            return _mapper.Map<IEnumerable<VocabularyViewModel>>(data);
         }
 
         public async Task<IEnumerable<VocabularyViewModel>> GetAllVocabularyByTopic(string topic)
@@ -98,12 +86,12 @@ namespace toeic_web.Services
             return listData;
         }
 
-        public async Task<VocabularyViewModel> GetVocabularyById(Guid vocId)
+        public async Task<VocabularyModel> GetVocabularyById(Guid vocId)
         {
             var data = await _vocabularyRepository.GetVocabularyById(vocId);
             if (data != null)
             {
-                var obj = _mapper.Map<VocabularyViewModel>(data);
+                var obj = _mapper.Map<VocabularyModel>(data);
                 return obj;
             }
             return null;
