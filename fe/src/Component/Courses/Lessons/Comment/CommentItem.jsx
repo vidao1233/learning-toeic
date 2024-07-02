@@ -99,7 +99,10 @@ function CommentItem({
           modal_on={modal}
           comment={currentComent}
         />
-        <div className="w-full mt-5 flex items-start gap-3">
+        <div
+          className="w-full mt-5 flex items-start gap-3"
+          data-testid="comment-item"
+        >
           <div className="h-14 w-14 border-gray-500 rounded-full overflow-hidden m-1">
             <img
               className="h-14 w-14"
@@ -219,7 +222,7 @@ function CommentItem({
               </div>
               {user.idUser !== currentComent.idUser && (
                 <div className="hidden group-hover:block relative">
-                  <i class="fa-solid fa-ellipsis-vertical fa-lg absolute top-6 right-4 cursor-pointer"></i>
+                  <i className="fa-solid fa-ellipsis-vertical fa-lg absolute top-6 right-4 cursor-pointer"></i>
                   <input
                     type="checkbox"
                     className="filter-btn absolute top-4 right-3 w-6 h-6 z-1 opacity-0 peer cursor-pointer"
@@ -231,7 +234,7 @@ function CommentItem({
                     <div className="text-md font-semibold">
                       Báo cáo bình luận
                     </div>
-                    <i class="fa-solid fa-flag fa-lg"></i>
+                    <i className="fa-solid fa-flag fa-lg"></i>
                   </div>
                 </div>
               )}

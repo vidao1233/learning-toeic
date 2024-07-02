@@ -61,7 +61,8 @@ a:-webkit-any-link {
 }
 .user-layout .login-button {
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 600;
+  letter-spacing: -1px;
 }
 .user-layout header ul {
   margin-bottom: 0;
@@ -71,19 +72,18 @@ a:-webkit-any-link {
   padding: 16px;
   list-style: none;
   position: relative;
-}
-.user-layout header ul li a {
   font-size: 16px;
   font-weight: 700;
   transition: 0.2s;
   text-decoration: none;
   color: #000;
 }
+.user-layout header ul li a {
+}
 .user-layout .dropdown-menu a {
   color: #000 !important;
 }
-.user-layout header ul li:hover a,
-img {
+.user-layout header ul li:hover {
   cursor: pointer;
   color: #fff;
 }
@@ -138,9 +138,9 @@ img {
 
 .start {
   background-color: #003150;
-  padding: 16px 80px;
+  padding: 15px 50px 16px 90px;
   color: #fff;
-  clip-path: polygon(20% 0, 100% 0, 100% 100%, 0 100%);
+  clip-path: polygon(25% 0, 100% 0, 100% 100%, 0 100%);
 }
 
 .toggle {
@@ -185,7 +185,13 @@ img {
   font-weight: 900;
 }
 
-@media screen and (max-width: 890px) and (min-width: 768px) {
+@media screen and (max-width: 900px) and (min-width: 775px) {
+  .start {
+    padding: 16px 32px 16px 72px;
+  }
+  .login-button {
+    font-size: 1rem !important;
+  }
   header ul li {
     padding: 5px 20px !important;
   }
@@ -198,20 +204,14 @@ img {
   }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 775px) {
   .header {
     margin: 0 !important;
   }
   .start {
-    clip-path: none;
-    width: 80%;
     text-align: center;
-  }
-  .head {
-    margin: 0 5px;
-  }
-  .head .social {
-    display: none;
+    padding: 16px 72px 16px 32px;
+    clip-path: polygon(0 0, 75% 0, 100% 100%, 0 100%);
   }
   header {
     margin: 0;
@@ -227,21 +227,28 @@ img {
     display: none;
   }
   .toggle {
-    display: block;
+    display: flex;
+    align-items: center;
     background: none;
     color: #fff;
     font-size: 30px;
     position: absolute;
-    right: 30px;
-    top: 20px;
+    right: 42px;
   }
   .mobile-nav {
     position: absolute;
     z-index: 5;
     top: 100%;
-    left: 0;
+    right: 0;
+    width: 50%;
+    background-color: #fff;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.3);
+    border-radius: 0 0 1rem 1rem;
+  }
+  .mobile-nav li {
     width: 100%;
-    background-color: #70a2ab;
+    text-align: center;
+    justify-content: center !important;
   }
   #heading h1 {
     font-size: 1.5rem !important;
@@ -249,5 +256,11 @@ img {
   }
   #heading h3 {
     font-size: 1.25rem !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .head {
+    display: none;
   }
 }

@@ -15,29 +15,33 @@ const cx = classNames.bind(styles);
 
 function VocabularyTopic() {
   const [topics, setTopic] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { user } = useContext(UserContext);
   const [urlNavigate, setUrlNavigate] = useState("");
 
-  useEffect(() => {
-    async function fetchVocabularyTopic() {
-      try {
-        const response = await fetch(
-          `${
-            process.env.REACT_APP_API_BASE_URL ?? "/api"
-          }/VocList/GetAllPublicVocList`
-        );
-        setIsLoading(false);
-        if (!response.ok) {
-          const errorData = await response?.json();
-          toast.error(`${errorData.message}`);
-        }
+  async function fetchVocabularyTopic() {
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `${
+          process.env.REACT_APP_API_BASE_URL ?? "/api"
+        }/VocList/GetAllPublicVocList`
+      );
+      if (!response.ok) {
+        const errorData = await response?.json();
+        toast.error(`${errorData.message}`);
+      } else {
         const data = await response?.json();
         setTopic(data);
-      } catch (error) {
-        console.log(error);
       }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
+  }
+
+  useEffect(() => {
     fetchVocabularyTopic();
     window.scrollTo(0, 0);
   }, []);
@@ -49,6 +53,7 @@ function VocabularyTopic() {
     }
   }, [user, setUrlNavigate]);
 
+  if (isLoading) return <Loader />;
   return (
     <div className="vocabulary-topic-wrapper">
       <div className="container vocabulary-topic">
@@ -75,11 +80,10 @@ function VocabularyTopic() {
             Đến trang quản lý từ vựng của bạn
           </button>
         </Link>
-        {isLoading ? <Loader /> : <></>}
         <div className={cx("wrapper")}>
           <div className={cx("gridview")}>
             {topics &&
-              topics.map((val, index) => {
+              topics?.map((val, index) => {
                 return (
                   <Link
                     key={val.idVocList}
@@ -93,19 +97,19 @@ function VocabularyTopic() {
                         <AiOutlineUser />
                         {val.author}
                       </p>
-                      <p className={cx("quantity")}>
+                      <div className={cx("quantity")}>
                         <p className={cx("label")}>
                           <MdOutlineFlipToFront /> Số lượng từ:{" "}
                         </p>
                         {val.quantity} từ
-                      </p>
-                      <p className={cx("createdate")}>
+                      </div>
+                      <div className={cx("createdate")}>
                         <p className={cx("label")}>
                           {" "}
                           <CiCalendar /> Ngày tạo:{" "}
                         </p>
                         {val.createDate}
-                      </p>
+                      </div>
                     </div>
                   </Link>
                 );

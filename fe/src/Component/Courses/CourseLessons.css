@@ -1,16 +1,14 @@
 .course-lesson-wrapper {
   height: auto;
-  padding: 20px;
+  padding: 0 40px 40px 40px;
 }
 .course-lesson-card {
-  background-color: #fff;
 }
 .list-lesson-wrapper {
   display: flex;
   justify-content: space-between;
   gap: 3rem;
   flex: 1;
-  padding: 0 30px;
 }
 
 .list-lesson {
@@ -65,4 +63,22 @@
 .other-course-list .course-item:hover {
   cursor: pointer;
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 800px) {
+  .course-lesson-wrapper {
+    padding: 0 1rem 1rem 1rem;
+  }
+  .list-lesson-wrapper {
+    gap: 1.5rem;
+    padding: 0;
+  }
+}
+@media (max-width: 480px) {
+  .other-course-wrapper {
+    display: none;
+  }
+  .list-lesson-wrapper {
+    gap: 0.5rem;
+  }
 }

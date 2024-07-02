@@ -18,7 +18,6 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isloading, setIsLoading] = useState(false);
   const [is2FA, setIs2FA] = useState(false);
-  const [otp, setOTP] = useState([]);
   const ref_otp = useRef([]);
 
   const { userAuthen, loginContext } = useContext(UserContext);
@@ -33,22 +32,6 @@ function Login() {
     handleSubmit: handleSubmitSignUp,
     formState: { errors: error_signup },
   } = useForm();
-  const focusNextOTPItem = (event, index) => {
-    const newotp = [...otp];
-    newotp[index] = ref_otp.current[index].value;
-    setOTP(newotp);
-
-    if (index < ref_otp.current.length - 1 && event.key !== "Tab") {
-      if (index === 0 && ref_otp.current[index].value === "") {
-      } else {
-        ref_otp.current[index + 1].focus();
-      }
-    }
-    if (event.key === "Backspace" && index > 0) {
-      ref_otp.current[index - 1].focus();
-      ref_otp.current[index].value = "";
-    }
-  };
   useEffect(() => {
     const loginElement = document.getElementById("login");
     if (loginElement) {
@@ -126,36 +109,6 @@ function Login() {
     }
   }
 
-  const handleSubmitOTP = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL ?? "/api"}/Authen/Login-2FA`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            code: otp.join(""),
-            username: getValues("username"),
-          }),
-        }
-      );
-      setIsLoading(false);
-      if (!response.ok) {
-        const errorData = await response?.json();
-        toast.error(`${errorData.message}`);
-      } else {
-        const data = await response?.json();
-        toast.success(`${data.message}`);
-      }
-    } catch (error) {
-      toast.error(`${error}`);
-    }
-  };
-
   const LoginGoogle = async (resp) => {
     try {
       setIsLoading(true);
@@ -201,154 +154,93 @@ function Login() {
       <div className="login" id="login">
         <div className={`container ${signUpMode ? "sign-up-mode" : null}`}>
           <div className="signin-signup">
-            {!is2FA ? (
-              <form
-                action=""
-                className="sign-in-form"
-                onSubmit={handleSubmitLogin(handleLogin)}
-              >
-                <div className="signin-input">
-                  <h2 className="title">Đăng nhập</h2>
-                  <div className="input-field">
-                    <i className="fas fa-user"></i>
-                    <input
-                      type="text"
-                      placeholder="Tên đăng nhập"
-                      id="login-username"
-                      {...loginData("username", { required: true })}
-                    />
-                  </div>
-                  <error>
-                    {error_login.username?.type === "required" &&
-                      "Username is required"}
-                  </error>
-                  <div className="input-field">
-                    <i className="fas fa-lock"></i>
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Mật khẩu"
-                      id="login-password"
-                      {...loginData("password", { required: true })}
-                    />
-                    {!showPassword ? (
-                      <i
-                        className="fa-regular fa-eye"
-                        onClick={() => setShowPassword(true)}
-                      ></i>
-                    ) : (
-                      <i
-                        className="fa-regular fa-eye-slash"
-                        onClick={() => setShowPassword(false)}
-                      ></i>
-                    )}
-                  </div>
-                  <error>
-                    {error_login.password?.type === "required" &&
-                      "Password is required"}
-                  </error>
-                  <a className="forgot-password">
-                    <Link to="/forgot-password">Quên mật khẩu</Link>
-                  </a>
+            <form
+              action=""
+              className="sign-in-form"
+              onSubmit={handleSubmitLogin(handleLogin)}
+            >
+              <div className="signin-input">
+                <h2 className="title">Đăng nhập</h2>
+                <div className="input-field">
+                  <i className="fas fa-user"></i>
                   <input
-                    type="submit"
-                    value="Đăng nhập"
-                    className="btn"
-                    id="login-btn"
+                    type="text"
+                    placeholder="Tên đăng nhập"
+                    id="login-username"
+                    {...loginData("username", { required: true })}
                   />
-                  <p className="social-text">Đăng nhập bằng tài khoản khác</p>
-                  <div className="social-media">
-                    <a href="#" className="social-icon">
-                      <i className="fab fa-facebook"></i>
-                    </a>
-                    <a href="" className="social-icon">
-                      <i className="fab fa-twitter"></i>
-                    </a>
-                    <GoogleLogin
-                      clientId="1047820244524-i4q01pgchejg1cvdfne578ag4sj44elo.apps.googleusercontent.com"
-                      buttonText=""
-                      onSuccess={(response) => {
-                        LoginGoogle(response.profileObj);
-                      }}
-                      onFailure={(e) => {
-                        toast.error("Đăng nhập bằng google thất bại");
-                      }}
-                      cookiePolicy={"single_host_origin"}
-                      isSignedIn={true}
-                      className="social-icon customLoginGoogle"
-                    />
-                    <a href="" className="social-icon">
-                      <i className="fab fa-linkedin-in"></i>
-                    </a>
-                  </div>
-                  <div
-                    className="sign-up-mobile"
-                    id="sign-up-mobile"
-                    onClick={() => SwitchSignUpMode(true)}
-                  >
-                    Đăng kí tài khoản
-                  </div>
                 </div>
-              </form>
-            ) : (
-              <div className="confirm-otp-wrapper">
-                <div>
-                  <h2 className="title" style={{ textAlign: "center" }}>
-                    XÁC THỰC OTP
-                  </h2>
-                  <p style={{ textAlign: "center" }}>
-                    OTP xác thực đã được gửi đến email {}
-                  </p>
+                <div className="error">
+                  {error_login.username?.type === "required" &&
+                    "Username is required"}
                 </div>
-                <form className="confirm-otp-form" onSubmit={handleSubmitOTP}>
-                  <div className="input-otp-wrapper">
-                    <input
-                      type="text"
-                      className="input-otp-item"
-                      maxLength={1}
-                      onKeyUp={(event) => focusNextOTPItem(event, 0)}
-                      ref={(el) => (ref_otp.current[0] = el)}
-                    />
-                    <input
-                      type="text"
-                      className="input-otp-item"
-                      maxLength={1}
-                      onKeyUp={(event) => focusNextOTPItem(event, 1)}
-                      ref={(el) => (ref_otp.current[1] = el)}
-                    />
-                    <input
-                      type="text"
-                      id="otp3"
-                      className="input-otp-item"
-                      maxLength={1}
-                      onKeyUp={(event) => focusNextOTPItem(event, 2)}
-                      ref={(el) => (ref_otp.current[2] = el)}
-                    />
-                    <input
-                      type="text"
-                      className="input-otp-item"
-                      maxLength={1}
-                      onKeyUp={(event) => focusNextOTPItem(event, 3)}
-                      ref={(el) => (ref_otp.current[3] = el)}
-                    />
-                    <input
-                      type="text"
-                      className="input-otp-item"
-                      maxLength={1}
-                      onKeyUp={(event) => focusNextOTPItem(event, 4)}
-                      ref={(el) => (ref_otp.current[4] = el)}
-                    />
-                    <input
-                      type="text"
-                      className="input-otp-item"
-                      maxLength={1}
-                      onKeyUp={(event) => focusNextOTPItem(event, 5)}
-                      ref={(el) => (ref_otp.current[5] = el)}
-                    />
-                  </div>
-                  <input type="submit" className="send-otp-submit"></input>
-                </form>
+                <div className="input-field">
+                  <i className="fas fa-lock"></i>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Mật khẩu"
+                    id="login-password"
+                    {...loginData("password", { required: true })}
+                  />
+                  {!showPassword ? (
+                    <i
+                      className="fa-regular fa-eye"
+                      onClick={() => setShowPassword(true)}
+                    ></i>
+                  ) : (
+                    <i
+                      className="fa-regular fa-eye-slash"
+                      onClick={() => setShowPassword(false)}
+                    ></i>
+                  )}
+                </div>
+                <div className="error">
+                  {error_login.password?.type === "required" &&
+                    "Password is required"}
+                </div>
+                <div className="forgot-password">
+                  <Link to="/forgot-password">Quên mật khẩu</Link>
+                </div>
+                <input
+                  type="submit"
+                  value="Đăng nhập"
+                  className="btn"
+                  id="login-btn"
+                />
+                <p className="social-text">Đăng nhập bằng tài khoản khác</p>
+                <div className="social-media">
+                  <a href="#" className="social-icon">
+                    <i className="fab fa-facebook"></i>
+                  </a>
+                  <a href="" className="social-icon">
+                    <i className="fab fa-twitter"></i>
+                  </a>
+                  <GoogleLogin
+                    clientId="1047820244524-i4q01pgchejg1cvdfne578ag4sj44elo.apps.googleusercontent.com"
+                    buttonText=""
+                    onSuccess={(response) => {
+                      LoginGoogle(response.profileObj);
+                    }}
+                    onFailure={(e) => {
+                      toast.error("Đăng nhập bằng google thất bại");
+                    }}
+                    cookiePolicy={"single_host_origin"}
+                    isSignedIn={true}
+                    className="social-icon customLoginGoogle"
+                  />
+                  <a href="" className="social-icon">
+                    <i className="fab fa-linkedin-in"></i>
+                  </a>
+                </div>
+                <div
+                  className="sign-up-mobile"
+                  id="sign-up-mobile"
+                  onClick={() => SwitchSignUpMode(true)}
+                >
+                  Đăng kí tài khoản
+                </div>
               </div>
-            )}
+            </form>
             <form
               action=""
               className="sign-up-form"
@@ -364,10 +256,10 @@ function Login() {
                   {...SignUpData("username", { required: true })}
                 />
               </div>
-              <error>
+              <div className="error">
                 {error_signup.username?.type === "required" &&
                   "Username is required"}
-              </error>
+              </div>
               <div className="input-field">
                 <i className="fas fa-envelope"></i>
                 <input
@@ -381,12 +273,11 @@ function Login() {
                   })}
                 />
               </div>
-              <error>
-                {error_signup.email?.type === "required" &&
-                  "Username is required"}
+              <div className="error">
+                {error_signup.email?.type === "required" && "Email is required"}
                 {error_signup.email?.type === "pattern" &&
                   "Email đã nhập không đúng định dạng"}
-              </error>
+              </div>
               <div className="input-field">
                 <i className="fas fa-lock"></i>
                 <input
@@ -411,12 +302,12 @@ function Login() {
                   ></i>
                 )}
               </div>
-              <error>
+              <div className="error">
                 {error_signup.password?.type === "required" &&
-                  "Username is required"}
+                  "Password is required"}
                 {error_signup.password?.type === "pattern" &&
                   "Phải có ít nhất 6 ký tự, một chữ hoa, một chữ thường, một chữ số, một ký tự đặc biệt"}
-              </error>
+              </div>
               <input
                 type="submit"
                 value="Đăng ký"

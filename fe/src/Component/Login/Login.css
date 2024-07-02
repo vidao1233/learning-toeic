@@ -44,7 +44,7 @@
   max-width: 350px;
   padding: 0 10px;
 }
-.login error {
+.login .error {
   font-size: 12px;
   font-style: italic;
   color: red;

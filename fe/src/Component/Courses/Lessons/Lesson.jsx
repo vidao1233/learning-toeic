@@ -204,9 +204,9 @@ function Lesson() {
               />
             )}
           </div>
-          <Comment id={id} />
         </div>
       </div>
+        <Comment id={id} />
     </div>
   );
 }

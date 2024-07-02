@@ -21,7 +21,7 @@ function Chatbot() {
     try {
       setIsLoading(true);
       const response = await fetch(
-        "https://230902.openai.azure.com/openai/deployments/chat-gpt-35/chat/completions?api-version=2024-02-15-preview",
+        "https://toeicchatbot.openai.azure.com/openai/deployments/chat-gpt-35/chat/completions?api-version=2024-02-15-preview",
         {
           method: "POST",
           headers: {
@@ -53,7 +53,8 @@ function Chatbot() {
         setError(
           response.status === 429
             ? `Bạn đang gửi yêu cầu quá nhanh. Thử lại sau ${
-                data.error.message?.match(/retry after (\d+) seconds/)[1]
+                data.error.message?.match(/retry after (\d+) seconds/)[1] ??
+                "vài"
               } giây.`
             : "Lỗi hệ thống"
         );
@@ -137,7 +138,7 @@ function Chatbot() {
         ...prevConversation,
         {
           role: "assistant",
-          content: `Đã hết lượt free trong tháng. Vui lòng truy cập trang <a class="!underline !text-blue" href="/vippackage">Get VIP</a> để nâng cấp tài khoản`,
+          content: `Đã hết lượt free trong tháng. Vui lòng truy cập trang <a class="!underline !text-blue-700" href="/vippackage">Get VIP</a> để nâng cấp tài khoản`,
         },
       ]);
     }
@@ -186,7 +187,12 @@ function Chatbot() {
           }))
         }
       >
-        <img src={assistantAva} alt="" className="w-16 h-16" />
+        <img
+          src={assistantAva}
+          data-testid="assistantAva"
+          alt=""
+          className="w-16 h-16"
+        />
       </div>
       {state.openBot && (
         <div
@@ -262,7 +268,7 @@ function Chatbot() {
           <div className="w-full px-4 py-2 flex justify-between bg-white">
             <div className="w-full flex items-center gap-2">
               <div className="relative w-fit">
-                <i class="fa-solid fa-ellipsis fa-lg absolute top-0 left-0 cursor-pointer"></i>
+                <i className="fa-solid fa-ellipsis fa-lg absolute top-0 left-0 cursor-pointer"></i>
                 <input
                   type="checkbox"
                   className="filter-btn absolute -top-2 left-0 w-6 h-6 z-1 opacity-0 peer cursor-pointer"
@@ -284,6 +290,7 @@ function Chatbot() {
                 </div>
               </div>
               <input
+                type="text"
                 className="w-full text-sm leading-5 pl-4 outline-none"
                 onChange={(e) => setInput(e.currentTarget.value)}
                 value={input}
@@ -295,6 +302,7 @@ function Chatbot() {
             </div>
             <img
               className="h-8 max-w-8"
+              data-testid="submit-question"
               src="https://img.icons8.com/fluency/48/filled-sent.png"
               alt="filled-sent"
               onClick={() => {
