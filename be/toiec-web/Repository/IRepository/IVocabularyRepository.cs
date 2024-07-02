@@ -7,6 +7,7 @@ namespace toeic_web.Repository.IRepository
         Task<IEnumerable<VocabularyModel>> GetAllVocabularies();
         Task<VocabularyModel> GetVocabularyById(Guid vocId);
         Task<IEnumerable<VocabularyModel>> GetAllVocabularyByTopic(string topic);
+        Task<IEnumerable<VocabularyModel>> GetAllVocabulariesByListId(Guid listId);
         Task<bool> AddVocabulary(VocabularyModel model, string userId);
         Task<bool> AddVocabularyToList(Guid listId, VocabularyModel model);
         Task<bool> RemoveVocabularyFromList(Guid listId, Guid vocabularyId);

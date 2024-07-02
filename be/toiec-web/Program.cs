@@ -37,6 +37,7 @@ namespace toeic_web
             });
             builder.Services.AddControllers().AddControllersAsServices();
             builder.Services.AddHttpClient();
+            builder.Services.AddMemoryCache();
             //add DBContext
             builder.Services.AddDbContext<ToeicDbContext>(options =>
             {

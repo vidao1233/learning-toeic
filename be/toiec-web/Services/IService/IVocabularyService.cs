@@ -6,7 +6,7 @@ namespace toeic_web.Services.IService
     public interface IVocabularyService
     {
         Task<IEnumerable<VocabularyViewModel>> GetAllVocabularies();
-        Task<VocabularyViewModel> GetVocabularyById(Guid vocId);
+        Task<VocabularyModel> GetVocabularyById(Guid vocId);
         Task<IEnumerable<VocabularyViewModel>> GetAllVocabularyByTopic(string topic);
         Task<IEnumerable<VocabularyViewModel>> GetAllVocabularyByList(Guid listId);
         Task<bool> AddVocFromExistList(Guid vocId, Guid idLists);
