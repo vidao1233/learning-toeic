@@ -1,101 +1,125 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="39" failures="0" errors="0" time="5.976">
-  <testsuite name="Record By Test" errors="0" failures="0" skipped="0" timestamp="2024-07-02T06:29:50" time="2.045" tests="3">
-    <testcase classname="Record By Test List Index" name="Record By Test List Index" time="0.107">
-    </testcase>
-    <testcase classname="Record By Test Detail navigate" name="Record By Test Detail navigate" time="0.034">
-    </testcase>
-    <testcase classname="Record By Test History navigate" name="Record By Test History navigate" time="0.03">
+<testsuites name="jest tests" tests="49" failures="0" errors="0" time="9.214">
+  <testsuite name="Record By Test" errors="0" failures="0" skipped="0" timestamp="2024-07-05T20:28:06" time="3.243" tests="1">
+    <testcase classname="Record By Test List Index" name="Record By Test List Index" time="0.119">
     </testcase>
   </testsuite>
-  <testsuite name="Header Component" errors="0" failures="0" skipped="0" timestamp="2024-07-02T06:29:50" time="2.176" tests="6">
-    <testcase classname="Header Component Header element" name="Header Component Header element" time="0.082">
+  <testsuite name="Test Component" errors="0" failures="0" skipped="0" timestamp="2024-07-05T20:28:06" time="3.395" tests="2">
+    <testcase classname="Test Component List Index" name="Test Component List Index" time="0.172">
     </testcase>
-    <testcase classname="Header Component User header" name="Header Component User header" time="0.054">
-    </testcase>
-    <testcase classname="Header Component Header element navigate" name="Header Component Header element navigate" time="0.052">
-    </testcase>
-    <testcase classname="Header Component Usser header element navigate" name="Header Component Usser header element navigate" time="0.049">
-    </testcase>
-    <testcase classname="Header Component Usser header VIP" name="Header Component Usser header VIP" time="0.043">
-    </testcase>
-    <testcase classname="Header Component Usser header Logout" name="Header Component Usser header Logout" time="0.027">
+    <testcase classname="Test Component Test navigate" name="Test Component Test navigate" time="0.073">
     </testcase>
   </testsuite>
-  <testsuite name="Explore Vocabulary" errors="0" failures="0" skipped="0" timestamp="2024-07-02T06:29:50" time="2.204" tests="2">
-    <testcase classname="Explore Vocabulary Vocab List" name="Explore Vocabulary Vocab List" time="0.126">
+  <testsuite name="Courses" errors="0" failures="0" skipped="0" timestamp="2024-07-05T20:28:06" time="3.347" tests="2">
+    <testcase classname="Courses Courses Component" name="Courses Courses Component" time="0.19">
     </testcase>
-    <testcase classname="Explore Vocabulary Vocab List Navigate" name="Explore Vocabulary Vocab List Navigate" time="0.047">
-    </testcase>
-  </testsuite>
-  <testsuite name="Home" errors="0" failures="0" skipped="0" timestamp="2024-07-02T06:29:50" time="2.255" tests="3">
-    <testcase classname="Home Home Element" name="Home Home Element" time="0.21">
-    </testcase>
-    <testcase classname="Home Home Course" name="Home Home Course" time="0.102">
-    </testcase>
-    <testcase classname="Home Course Navigate" name="Home Course Navigate" time="0.024">
+    <testcase classname="Courses Course navigate" name="Courses Course navigate" time="0.053">
     </testcase>
   </testsuite>
-  <testsuite name="Comment component" errors="0" failures="0" skipped="0" timestamp="2024-07-02T06:29:50" time="2.3" tests="2">
-    <testcase classname="Comment component Comment element" name="Comment component Comment element" time="0.201">
+  <testsuite name="Record By Test" errors="0" failures="0" skipped="0" timestamp="2024-07-05T20:28:06" time="3.401" tests="4">
+    <testcase classname="Record By Test List Index" name="Record By Test List Index" time="0.149">
     </testcase>
-    <testcase classname="Comment component renders comments" name="Comment component renders comments" time="0.022">
+    <testcase classname="Record By Test Detail navigate" name="Record By Test Detail navigate" time="0.041">
     </testcase>
-  </testsuite>
-  <testsuite name="Login" errors="0" failures="0" skipped="0" timestamp="2024-07-02T06:29:50" time="2.473" tests="8">
-    <testcase classname="Login Login Element" name="Login Login Element" time="0.109">
+    <testcase classname="Record By Test History navigate" name="Record By Test History navigate" time="0.043">
     </testcase>
-    <testcase classname="Login Validate Login" name="Login Validate Login" time="0.069">
-    </testcase>
-    <testcase classname="Login Validate SignUp" name="Login Validate SignUp" time="0.033">
-    </testcase>
-    <testcase classname="Login Validate SignUp pattern" name="Login Validate SignUp pattern" time="0.04">
-    </testcase>
-    <testcase classname="Login Input Login" name="Login Input Login" time="0.039">
-    </testcase>
-    <testcase classname="Login Input Login load" name="Login Input Login load" time="0.118">
-    </testcase>
-    <testcase classname="Login Login failed" name="Login Login failed" time="0.178">
-    </testcase>
-    <testcase classname="Login Input SignUp" name="Login Input SignUp" time="0.035">
+    <testcase classname="Record By Test Do test navigate" name="Record By Test Do test navigate" time="0.027">
     </testcase>
   </testsuite>
-  <testsuite name="Chatbot component" errors="0" failures="0" skipped="0" timestamp="2024-07-02T06:29:50" time="2.49" tests="7">
-    <testcase classname="Chatbot component Chatbot toggle" name="Chatbot component Chatbot toggle" time="0.175">
+  <testsuite name="Explore Vocabulary" errors="0" failures="0" skipped="0" timestamp="2024-07-05T20:28:06" time="3.471" tests="2">
+    <testcase classname="Explore Vocabulary Vocab List" name="Explore Vocabulary Vocab List" time="0.175">
     </testcase>
-    <testcase classname="Chatbot component Submits a message" name="Chatbot component Submits a message" time="0.129">
+    <testcase classname="Explore Vocabulary Vocab List Navigate" name="Explore Vocabulary Vocab List Navigate" time="0.049">
     </testcase>
-    <testcase classname="Chatbot component Clears conversation history" name="Chatbot component Clears conversation history" time="0.042">
+  </testsuite>
+  <testsuite name="CourseLessons component" errors="0" failures="0" skipped="0" timestamp="2024-07-05T20:28:06" time="3.502" tests="4">
+    <testcase classname="CourseLessons component Render lessons" name="CourseLessons component Render lessons" time="0.12">
+    </testcase>
+    <testcase classname="CourseLessons component Render other course" name="CourseLessons component Render other course" time="0.144">
+    </testcase>
+    <testcase classname="CourseLessons component Navigate Lesson" name="CourseLessons component Navigate Lesson" time="0.032">
+    </testcase>
+    <testcase classname="CourseLessons component Navigate Course" name="CourseLessons component Navigate Course" time="0.059">
+    </testcase>
+  </testsuite>
+  <testsuite name="Header Component" errors="0" failures="0" skipped="0" timestamp="2024-07-05T20:28:06" time="3.567" tests="6">
+    <testcase classname="Header Component Header element" name="Header Component Header element" time="0.116">
+    </testcase>
+    <testcase classname="Header Component User header" name="Header Component User header" time="0.075">
+    </testcase>
+    <testcase classname="Header Component Header element navigate" name="Header Component Header element navigate" time="0.083">
+    </testcase>
+    <testcase classname="Header Component User header element navigate" name="Header Component User header element navigate" time="0.066">
+    </testcase>
+    <testcase classname="Header Component Usser header VIP" name="Header Component Usser header VIP" time="0.052">
+    </testcase>
+    <testcase classname="Header Component Usser header Logout" name="Header Component Usser header Logout" time="0.017">
+    </testcase>
+  </testsuite>
+  <testsuite name="Home" errors="0" failures="0" skipped="0" timestamp="2024-07-05T20:28:06" time="3.622" tests="4">
+    <testcase classname="Home Home Element" name="Home Home Element" time="0.254">
+    </testcase>
+    <testcase classname="Home Intro Navigate" name="Home Intro Navigate" time="0.068">
+    </testcase>
+    <testcase classname="Home Home Course" name="Home Home Course" time="0.108">
+    </testcase>
+    <testcase classname="Home Course Navigate" name="Home Course Navigate" time="0.017">
+    </testcase>
+  </testsuite>
+  <testsuite name="Comment component" errors="0" failures="0" skipped="0" timestamp="2024-07-05T20:28:06" time="3.611" tests="2">
+    <testcase classname="Comment component Comment element" name="Comment component Comment element" time="0.195">
+    </testcase>
+    <testcase classname="Comment component renders comments" name="Comment component renders comments" time="0.038">
+    </testcase>
+  </testsuite>
+  <testsuite name="Forgot Password" errors="0" failures="0" skipped="0" timestamp="2024-07-05T20:28:06" time="3.664" tests="7">
+    <testcase classname="Forgot Password Element mail" name="Forgot Password Element mail" time="0.08">
+    </testcase>
+    <testcase classname="Forgot Password Send mail" name="Forgot Password Send mail" time="0.166">
+    </testcase>
+    <testcase classname="Forgot Password Reset Password" name="Forgot Password Reset Password" time="0.081">
+    </testcase>
+    <testcase classname="Forgot Password Validate Field" name="Forgot Password Validate Field" time="0.032">
+    </testcase>
+    <testcase classname="Forgot Password Validate Password" name="Forgot Password Validate Password" time="0.063">
+    </testcase>
+    <testcase classname="Forgot Password Validate Confirm Password" name="Forgot Password Validate Confirm Password" time="0.049">
+    </testcase>
+    <testcase classname="Forgot Password Error Reset" name="Forgot Password Error Reset" time="0.069">
+    </testcase>
+  </testsuite>
+  <testsuite name="Chatbot component" errors="0" failures="0" skipped="0" timestamp="2024-07-05T20:28:06" time="3.93" tests="7">
+    <testcase classname="Chatbot component Chatbot toggle" name="Chatbot component Chatbot toggle" time="0.186">
+    </testcase>
+    <testcase classname="Chatbot component Submits a message" name="Chatbot component Submits a message" time="0.137">
+    </testcase>
+    <testcase classname="Chatbot component Clears conversation history" name="Chatbot component Clears conversation history" time="0.061">
     </testcase>
     <testcase classname="Chatbot component SubmitChatbot handles Free" name="Chatbot component SubmitChatbot handles Free" time="0.046">
     </testcase>
-    <testcase classname="Chatbot component SubmitChatbot handles API 429 Error" name="Chatbot component SubmitChatbot handles API 429 Error" time="0.033">
+    <testcase classname="Chatbot component SubmitChatbot handles API 429 Error" name="Chatbot component SubmitChatbot handles API 429 Error" time="0.049">
     </testcase>
-    <testcase classname="Chatbot component SubmitChatbot handles API Sys Error" name="Chatbot component SubmitChatbot handles API Sys Error" time="0.028">
+    <testcase classname="Chatbot component SubmitChatbot handles API Sys Error" name="Chatbot component SubmitChatbot handles API Sys Error" time="0.029">
     </testcase>
-    <testcase classname="Chatbot component UpdateAvalable handles" name="Chatbot component UpdateAvalable handles" time="0.041">
-    </testcase>
-  </testsuite>
-  <testsuite name="Courses" errors="0" failures="0" skipped="0" timestamp="2024-07-02T06:29:52" time="0.68" tests="2">
-    <testcase classname="Courses Courses Component" name="Courses Courses Component" time="0.068">
-    </testcase>
-    <testcase classname="Courses Course navigate" name="Courses Course navigate" time="0.02">
+    <testcase classname="Chatbot component UpdateAvalable handles" name="Chatbot component UpdateAvalable handles" time="0.085">
     </testcase>
   </testsuite>
-  <testsuite name="Test Component" errors="0" failures="0" skipped="0" timestamp="2024-07-02T06:29:52" time="0.614" tests="2">
-    <testcase classname="Test Component List Index" name="Test Component List Index" time="0.054">
+  <testsuite name="Login" errors="0" failures="0" skipped="0" timestamp="2024-07-05T20:28:06" time="3.957" tests="8">
+    <testcase classname="Login Login Element" name="Login Login Element" time="0.149">
     </testcase>
-    <testcase classname="Test Component Test navigate" name="Test Component Test navigate" time="0.024">
+    <testcase classname="Login Validate Login" name="Login Validate Login" time="0.087">
     </testcase>
-  </testsuite>
-  <testsuite name="CourseLessons component" errors="0" failures="0" skipped="0" timestamp="2024-07-02T06:29:50" time="2.904" tests="4">
-    <testcase classname="CourseLessons component Render lessons" name="CourseLessons component Render lessons" time="0.087">
+    <testcase classname="Login Validate SignUp" name="Login Validate SignUp" time="0.055">
     </testcase>
-    <testcase classname="CourseLessons component Render other course" name="CourseLessons component Render other course" time="0.042">
+    <testcase classname="Login Validate SignUp pattern" name="Login Validate SignUp pattern" time="0.046">
     </testcase>
-    <testcase classname="CourseLessons component Navigate Lesson" name="CourseLessons component Navigate Lesson" time="0.014">
+    <testcase classname="Login Input Login" name="Login Input Login" time="0.052">
     </testcase>
-    <testcase classname="CourseLessons component Navigate Course" name="CourseLessons component Navigate Course" time="0.017">
+    <testcase classname="Login Input Login load" name="Login Input Login load" time="0.143">
+    </testcase>
+    <testcase classname="Login Login failed" name="Login Login failed" time="0.161">
+    </testcase>
+    <testcase classname="Login Input SignUp" name="Login Input SignUp" time="0.036">
     </testcase>
   </testsuite>
 </testsuites>

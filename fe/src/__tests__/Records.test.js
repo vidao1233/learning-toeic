@@ -1,9 +1,8 @@
 import React from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
-import { UserProviderTest } from "../constant/testConst";
+import { screen } from "@testing-library/react";
+import { renderWithUserRole } from "../constant/testConst";
 import fetchMock from "fetch-mock";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
-import RecordByTest from "../Component/Test/TestRecord/RecordByTest";
+import TestRecord from "../Component/Test/TestRecord/TestRecord";
 
 const mockRecords = [
   {
@@ -21,15 +20,6 @@ const mockRecords = [
     testName: "EST 2022 Test 1 FullTest",
   },
 ];
-const mockTest = {
-  idTest: "e109ad2c-6eda-4395-8638-74ebf489b1c6",
-  idType: "9c2cdc56-6774-4304-ad5e-c88403cc0e18",
-  idRoadMap: null,
-  name: "EST 2022 Test 1 FullTest",
-  createDate: "1/1/0001 12:00:00 AM",
-  useDate: "1/1/0001 12:00:00 AM",
-  isVip: false,
-};
 
 const mockedUsedNavigate = jest.fn();
 
@@ -44,80 +34,19 @@ describe("Record By Test", () => {
     fetchMock.get(
       `${
         process.env.REACT_APP_API_BASE_URL ?? "/api"
-      }/Record/GetRecordByUserTest/12345&&${mockTest.idTest}`,
+      }/Record/GetRecordByUser/12345`,
 
       {
         status: 200,
         body: mockRecords,
       }
     );
-    fetchMock.get(
-      `${process.env.REACT_APP_API_BASE_URL ?? "/api"}/Test/GetTestById/${
-        mockTest.idTest
-      }`,
-
-      {
-        status: 200,
-        body: mockTest,
-      }
-    );
   });
 
   test("List Index", async () => {
-    render(
-      <UserProviderTest>
-        <MemoryRouter initialEntries={[`/test/${mockTest.idTest}`]}>
-          <Routes>
-            <Route path="/test/:id" element={<RecordByTest />} />
-          </Routes>
-        </MemoryRouter>
-      </UserProviderTest>
-    );
+    renderWithUserRole(<TestRecord />);
 
-    const test = await screen.findByText(mockTest.name);
+    const test = await screen.findByText(mockRecords[0].testName);
     expect(test).toBeInTheDocument();
-
-    const record = await screen.findByText(mockRecords[0].createDate);
-    expect(record).toBeInTheDocument();
-  });
-
-  test("Detail navigate", async () => {
-    render(
-      <UserProviderTest>
-        <MemoryRouter initialEntries={[`/test/${mockTest.idTest}`]}>
-          <Routes>
-            <Route path="/test/:id" element={<RecordByTest />} />
-          </Routes>
-        </MemoryRouter>
-      </UserProviderTest>
-    );
-
-    const linkElement = await screen.findByText(/Xem chi tiết/i);
-
-    expect(linkElement).toBeInTheDocument();
-
-    expect(linkElement.href).toContain(
-      `/test/result/${mockRecords[0].idRecord}`
-    );
-  });
-
-  test("History navigate", async () => {
-    render(
-      <UserProviderTest>
-        <MemoryRouter initialEntries={[`/test/${mockTest.idTest}`]}>
-          <Routes>
-            <Route path="/test/:id" element={<RecordByTest />} />
-          </Routes>
-        </MemoryRouter>
-      </UserProviderTest>
-    );
-
-    await screen.findAllByText(/Lịch sử /i);
-
-    const historyButton = screen.getByTestId("test-history");
-    fireEvent.click(historyButton);
-
-    // Kiểm tra xem navigate đã được gọi với đúng địa chỉ URL không
-    expect(mockedUsedNavigate).toHaveBeenCalledWith(`/test/record`);
   });
 });

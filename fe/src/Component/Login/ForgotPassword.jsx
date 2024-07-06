@@ -98,7 +98,11 @@ function ForgotPassword() {
                 placeholder="Nhập Email"
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <div className="send-mail-image" onClick={sendEmail}>
+              <div
+                className="send-mail-image"
+                onClick={sendEmail}
+                data-testid="submit-mail"
+              >
                 <img
                   width="48"
                   height="48"

@@ -84,7 +84,7 @@ describe("Header Component", () => {
     expect(window.location.href).toContain("MiniTest");
   });
 
-  test("Usser header element navigate", async () => {
+  test("User header element navigate", async () => {
     renderWithUserRole(<Header />);
 
     const profileLabel = await screen.findByText(/trang cá nhân/i);

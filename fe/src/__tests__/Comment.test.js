@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import fetchMock from "fetch-mock";
 import Comment from "../Component/Courses/Lessons/Comment/Comment";
 import { renderWithUserRole } from "../constant/testConst";
