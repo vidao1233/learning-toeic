@@ -52,7 +52,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "test:ci": "npm test -- --coverage --ci --testResultsProcessor=jest-junit",
+    "test:ci": "npm test -- --coverage --ci --testResultsProcessor=jest-junit --watchAll=false",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

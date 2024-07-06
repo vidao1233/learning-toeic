@@ -27,6 +27,8 @@ const ModalUpdateVoc = ({ isOpen, contentLabel, children }) => {
     borderRadius: "10px",
     padding: "20px",
     zIndex: 1001,
+    maxHeight: "97vh",
+    overflowY: "scroll",
   });
 
   useEffect(() => {

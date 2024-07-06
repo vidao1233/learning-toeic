@@ -47,6 +47,30 @@ describe("Home", () => {
     expect(test).toBeInTheDocument();
   });
 
+  test("Intro Navigate", () => {
+    renderWithCustom(<Home />);
+
+    const test = screen.getByText(
+      /Cung cấp các đề thi thử toàn phần và từng phần/i
+    );
+    expect(test).toBeInTheDocument();
+
+    const course = screen.getByText(/các lesson ngữ pháp/i);
+    expect(course).toBeInTheDocument();
+
+    const vocab = screen.getByText(/từ vựng về các chủ đề/i);
+    expect(vocab).toBeInTheDocument();
+
+    fireEvent.click(course);
+    expect(window.location.href).toContain("courses");
+
+    fireEvent.click(vocab);
+    expect(window.location.href).toContain("practice-vocabulary");
+
+    fireEvent.click(test);
+    expect(window.location.href).toContain("test");
+  });
+
   test("Home Course", async () => {
     fetchMock.get(
       `${process.env.REACT_APP_API_BASE_URL ?? "/api"}/Course/GetAllCourses`,

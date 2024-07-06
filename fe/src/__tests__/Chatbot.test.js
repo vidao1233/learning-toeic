@@ -89,11 +89,6 @@ Object.defineProperty(window, "localStorage", {
   value: localStorageMock,
 });
 global.fetch = jest.fn();
-jest.mock("react-toastify", () => ({
-  toast: {
-    error: jest.fn(),
-  },
-}));
 
 describe("Chatbot component", () => {
   beforeEach(() => {
