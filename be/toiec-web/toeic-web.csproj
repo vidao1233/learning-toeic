@@ -43,7 +43,12 @@
 
   <ItemGroup>
     <Folder Include="ExcelData\" />
+    <Folder Include="wwwroot\images\" />
     <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\voc-default.png" />
   </ItemGroup>
 
 </Project>

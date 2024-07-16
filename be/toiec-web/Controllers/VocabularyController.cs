@@ -15,12 +15,15 @@ namespace toeic_web.Controllers
         private readonly IVocabularyService _vocabularyService;
         private readonly IMapper _mapper;
         private readonly ILogger<VocabularyController> _logger;
+        private readonly IWebHostEnvironment _env;
 
-        public VocabularyController(IVocabularyService vocabularyService, IMapper mapper, ILogger<VocabularyController> logger)
+        public VocabularyController(IVocabularyService vocabularyService, IMapper mapper, 
+            ILogger<VocabularyController> logger, IWebHostEnvironment env)
         {
             _vocabularyService = vocabularyService;
             _mapper = mapper;
             _logger = logger;
+            _env = env;
         }
 
         [HttpGet]
@@ -61,15 +64,15 @@ namespace toeic_web.Controllers
                 return StatusCode(StatusCodes.Status404NotFound,
                     new Response { Status = "Fail", Message = "Data not found !" });
             }
-            if (voc.image == null)
-            {
-                var url = Url.Action(nameof(GetImage), "Vocabulary", new { id = voc.idVoc }, Request.Scheme);
-                if (url != null && url.Contains("http://backend"))
-                {
-                    url = url.Replace("http://backend", "https://toeic.workon.space");
-                }
-                voc.image = url;
-            }
+            //if (voc.image == null)
+            //{
+            //    var url = Url.Action(nameof(GetImage), "Vocabulary", new { id = voc.idVoc }, Request.Scheme);
+            //    if (url != null && url.Contains("http://backend"))
+            //    {
+            //        url = url.Replace("http://backend", "https://toeic.workon.space");
+            //    }
+            //    voc.image = url;
+            //}
             return Ok(voc);
         }
 
@@ -202,16 +205,40 @@ namespace toeic_web.Controllers
             stopwatch.Stop();
             _logger.LogInformation($"GetVocabularyById took {stopwatch.ElapsedMilliseconds} ms");
 
-            if (vocabulary == null || string.IsNullOrEmpty(vocabulary.image))
+            if (vocabulary == null)
             {
                 return StatusCode(StatusCodes.Status404NotFound,
                     new Response { Status = "Fail", Message = "Data not found!" });
             }
 
-            stopwatch = Stopwatch.StartNew();
-            byte[] imageBytes = Convert.FromBase64String(vocabulary.image);
-            stopwatch.Stop();
-            _logger.LogInformation($"Base64 to byte[] conversion took {stopwatch.ElapsedMilliseconds} ms");
+            byte[] imageBytes;
+            if (string.IsNullOrEmpty(vocabulary.image))
+            {
+                var webRootPath = _env.WebRootPath;
+
+                if (string.IsNullOrEmpty(webRootPath))
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError,
+                        new Response { Status = "Error", Message = "Web root path is not configured correctly." });
+                }
+
+                var defaultImagePath = Path.Combine(webRootPath, "images", "voc-default.png");
+
+                if (!System.IO.File.Exists(defaultImagePath))
+                {
+                    return StatusCode(StatusCodes.Status404NotFound,
+                        new Response { Status = "Fail", Message = $"Default image not found! {defaultImagePath}" });
+                }
+                imageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                _logger.LogInformation("Default image returned");
+            }
+            else
+            {
+                stopwatch = Stopwatch.StartNew();
+                imageBytes = Convert.FromBase64String(vocabulary.image);
+                stopwatch.Stop();
+                _logger.LogInformation($"Base64 to byte[] conversion took {stopwatch.ElapsedMilliseconds} ms");
+            }
 
             return File(imageBytes, "image/png");
         }
