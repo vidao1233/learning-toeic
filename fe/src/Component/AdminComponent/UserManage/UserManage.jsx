@@ -133,7 +133,7 @@ function UserManage() {
             return (
               <div key={index} className="wordList-item">
                 <div>{item?.fullname}</div>
-                <div>{item?.userName}</div>
+                <div>{item?.username}</div>
                 <div>{item?.email}</div>
                 <div className="btn-wrapper">
                   <button

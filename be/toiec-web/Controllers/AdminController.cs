@@ -44,7 +44,15 @@ namespace toeic_web.Controllers
         [Route("GetAllUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
-            var usersList = await _userManager.Users.ToListAsync();
+            var usersData = await _userManager.Users.ToListAsync();
+            var usersList = new List<UserViewModel>();
+            foreach (var user in usersData)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                var userView = _mapper.Map<UserViewModel>(user);
+                userView.roles = roles.ToList();
+                usersList.Add(userView);
+            }
             return Ok(usersList);
         }
 

@@ -39,7 +39,7 @@ namespace toeic_web.Services
 
             if (voc != null)
             {
-                voc.idVoc = new Guid();
+                voc.idVoc = new Guid(); 
                 addCheck = await _vocabularyRepository.AddVocabularyToList(idList, voc);
             }
             return addCheck;

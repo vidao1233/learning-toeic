@@ -143,6 +143,7 @@ namespace toeic_web
             app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseStaticFiles();
 
             app.MapControllers();
 
