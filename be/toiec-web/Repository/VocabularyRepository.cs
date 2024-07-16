@@ -74,20 +74,41 @@ namespace toeic_web.Repository
 
         public async Task<IEnumerable<VocabularyModel>> GetAllVocabularies()
         {
-            var listData = new List<VocabularyModel>();
-            var data = await Entities.OrderBy(v => v.engWord).ToListAsync();
-            foreach (var item in data)
-            {
-                var obj = _mapper.Map<VocabularyModel>(item);
-                listData.Add(obj);
-            }
-            return listData;
+            var listData = await Entities.OrderBy(v => v.engWord)
+                .Select(v => new VocabularyModel
+                {
+                    idVoc = v.idVoc,
+                    idList = v.idList,
+                    topic = v.topic,
+                    engWord = v.engWord,
+                    pronunciation = v.pronunciation,
+                    wordType = v.wordType,
+                    meaning = v.meaning,
+                    image = null,
+                    example = v.example,
+                    status = v.status,
+                })
+                .ToListAsync();
+            return _mapper.Map<IEnumerable<VocabularyModel>>(listData);
         }
         public async Task<IEnumerable<VocabularyModel>> GetAllVocabulariesByListId(Guid listId)
         {
             var listData = await Entities
                 .Where(v => v.idList == listId)
                 .OrderBy(v => v.engWord)
+                .Select(v => new VocabularyModel
+                {
+                    idVoc = v.idVoc,
+                    idList = v.idList,
+                    topic = v.topic,
+                    engWord = v.engWord,
+                    pronunciation = v.pronunciation,
+                    wordType = v.wordType,
+                    meaning = v.meaning,
+                    image = null,
+                    example = v.example,
+                    status = v.status,
+                })
                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<VocabularyModel>>(listData);
@@ -96,17 +117,22 @@ namespace toeic_web.Repository
 
         public async Task<IEnumerable<VocabularyModel>> GetAllVocabularyByTopic(string topic)
         {
-            var listData = new List<VocabularyModel>();
-            var data = await Entities.OrderBy(v => v.engWord).ToListAsync();
-            foreach(var item in data)
-            {
-                if(item.topic == topic)
-                {
-                    var obj = _mapper.Map<VocabularyModel>(item);
-                    listData.Add(obj);
-                }
-            }
-            return listData;
+            var listData = await Entities.OrderBy(v => v.engWord)
+                .Select(v => new VocabularyModel
+                { 
+                    idVoc = v.idVoc,
+                    idList = v.idList,
+                    topic = v.topic,
+                    engWord = v.engWord,
+                    pronunciation = v.pronunciation,
+                    wordType = v.wordType,
+                    meaning = v.meaning,
+                    image = null,
+                    example = v.example,
+                    status = v.status,
+                })
+                .ToListAsync();
+            return _mapper.Map<IEnumerable<VocabularyModel>>(listData);
         }
 
         public async Task<VocabularyModel> GetVocabularyById(Guid vocId)
