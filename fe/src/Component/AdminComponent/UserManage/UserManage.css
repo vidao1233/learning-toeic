@@ -66,6 +66,7 @@
   border-bottom: 1px solid #e8eaf1;
   display: grid;
   grid-template-columns: 1fr 1fr 2fr 1fr;
+  gap: 1rem;
 }
 .professor-lesson-list .lesson-list-item:hover {
   transform: translateZ(1px);

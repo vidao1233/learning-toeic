@@ -107,11 +107,13 @@ function AddVipPackage() {
                 "Không được để trống thời hạn"}
             </error>
           </div>
-          <input
-            className="professor-add-lesson-btn"
-            type="submit"
-            value="Thêm gói VIP"
-          />
+          <div
+            style={{ width: "100%", display: "flex", justifyContent: "center" }}
+          >
+            <button type="submit" className="professor-add-lesson-btn">
+              Thêm gói VIP
+            </button>
+          </div>
         </form>
       </div>
     </div>

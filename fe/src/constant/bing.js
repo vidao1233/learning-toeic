@@ -26,9 +26,6 @@ export const bingRequest = async (query) => {
     headers: myHeaders,
   });
   const data = await res.json();
-  console.log("Image results from BING: ", data.value);
-
   const contentUrl = getContentUrlWithSizeLimit(data, 4.5);
-
   return contentUrl ?? null;
 };

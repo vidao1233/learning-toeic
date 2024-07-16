@@ -6,11 +6,13 @@ import AddTest from "./AddTest";
 import { UserContext } from "../../../Context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { showDeleteWarning } from "../../Common/Alert/Alert";
+import ReactPaginate from "react-paginate";
 
 function ProfessorTestManage() {
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [tests, setTest] = useState([]);
   const [modal, setModal] = useState(false);
@@ -109,36 +111,53 @@ function ProfessorTestManage() {
         <div className="test-grid-wrapper">
           <div className="test-grid">
             {tests &&
-              tests.map((test, index) => {
-                return (
-                  <div key={index} className="test-item">
-                    <img
-                      src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/100/external-online-test-online-education-flaticons-lineal-color-flat-icons-2.png"
-                      alt=""
-                    />
-                    <div className="test-title">{test.name}</div>
-                    <div className="btn-wrapper">
-                      <button
-                        className="delete-btn"
-                        onClick={() =>
-                          showDeleteWarning(() => DeleteTest(test.idTest))
-                        }
-                      >
-                        Xóa
-                      </button>
-                      <button
-                        className="update-btn"
-                        onClick={() => {
-                          navigate(`/professor/test/${test.idTest}`);
-                        }}
-                      >
-                        Sửa
-                      </button>
+              tests
+                .slice(currentPage * 8 - 8, currentPage * 8)
+                .map((test, index) => {
+                  return (
+                    <div key={index} className="test-item">
+                      <img
+                        src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/100/external-online-test-online-education-flaticons-lineal-color-flat-icons-2.png"
+                        alt=""
+                      />
+                      <div className="test-title">{test.name}</div>
+                      <div className="btn-wrapper">
+                        <button
+                          className="delete-btn"
+                          onClick={() =>
+                            showDeleteWarning(() => DeleteTest(test.idTest))
+                          }
+                        >
+                          Xóa
+                        </button>
+                        <button
+                          className="update-btn"
+                          onClick={() => {
+                            navigate(`/professor/test/${test.idTest}`);
+                          }}
+                        >
+                          Sửa
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
           </div>
+        </div>
+        <div className="pagination-wrapper">
+          <ReactPaginate
+            containerClassName={"pagination"}
+            pageClassName={"page-item"}
+            activeClassName={"active"}
+            onPageChange={(event) => {
+              console.log(event.selected);
+              setCurrentPage(event.selected + 1);
+            }}
+            pageCount={Math.ceil(tests.length / 8)}
+            breakLabel="..."
+            previousLabel={<i class="fa-solid fa-chevron-left page-item"></i>}
+            nextLabel={<i class="fa-solid fa-chevron-right page-item"></i>}
+          />
         </div>
       </div>
     </>

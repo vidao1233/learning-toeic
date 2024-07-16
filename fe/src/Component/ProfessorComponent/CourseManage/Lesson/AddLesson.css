@@ -14,12 +14,6 @@
   width: 100%;
   text-align: center;
   font-weight: 600;
-}
-.professor-add-lesson-btn {
-  background-color: #41a86c;
-  border-radius: 2rem;
-}
-.professor-add-lesson-btn:hover {
-  cursor: pointer;
+  border: 1px solid #e8eaf1;
 }
 /* ----------------Quiz Session----------- */

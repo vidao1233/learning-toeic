@@ -8,14 +8,13 @@
 }
 .professor-vocabulary-wrapper .vocabulary-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1.5rem;
 }
 .professor-vocabulary-wrapper .vocabulary-item {
   display: flex;
   flex-direction: column;
   min-height: 250px;
-  max-width: 300px;
   gap: 1rem;
   justify-content: center;
   align-items: center;

@@ -154,12 +154,17 @@ function UpdateVipPackage() {
               onChange={changeInput}
             />
           </div>
-          <input
-            type="button"
-            value="Cập nhật gói vip"
-            className="professor-add-lesson-btn"
-            onClick={clickSubmit}
-          />
+          <div
+            style={{ width: "100%", display: "flex", justifyContent: "center" }}
+          >
+            <button
+              onClick={clickSubmit}
+              type="submit"
+              className="professor-add-lesson-btn"
+            >
+              Cập nhật gói vip
+            </button>
+          </div>
         </form>
       </div>
     </div>

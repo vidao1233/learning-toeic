@@ -128,13 +128,37 @@ function UserManage() {
         </div>
       </div>
       <div className="wordList-wrapper">
+        <div className="wordList-item" style={{ fontWeight: 600 }}>
+          <div>Họ và tên</div>
+          <div>Tên người dùng</div>
+          <div>Email</div>
+          <div className="btn-wrapper">Hành động</div>
+        </div>
         {users &&
           users.map((item, index) => {
             return (
               <div key={index} className="wordList-item">
-                <div>{item?.fullname}</div>
-                <div>{item?.username}</div>
-                <div>{item?.email}</div>
+                <div className="text-truncate">{item?.fullname}</div>
+                <div className="text-truncate">{item?.username}</div>
+                <div
+                  className="text-truncate"
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  {item?.email}
+                  {item?.roles[1] === "VipStudent" && (
+                    <img
+                      width="34"
+                      height="34"
+                      src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-vip-music-festival-flaticons-flat-flat-icons.png"
+                      alt=""
+                    />
+                  )}
+                </div>
                 <div className="btn-wrapper">
                   <button
                     className="delete-btn"

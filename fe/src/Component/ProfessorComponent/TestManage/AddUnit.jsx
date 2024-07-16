@@ -25,6 +25,7 @@ function AddUnit({ idTestPart, toggle_modal, fetchUnit }) {
     () => ({
       toolbarButtonSize: "small",
       readonly: false,
+      height: 600,
     }),
     []
   );
@@ -184,7 +185,9 @@ function AddUnit({ idTestPart, toggle_modal, fetchUnit }) {
             config={config}
           ></JoditEditor>
           <h3>Kiểm tra lại nội dung</h3>
-          <div>{HTMLReactParser(String(paragraph))}</div>
+          <div style={{ maxHeight: 400, overflowY: "scroll" }}>
+            {HTMLReactParser(String(paragraph))}
+          </div>
           <div>
             <h3>Script</h3>
             <textarea
@@ -199,11 +202,13 @@ function AddUnit({ idTestPart, toggle_modal, fetchUnit }) {
               onChange={(e) => setTranslation(e.target.value)}
             ></textarea>
           </div>
-          <input
-            type="submit"
-            value="Thêm Unit"
-            className="professor-add-lesson-btn"
-          />
+          <div
+            style={{ width: "100%", display: "flex", justifyContent: "center" }}
+          >
+            <button type="submit" className="professor-add-lesson-btn">
+              Thêm Unit
+            </button>
+          </div>
         </form>
       </div>
     </div>

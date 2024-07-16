@@ -192,7 +192,7 @@ label:hover :checked + .flip-card {
 
 .vocabulary__item:hover {
   transition: all;
-  box-shadow:  0 6px 6px #e8eaf1;
+  box-shadow: 0 6px 6px #e8eaf1;
 }
 
 .vocabulary__item-content {
@@ -202,8 +202,8 @@ label:hover :checked + .flip-card {
   flex-direction: row;
 }
 
-
 .vocabulary__item-button {
+  white-space: nowrap;
   border-radius: 5px;
   padding: 4px 10px;
   background: #f2f2f2;

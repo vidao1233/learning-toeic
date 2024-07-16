@@ -10,6 +10,7 @@ import { AiOutlineUser } from "react-icons/ai";
 import { MdOutlineFlipToFront } from "react-icons/md";
 import classNames from "classnames/bind";
 import { UserContext } from "../../Context/UserContext";
+import ReactPaginate from "react-paginate";
 
 const cx = classNames.bind(styles);
 
@@ -17,7 +18,7 @@ function VocabularyTopic() {
   const [topics, setTopic] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useContext(UserContext);
-  const [urlNavigate, setUrlNavigate] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   async function fetchVocabularyTopic() {
     try {
@@ -45,13 +46,6 @@ function VocabularyTopic() {
     fetchVocabularyTopic();
     window.scrollTo(0, 0);
   }, []);
-  useEffect(() => {
-    if (user.auth) {
-      setUrlNavigate(`/vocabulary-by-user/${user.idUser}`);
-    } else {
-      setUrlNavigate("/login");
-    }
-  }, [user, setUrlNavigate]);
 
   if (isLoading) return <Loader />;
   return (
@@ -61,29 +55,31 @@ function VocabularyTopic() {
           subtitle="VictoryU"
           title="Danh sách từ vựng thường gặp trong bài thi TOEIC"
         />
-        <Link to={`${urlNavigate}`}>
-          <button
-            style={{
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "5px",
-              backgroundColor: "#007BFF",
-              color: "#fff",
-              fontWeight: "bold",
-              fontSize: "16px",
-              cursor: "pointer",
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-              transition: "background-color 0.3s",
-              marginLeft: "81%",
-            }}
-          >
-            Đến trang quản lý từ vựng của bạn
-          </button>
-        </Link>
+        {user.auth && (
+          <Link to={`/vocabulary-by-user/${user.idUser}`}>
+            <button
+              style={{
+                padding: "10px 20px",
+                border: "none",
+                borderRadius: "8px",
+                backgroundColor: "#007BFF",
+                color: "#fff",
+                fontWeight: "bold",
+                fontSize: "16px",
+                cursor: "pointer",
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+                transition: "background-color 0.3s",
+                marginLeft: "81%",
+              }}
+            >
+              Đến trang Từ vựng của bạn
+            </button>
+          </Link>
+        )}
         <div className={cx("wrapper")}>
           <div className={cx("gridview")}>
             {topics &&
-              topics?.map((val, index) => {
+              topics?.slice(currentPage * 9 - 9, currentPage * 9).map((val) => {
                 return (
                   <Link
                     key={val.idVocList}
@@ -114,6 +110,21 @@ function VocabularyTopic() {
                   </Link>
                 );
               })}
+          </div>
+          <div className="pagination-wrapper">
+            <ReactPaginate
+              containerClassName={"pagination"}
+              pageClassName={"page-item"}
+              activeClassName={"active"}
+              onPageChange={(event) => {
+                console.log(event.selected);
+                setCurrentPage(event.selected + 1);
+              }}
+              pageCount={Math.ceil(topics.length / 9)}
+              breakLabel="..."
+              previousLabel={<i class="fa-solid fa-chevron-left page-item"></i>}
+              nextLabel={<i class="fa-solid fa-chevron-right page-item"></i>}
+            />
           </div>
         </div>
       </div>
