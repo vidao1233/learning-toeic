@@ -31,9 +31,6 @@ function Quiz({ quizData, quizTitle }) {
       );
     }
   }, [clickedOption]);
-  useEffect(() => {
-    console.log(clickedList);
-  }, [clickedList]);
 
   useEffect(() => {
     if (showResult) {

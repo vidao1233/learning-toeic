@@ -5,6 +5,21 @@ import { toast } from "react-toastify";
 import Loader from "../../Common/Loader/Loader";
 import { bingRequest } from "../../../constant/bing";
 
+export async function getImageFileFromUrl(engWord) {
+  const imageUrl = await bingRequest(engWord);
+  try {
+    const proxyUrl =
+      "https://nodejs-serverless-function-express-phi-ashy.vercel.app/api/fetchImage?url=";
+    const response = await fetch(proxyUrl + encodeURIComponent(imageUrl));
+    const blob = await response.blob();
+    const filename = imageUrl.split("/").pop();
+    const file = new File([blob], filename, { type: blob.type });
+    return file;
+  } catch (error) {
+    console.error("Error converting URL to file:", error);
+  }
+}
+
 function AddVocabulary({
   toggleModal,
   modal_on,
@@ -24,21 +39,6 @@ function AddVocabulary({
     setValue,
     reset,
   } = useForm();
-
-  async function getImageFileFromUrl(engWord) {
-    const imageUrl = await bingRequest(engWord);
-    try {
-      const proxyUrl =
-        "https://nodejs-serverless-function-express-phi-ashy.vercel.app/api/fetchImage?url=";
-      const response = await fetch(proxyUrl + encodeURIComponent(imageUrl));
-      const blob = await response.blob();
-      const filename = imageUrl.split("/").pop();
-      const file = new File([blob], filename, { type: blob.type });
-      return file;
-    } catch (error) {
-      console.error("Error converting URL to file:", error);
-    }
-  }
 
   async function handleAddVocabulary(vocabulary) {
     const formData = new FormData();
@@ -199,7 +199,6 @@ function AddVocabulary({
               </h2>
               <form
                 onSubmit={handleSubmit((vocabulary) => {
-                  console.log(current_word);
                   if (current_word) handleUpdateVocabulary(vocabulary);
                   else handleAddVocabulary(vocabulary);
                 })}

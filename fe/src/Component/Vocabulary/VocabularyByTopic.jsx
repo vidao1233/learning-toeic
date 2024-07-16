@@ -23,6 +23,7 @@ import ModalUpdateVoc from "./ModalUpdateVoc";
 import { IoAddOutline } from "react-icons/io5";
 import vocDefault from "../../assets/voc-default.png";
 import { base64ToFile } from "../../constant/convertBase64";
+import { getImageFileFromUrl } from "../ProfessorComponent/VocabularyManage/AddVocabulary";
 
 const cx = classNames.bind(styles);
 
@@ -70,7 +71,6 @@ function VocabularyByTopic() {
         example: vocSelected.example,
         status: vocSelected.status,
       });
-      console.log(vocSelected.image);
     }
   }, [isEdit, vocSelected]);
   const handleOpenUpdateModal = () => setIsModalAddVocOpen(true);
@@ -151,10 +151,19 @@ function VocabularyByTopic() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      setIsLoading(true);
       const formDataToSend = new FormData();
 
       for (const key in formData) {
-        formDataToSend.append(key, formData[key]);
+        if (key === "image") {
+          if (formData["image"]) formDataToSend.append(key, formData[key]);
+          else {
+            const autoImg = await getImageFileFromUrl(formData["engWord"]);
+            formDataToSend.append("image", autoImg);
+          }
+        } else {
+          formDataToSend.append(key, formData[key]);
+        }
       }
       const response = await fetch(
         `${
@@ -168,24 +177,25 @@ function VocabularyByTopic() {
           body: formDataToSend,
         }
       );
-      setIsLoading(false);
       if (!response.ok) {
         toast.error(`Thêm từ vựng thất bại`);
       } else {
         toast.success("Thêm từ vựng thành công.");
       }
+      await Promise.all([fetchVocabulary(), handleCloseUpdateModal()]);
     } catch (error) {
       console.log(error);
       toast.error(`${error}`);
+    } finally {
+      setIsLoading(false);
     }
-    fetchVocabulary();
-    handleCloseUpdateModal();
   };
 
   const handleUpdate = async (event) => {
     // Do something with formData, like sending it to an API
     event.preventDefault();
     try {
+      setIsLoading(true);
       const formDataToSend = new FormData();
 
       for (const key in formData) {
@@ -203,7 +213,6 @@ function VocabularyByTopic() {
           body: formDataToSend,
         }
       );
-      setIsLoading(false);
       if (!updated.ok) {
         toast.error(`Cập nhật từ vựng thất bại`);
       } else {
@@ -213,19 +222,18 @@ function VocabularyByTopic() {
       console.log(error);
       toast.error(`${error}`);
     }
-    fetchVocabulary();
-    handleCloseUpdateModal();
+    await Promise.all([fetchVocabulary(), handleCloseUpdateModal()]);
+    setIsLoading(false);
   };
 
   async function fetchVocabulary() {
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
       const response = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL ?? "/api"
         }/Vocabulary/GetVocabularyByList/${id}`
       );
-      setIsLoading(false);
       if (!response.ok) {
         const errorData = await response?.json();
         toast.error(`${errorData.message}`);
@@ -235,18 +243,19 @@ function VocabularyByTopic() {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      // setIsLoading(false);
     }
   }
 
   async function fetchVocabularyTopic() {
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
       const response = await fetch(
         `${
           process.env.REACT_APP_API_BASE_URL ?? "/api"
         }/VocList/GetVocListById/${id}`
       );
-      setIsLoading(false);
       if (!response.ok) {
         const errorData = await response?.json();
         toast.error(`${errorData.message}`);
@@ -256,6 +265,8 @@ function VocabularyByTopic() {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      // setIsLoading(false);
     }
   }
   useEffect(() => {
@@ -287,13 +298,21 @@ function VocabularyByTopic() {
         }
       }
     };
-
     fetchData();
   }, [wordId]);
 
   useEffect(() => {
-    fetchVocabulary();
-    fetchVocabularyTopic();
+    const fetchInitData = async () => {
+      setIsLoading(true);
+      try {
+        await Promise.all([fetchVocabulary(), fetchVocabularyTopic()]);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchInitData();
     window.scrollTo(0, 0);
   }, []);
 
@@ -339,12 +358,12 @@ function VocabularyByTopic() {
   useEffect(() => {
     setCurrentSlide(0);
   }, []);
+  useEffect(() => {
+    console.log(isLoading);
+  }, [isLoading]);
   if (isLoading) {
     return <Loader />;
   }
-  console.log("edit:", isEdit);
-  console.log("add", isModalAddVocOpen);
-  console.log("sect", vocSelected);
   return (
     <div className="vocabulary-wrapper">
       <div className="container vocabulary-card">

@@ -10,7 +10,7 @@
 /* ------------Slider----------- */
 
 .slider {
-  height: 70vh;
+  height: 50vh;
   position: relative;
   overflow: hidden;
 }
@@ -173,7 +173,7 @@ label:hover :checked + .flip-card {
 /* --------Table----------- */
 
 .vocabulary-list-wrapper {
-  padding-top: 20px;
+  /* padding-top: 20px; */
 }
 .vocabulary-list {
   display: flex;

@@ -126,6 +126,14 @@ function CourseLessons() {
                             onClick={() => setCurrentCourse(other_course)}
                           >
                             {other_course.name}
+                            {other_course.isVip && (
+                              <img
+                                width="34"
+                                height="34"
+                                src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-vip-music-festival-flaticons-flat-flat-icons.png"
+                                alt=""
+                              />
+                            )}
                           </div>
                         );
                       } else {

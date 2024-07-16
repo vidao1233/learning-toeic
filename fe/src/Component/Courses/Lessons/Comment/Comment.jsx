@@ -3,7 +3,7 @@ import { UserContext } from "../../../../Context/UserContext";
 import CommentItem from "./CommentItem";
 import { toast } from "react-toastify";
 import Loader from "../../../Common/Loader/Loader";
-import { openAIClient } from "../../../../constant/chatbot";
+import { OPENAI_DEPLOYMENT, openAIClient } from "../../../../constant/chatbot";
 
 // Hàm tạo chuỗi định dạng ngày tháng từ đối tượng Date
 export function formatDateTime() {
@@ -35,7 +35,7 @@ function Comment({ id }) {
 
     try {
       const response = await openAIClient.getCompletions(
-        "chat-gpt-35",
+        OPENAI_DEPLOYMENT,
         [content],
         {
           maxTokens: 500,

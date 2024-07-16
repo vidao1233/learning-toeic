@@ -88,9 +88,6 @@ function CommentItem({
     };
   }, []);
 
-  useEffect(() => {
-    console.log(currentComent.content);
-  }, [currentComent]);
   return (
     currentComent && (
       <Fragment>

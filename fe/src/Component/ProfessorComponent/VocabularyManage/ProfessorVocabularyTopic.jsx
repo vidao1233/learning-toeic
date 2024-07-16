@@ -74,7 +74,7 @@ function ProfessorVocabularyTopic() {
     window.scrollTo(0, 0);
   }, []);
   useEffect(() => {
-    if (modal) {
+    if (!modal) {
       fetchVocabularyTopic();
     }
   }, [modal]);

@@ -111,7 +111,6 @@ describe("Header Component", () => {
   });
 
   test("Usser header VIP", async () => {
-    console.log("header");
     renderWithUserRole(<Header />, {
       user: {
         username: "dutran",

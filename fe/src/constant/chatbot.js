@@ -1,6 +1,10 @@
 import { OpenAIClient, AzureKeyCredential } from "@azure/openai";
-export const OPENAI_API_KEY = "6cc575947b0544229598df5c5c4e27d4";
-export const OPENAI_ENDPOINT = "https://toeicchatbot.openai.azure.com/";
+export const OPENAI_ENDPOINT = "https://utemyvietnam.openai.azure.com";
+export const OPENAI_API_KEY = "59cadad899ea4b84880981aa7575a2d8";
+export const OPENAI_DEPLOYMENT = "victoryu-chatbot";
+export const AZURE_SEARCH_ENDPOINT =
+  "https://victoryusearch.search.windows.net";
+export const AZURE_SEARCH_INDEX = "toeic-index";
 export const openAIClient = new OpenAIClient(
   OPENAI_ENDPOINT,
   new AzureKeyCredential(OPENAI_API_KEY)
