@@ -20,10 +20,7 @@ function AddVocabularyTopic({ toggleModal, modal_on, wordId }) {
     reset,
   } = useForm();
 
-  console.log({ wordId });
-
   async function handleAddVocabularyTopic(listId, wordId) {
-    console.log(listId);
     setIsLoading(true);
     try {
       const response = await fetch(

@@ -54,8 +54,6 @@ function EmailVerify() {
     });
   }, []);
 
-  console.log(id);
-
   return (
     <div className={css["login-success-wrapper"]}>
       <div className={css["login-success-bg"]}>

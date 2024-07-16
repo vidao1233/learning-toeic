@@ -16,7 +16,7 @@ export const bingRequest = async (query) => {
   const myHeaders = new Headers();
   myHeaders.append(
     "Ocp-Apim-Subscription-Key",
-    "488d765bf8cc473da0e511fe2023c805"
+    "d7a76291bea9415db0b73b614ae3699e"
   );
   const endpoint = `https://api.bing.microsoft.com/v7.0/images/search?q=${encodeURIComponent(
     query

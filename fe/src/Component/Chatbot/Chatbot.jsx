@@ -1,7 +1,13 @@
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { UserContext } from "../../Context/UserContext";
 import ChatMessage from "./ChatMessage";
-import { OPENAI_API_KEY } from "../../constant/chatbot";
+import {
+  AZURE_SEARCH_ENDPOINT,
+  AZURE_SEARCH_INDEX,
+  OPENAI_API_KEY,
+  OPENAI_DEPLOYMENT,
+  OPENAI_ENDPOINT,
+} from "../../constant/chatbot";
 import { toast } from "react-toastify";
 
 function Chatbot() {
@@ -17,11 +23,35 @@ function Chatbot() {
   const [error, setError] = useState("");
   const [conversation, setConversation] = useState([]);
 
-  const submitChatbot = async () => {
+  const searchAzure = async () => {
     try {
-      setIsLoading(true);
       const response = await fetch(
-        "https://toeicchatbot.openai.azure.com/openai/deployments/chat-gpt-35/chat/completions?api-version=2024-02-15-preview",
+        `${AZURE_SEARCH_ENDPOINT}/indexes/${AZURE_SEARCH_INDEX}/docs/search?api-version=2024-05-01-preview`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "api-key": "D0xRUU6jt2lhscpxMPthgxHK3YGyKLeXyCkvFXn42IAzSeDbiqOI",
+          },
+          body: JSON.stringify({
+            search: input,
+            queryType: "semantic",
+            semanticConfiguration: "default",
+          }),
+        }
+      );
+      const data = await response.json();
+      const results = data.value.map((doc) => doc.content);
+      return results;
+    } catch (error) {
+      console.error("Error searching Azure Search: ", error);
+      return false;
+    }
+  };
+  const ChatgptSearch = async (input_message) => {
+    try {
+      const response = await fetch(
+        `${OPENAI_ENDPOINT}/openai/deployments/${OPENAI_DEPLOYMENT}/chat/completions?api-version=2024-02-15-preview`,
         {
           method: "POST",
           headers: {
@@ -29,15 +59,43 @@ function Chatbot() {
             "api-key": OPENAI_API_KEY,
           },
           body: JSON.stringify({
-            messages: [...conversation, { role: "user", content: input }],
+            messages: input_message,
             temperature: 0.7,
             top_p: 0.95,
             frequency_penalty: 0,
             presence_penalty: 0,
-            max_tokens: 800,
           }),
         }
       );
+      return response;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
+  const submitChatbot = async () => {
+    const searchResults = await searchAzure();
+    try {
+      setIsLoading(true);
+      let response;
+      if (searchResults) {
+        const limitedSearchResult = searchResults[0].substring(0, 15000);
+        response = await ChatgptSearch([
+          ...conversation,
+          {
+            role: "assistant",
+            content:
+              "Use the following information to assist with the user's query: " +
+              limitedSearchResult,
+          },
+          { role: "user", content: input },
+        ]);
+      } else {
+        response = await ChatgptSearch([
+          ...conversation,
+          { role: "user", content: input },
+        ]);
+      }
       if (response.status === 200) {
         const data = await response.json();
         setConversation((prevConversation) => [
@@ -295,7 +353,7 @@ function Chatbot() {
                 onChange={(e) => setInput(e.currentTarget.value)}
                 value={input}
                 onKeyUp={(e) => {
-                  if (e.key === "Enter") submitQuestion();
+                  if (e.key === "Enter" && input !== "") submitQuestion();
                 }}
                 autoFocus
               />

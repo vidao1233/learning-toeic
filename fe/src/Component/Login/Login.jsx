@@ -237,7 +237,7 @@ function Login() {
                   id="sign-up-mobile"
                   onClick={() => SwitchSignUpMode(true)}
                 >
-                  Đăng kí tài khoản
+                  Đăng ký tài khoản
                 </div>
               </div>
             </form>
@@ -246,7 +246,7 @@ function Login() {
               className="sign-up-form"
               onSubmit={handleSubmitSignUp(handleSignUp)}
             >
-              <h2 className="title">Đăng kí</h2>
+              <h2 className="title">Đăng ký</h2>
               <div className="input-field">
                 <i className="fas fa-user"></i>
                 <input
@@ -362,7 +362,7 @@ function Login() {
               <div className="content">
                 <h3>Bạn là người mới?</h3>
                 <p>
-                  Đăng kí tài khoản để trải nghiệm trang web ngay bây giờ!!!
+                  Đăng ký tài khoản để trải nghiệm trang web ngay bây giờ!!!
                 </p>
                 <button
                   className="btn"

@@ -60,7 +60,6 @@ function UserProfile() {
       formData.append("FullName", data.fullname);
       formData.append("dateOfBirth", data.dateOfBirth);
       formData.append("Gender", Boolean(data.gender));
-      console.log(Boolean(data.gender));
       formData.append("PhoneNumber", data.phonenumber);
       if (data.imageURL) {
         if (

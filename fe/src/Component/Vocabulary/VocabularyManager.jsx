@@ -244,10 +244,7 @@ function VocabularyUserManager() {
       validateField(fieldName, formData[fieldName]);
     }
   }, [formData]);
-  console.log("selected:", idListSelected);
-  console.log("selected lits:", listInfo);
-  console.log("user:", user.idUser);
-  console.log("id:", id);
+
   return (
     <div className="vocabulary-topic-wrapper">
       <div className="container vocabulary-topic">
