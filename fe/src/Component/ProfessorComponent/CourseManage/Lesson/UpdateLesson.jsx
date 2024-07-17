@@ -44,7 +44,6 @@ function UpdateLesson() {
         toast.error(`${errorData.message}`);
       } else {
         const data = await response?.json();
-        console.log(data);
         setFormData(data);
       }
     } catch (error) {

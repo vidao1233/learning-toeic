@@ -88,7 +88,6 @@ function AddVocabularyTopic({ toggleModal, modal_on, initTopic }) {
 
   useEffect(() => {
     if (initTopic) {
-      console.log(initTopic);
       setValue("title", initTopic.title);
       setValue("description", initTopic?.description);
       setValue("isPublic", initTopic?.isPublic);

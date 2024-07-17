@@ -21,11 +21,27 @@ export const bingRequest = async (query) => {
   const endpoint = `https://api.bing.microsoft.com/v7.0/images/search?q=${encodeURIComponent(
     query
   )}`;
-  const res = await fetch(endpoint, {
-    method: "GET",
-    headers: myHeaders,
-  });
-  const data = await res.json();
-  const contentUrl = getContentUrlWithSizeLimit(data, 4.5);
-  return contentUrl ?? null;
+
+  let attempt = 0;
+  const maxAttempts = 5;
+  let contentUrl = null;
+
+  while (attempt < maxAttempts) {
+    try {
+      const res = await fetch(endpoint, {
+        method: "GET",
+        headers: myHeaders,
+      });
+      const data = await res.json();
+      contentUrl = getContentUrlWithSizeLimit(data, 3);
+      if (contentUrl) {
+        return contentUrl;
+      }
+    } catch (error) {
+      console.error(`Attempt ${attempt + 1} failed:`, error);
+    }
+    attempt += 1;
+  }
+
+  return null;
 };

@@ -46,6 +46,7 @@ import EmailVerify from "./Component/Login/MailVerify/EmailVerify";
 import TestResult from "./Component/Test/TestResult/TestResult";
 import CommentManage from "./Component/AdminComponent/CommentManage/CommentManage";
 import VocabularyUserManager from "./Component/Vocabulary/VocabularyManager";
+import { VocabularyProvider } from "./Context/VocabularyContext";
 
 function App() {
   return (
@@ -59,65 +60,75 @@ function App() {
           draggable={true}
         />
         <UserLayout>
-          <Routes>
-            <Route exact path="/" element={<Home />} />
-            <Route exact path="/login" element={<Login />} />
-            <Route exact path="/login/success" element={<EmailVerify />} />
-            <Route
-              exact
-              path="/practice-vocabulary"
-              element={<VocabularyTopic />}
-            />
-            <Route
-              exact
-              path="/vocabulary-by-topic/:id"
-              element={<VocabularyByTopic />}
-            />
-            <Route exact path="/courses" element={<Courses />} />
-            <Route
-              exact
-              path="/course-lessons/:id"
-              element={<CourseLessons />}
-            />
-            <Route exact path="/test" element={<TestIndex />} />
-            <Route exact path="/test/type/:id" element={<TestList />} />
-            <Route exact path="/test/result/:id" element={<TestResult />} />
-            <Route exact path="/forgot-password" element={<ForgotPassword />} />
+          <VocabularyProvider>
+            <Routes>
+              <Route exact path="/" element={<Home />} />
+              <Route exact path="/login" element={<Login />} />
+              <Route exact path="/login/success" element={<EmailVerify />} />
+              <Route
+                exact
+                path="/practice-vocabulary"
+                element={<VocabularyTopic />}
+              />
+              <Route
+                exact
+                path="/vocabulary-by-topic/:id"
+                element={<VocabularyByTopic />}
+              />
+              <Route exact path="/courses" element={<Courses />} />
+              <Route
+                exact
+                path="/course-lessons/:id"
+                element={<CourseLessons />}
+              />
+              <Route exact path="/test" element={<TestIndex />} />
+              <Route exact path="/test/type/:id" element={<TestList />} />
+              <Route exact path="/test/result/:id" element={<TestResult />} />
+              <Route
+                exact
+                path="/forgot-password"
+                element={<ForgotPassword />}
+              />
 
-            <Route element={<UserPrivate />}>
-              <Route
-                exact
-                path="/vocabulary-by-user/:id"
-                element={<VocabularyUserManager />}
-              />
-              <Route exact path="/user/profile/:id" element={<UserProfile />} />
-              <Route
-                exact
-                path="/user/changePassword"
-                element={<ChangePassword />}
-              />
-              <Route exact path="/lesson/:id" element={<Lesson />} />
-              <Route exact path="/test/record" element={<TestRecord />} />
-              <Route exact path="/test/:id" element={<RecordByTest />} />
-              <Route exact path="/do-test/:id" element={<TestMain />} />
-              <Route exact path="/vippackage" element={<VipPackage />} />
-              <Route
-                exact
-                path="/vippackage-detail/:id"
-                element={<VipPackageDetail />}
-              />
-              <Route
-                exact
-                path="/vippackage-checkout/:state"
-                element={<VipPackageCheckout />}
-              />
-              <Route
-                exact
-                path="/payment-history"
-                element={<VipPackageCheckout />}
-              />
-            </Route>
-          </Routes>
+              <Route element={<UserPrivate />}>
+                <Route
+                  exact
+                  path="/vocabulary-by-user/:id"
+                  element={<VocabularyUserManager />}
+                />
+                <Route
+                  exact
+                  path="/user/profile/:id"
+                  element={<UserProfile />}
+                />
+                <Route
+                  exact
+                  path="/user/changePassword"
+                  element={<ChangePassword />}
+                />
+                <Route exact path="/lesson/:id" element={<Lesson />} />
+                <Route exact path="/test/record" element={<TestRecord />} />
+                <Route exact path="/test/:id" element={<RecordByTest />} />
+                <Route exact path="/do-test/:id" element={<TestMain />} />
+                <Route exact path="/vippackage" element={<VipPackage />} />
+                <Route
+                  exact
+                  path="/vippackage-detail/:id"
+                  element={<VipPackageDetail />}
+                />
+                <Route
+                  exact
+                  path="/vippackage-checkout/:state"
+                  element={<VipPackageCheckout />}
+                />
+                <Route
+                  exact
+                  path="/payment-history"
+                  element={<VipPackageCheckout />}
+                />
+              </Route>
+            </Routes>
+          </VocabularyProvider>
         </UserLayout>
         <ProfessorLayout>
           <Routes>
