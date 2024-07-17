@@ -47,7 +47,7 @@ namespace toeic_web
             builder.Services.AddDbContext<ToeicDbContext>(options =>
             {
                 options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("CustomConnection"),
+                    builder.Configuration.GetConnectionString("FixConnection"),
                     options => options.EnableRetryOnFailure(
                     maxRetryCount: 5,
                     maxRetryDelay: System.TimeSpan.FromSeconds(30),
@@ -59,7 +59,7 @@ namespace toeic_web
             configuration.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                           .UseSimpleAssemblyNameTypeSerializer()
                           .UseRecommendedSerializerSettings()
-                          .UseSqlServerStorage(builder.Configuration.GetConnectionString("CustomConnection")));
+                          .UseSqlServerStorage(builder.Configuration.GetConnectionString("FixConnection")));
 
             builder.Services.AddHangfireServer();
             //add Identity
