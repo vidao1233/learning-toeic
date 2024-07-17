@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using MathNet.Numerics.Distributions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -364,7 +363,7 @@ namespace toeic_web.Controllers
                 token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
                 expiration = jwtToken.ValidTo,
                 emailConfirm = true,
-                freetest = student?.freeTest ?? false
+                freetest = student.freeTest
             });
 
         }
