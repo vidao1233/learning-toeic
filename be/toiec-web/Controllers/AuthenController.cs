@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
-using MathNet.Numerics.Distributions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.SqlServer.Management.Smo;
-using NPOI.HSSF.Record;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -365,7 +363,7 @@ namespace toeic_web.Controllers
                 token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
                 expiration = jwtToken.ValidTo,
                 emailConfirm = true,
-                freetest = student?.freeTest ?? false
+                freetest = student.freeTest
             });
 
         }
