@@ -47,7 +47,7 @@ namespace toeic_web
             builder.Services.AddDbContext<ToeicDbContext>(options =>
             {
                 options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("CustomConnection"),
+                    builder.Configuration.GetConnectionString("FixConnection"),
                     options => options.EnableRetryOnFailure(
                     maxRetryCount: 5,
                     maxRetryDelay: System.TimeSpan.FromSeconds(30),
@@ -59,7 +59,7 @@ namespace toeic_web
             configuration.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                           .UseSimpleAssemblyNameTypeSerializer()
                           .UseRecommendedSerializerSettings()
-                          .UseSqlServerStorage(builder.Configuration.GetConnectionString("CustomConnection")));
+                          .UseSqlServerStorage(builder.Configuration.GetConnectionString("FixConnection")));
 
             builder.Services.AddHangfireServer();
             //add Identity
@@ -148,13 +148,13 @@ namespace toeic_web
             });
 
             var app = builder.Build();
-            // Ensure database is created
-            using (var scope = app.Services.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<ToeicDbContext>();
-                dbContext.Database.Migrate();
-            }
-            var serviceProvider = app.Services;            
+            // // Ensure database is created
+            // using (var scope = app.Services.CreateScope())
+            // {
+            //     var dbContext = scope.ServiceProvider.GetRequiredService<ToeicDbContext>();
+            //     dbContext.Database.Migrate();
+            // }
+            // var serviceProvider = app.Services;            
 
             app.UseSwagger();
             app.UseSwaggerUI();
