@@ -148,13 +148,13 @@ namespace toeic_web
             });
 
             var app = builder.Build();
+            var serviceProvider = app.Services;
             // Ensure database is created
             using (var scope = app.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<ToeicDbContext>();
                 dbContext.Database.Migrate();
-            }
-            var serviceProvider = app.Services;            
+            }                     
 
             app.UseSwagger();
             app.UseSwaggerUI();
