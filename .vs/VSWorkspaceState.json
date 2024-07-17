@@ -3,7 +3,7 @@
     "",
     "\\be",
     "\\be\\toiec-web",
-    "\\be\\toiec-web\\Controllers",
+    "\\be\\toiec-web\\Data",
     "\\be\\toiec-web\\Repository",
     "\\be\\toiec-web\\Services",
     "\\be\\toiec-web\\ViewModels",
@@ -11,6 +11,6 @@
     "\\be\\toiec-web\\ViewModels\\Vocabulary",
     "\\be\\UnitTest"
   ],
-  "SelectedNode": "\\be\\toiec-web.sln",
+  "SelectedNode": "\\be\\toiec-web\\Data\\VipStudent.cs",
   "PreviewInSolutionExplorer": false
 }

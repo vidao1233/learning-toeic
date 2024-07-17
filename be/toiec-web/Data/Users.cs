@@ -17,5 +17,6 @@ namespace toeic_web.Models
         public virtual ICollection<VocList> VocTopics { get; set; }
         public virtual ICollection<Vocabulary> Vocabulary { get; set;}
         public virtual ICollection<UserRoute> UserRoutes { get; set; }
+        public virtual ICollection<AccessHistory> AccessHistory { get; set; }
     }
 }

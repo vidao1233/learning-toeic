@@ -23,8 +23,45 @@ namespace toeic_web.Services
             emailMessage.From.Add(new MailboxAddress("VICTORYU_CENTER", _emailConfig.From));
             emailMessage.To.AddRange(message.To);
             emailMessage.Subject = message.Subject;
-            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = message.Content };
+
+            if (!string.IsNullOrEmpty(message.TemplateFilePath))
+            {
+                // Load email template from file
+                var templatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, message.TemplateFilePath);
+                var templateContent = File.ReadAllText(templatePath);
+
+                // Replace placeholders with actual values
+                var finalHtml = ReplaceTemplatePlaceholders(templateContent, message.TemplateValues);
+
+                // Set message body as HTML
+                var htmlBody = new TextPart(MimeKit.Text.TextFormat.Html)
+                {
+                    Text = finalHtml
+                };
+
+                emailMessage.Body = htmlBody;
+            }
+            else
+            {
+                // If no template file path is specified, use message.Content directly
+                var htmlBody = new TextPart(MimeKit.Text.TextFormat.Html)
+                {
+                    Text = message.Content
+                };
+
+                emailMessage.Body = htmlBody;
+            }
+
             return emailMessage;
+        }
+
+        private string ReplaceTemplatePlaceholders(string templateContent, Dictionary<string, string> templateValues)
+        {
+            foreach (var kvp in templateValues)
+            {
+                templateContent = templateContent.Replace(kvp.Key, kvp.Value);
+            }
+            return templateContent;
         }
 
         private void Send(MimeMessage mailMessage)

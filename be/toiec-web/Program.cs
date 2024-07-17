@@ -1,11 +1,16 @@
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System;
 using System.Text;
+using System.Threading.Tasks;
 using toeic_web.Infrastructure;
 using toeic_web.Models;
+using toiec_web.Helper;
 
 namespace toeic_web
 {
@@ -38,6 +43,14 @@ namespace toeic_web
             builder.Services.AddControllers().AddControllersAsServices();
             builder.Services.AddHttpClient();
             builder.Services.AddMemoryCache();
+            //add Hangfire
+            builder.Services.AddHangfire(configuration =>
+            configuration.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                          .UseSimpleAssemblyNameTypeSerializer()
+                          .UseRecommendedSerializerSettings()
+                          .UseSqlServerStorage(builder.Configuration.GetConnectionString("CustomConnection")));
+
+            builder.Services.AddHangfireServer();
             //add DBContext
             builder.Services.AddDbContext<ToeicDbContext>(options =>
             {
@@ -50,7 +63,7 @@ namespace toeic_web
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
             //add Identity
-            builder.Services.AddIdentity<Users, IdentityRole>()                
+            builder.Services.AddIdentity<Users, IdentityRole>()
                 .AddEntityFrameworkStores<ToeicDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -61,7 +74,7 @@ namespace toeic_web
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                
+
             })
             //Add google
             .AddGoogle(options =>
@@ -135,6 +148,7 @@ namespace toeic_web
             });
 
             var app = builder.Build();
+            var serviceProvider = app.Services;            
 
             app.UseSwagger();
             app.UseSwaggerUI();
@@ -144,11 +158,18 @@ namespace toeic_web
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseStaticFiles();
+            app.UseMiddleware<AccessHistoryMiddleware>();
+            app.UseHangfireDashboard();
+            // Register Hangfire and configure recurring job
+            RecurringJob.AddOrUpdate<VipUserJob>(
+            "CheckVIPUserAccess",
+            job => job.CheckVIPUserAccess(),
+            "30 10 * * *");
+            //BackgroundJob.Enqueue<VipUserJob>(job => job.CheckVIPUserAccess());
 
             app.MapControllers();
 
             app.Run();
         }
-
     }
 }

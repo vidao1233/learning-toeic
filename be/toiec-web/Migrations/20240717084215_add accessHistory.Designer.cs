@@ -12,8 +12,8 @@ using toeic_web.Models;
 namespace toiec_web.Migrations
 {
     [DbContext(typeof(ToeicDbContext))]
-    [Migration("20240528064027_update voc")]
-    partial class updatevoc
+    [Migration("20240717084215_add accessHistory")]
+    partial class addaccessHistory
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -375,6 +375,9 @@ namespace toiec_web.Migrations
                     b.Property<Guid>("idProfessor")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("idRoadMap")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool?>("isVip")
                         .HasColumnType("bit");
 
@@ -385,6 +388,8 @@ namespace toiec_web.Migrations
                     b.HasKey("idCourse");
 
                     b.HasIndex("idProfessor");
+
+                    b.HasIndex("idRoadMap");
 
                     b.ToTable("Courses");
                 });
@@ -630,6 +635,9 @@ namespace toiec_web.Migrations
                     b.Property<Guid>("idProfessor")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("idRoadMap")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<Guid>("idType")
                         .HasColumnType("uniqueidentifier");
 
@@ -646,6 +654,8 @@ namespace toiec_web.Migrations
                     b.HasKey("idTest");
 
                     b.HasIndex("idProfessor");
+
+                    b.HasIndex("idRoadMap");
 
                     b.HasIndex("idType");
 
@@ -875,6 +885,8 @@ namespace toiec_web.Migrations
 
                     b.HasIndex("idList");
 
+                    b.HasIndex("idVoc");
+
                     b.ToTable("Vocabularies");
                 });
 
@@ -894,6 +906,9 @@ namespace toiec_web.Migrations
                     b.Property<string>("description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("idRoadMap")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("idUser")
                         .IsRequired()
@@ -915,9 +930,95 @@ namespace toiec_web.Migrations
 
                     b.HasKey("idVocList");
 
+                    b.HasIndex("idRoadMap");
+
                     b.HasIndex("idUser");
 
                     b.ToTable("VocList");
+                });
+
+            modelBuilder.Entity("toiec_web.Data.AccessHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("AccessTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AccessHistories");
+                });
+
+            modelBuilder.Entity("toiec_web.Data.RoadMap", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RoadMaps");
+                });
+
+            modelBuilder.Entity("toiec_web.Data.UserChatBot", b =>
+                {
+                    b.Property<string>("idUser")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("availableChat")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("lastReset")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("idUser");
+
+                    b.ToTable("UserChatBots");
+                });
+
+            modelBuilder.Entity("toiec_web.Data.UserRoute", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("IdRoadMap")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("IdUser")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("Progress")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdRoadMap");
+
+                    b.HasIndex("IdUser");
+
+                    b.ToTable("UserRoutes");
                 });
 
             modelBuilder.Entity("toeic_web.Models.Users", b =>
@@ -1043,7 +1144,14 @@ namespace toiec_web.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_CourseOfProfessor");
 
+                    b.HasOne("toiec_web.Data.RoadMap", "RoadMap")
+                        .WithMany("Courses")
+                        .HasForeignKey("idRoadMap")
+                        .HasConstraintName("FK_CourseOfRoadMap");
+
                     b.Navigation("Professor");
+
+                    b.Navigation("RoadMap");
                 });
 
             modelBuilder.Entity("toeic_web.Models.Lesson", b =>
@@ -1178,6 +1286,11 @@ namespace toiec_web.Migrations
                         .IsRequired()
                         .HasConstraintName("TestOfProfessor");
 
+                    b.HasOne("toiec_web.Data.RoadMap", "RoadMap")
+                        .WithMany("Tests")
+                        .HasForeignKey("idRoadMap")
+                        .HasConstraintName("TestOfRoadMap");
+
                     b.HasOne("toeic_web.Models.TestType", "TestType")
                         .WithMany("Tests")
                         .HasForeignKey("idType")
@@ -1185,6 +1298,8 @@ namespace toiec_web.Migrations
                         .HasConstraintName("TypeTest");
 
                     b.Navigation("Professor");
+
+                    b.Navigation("RoadMap");
 
                     b.Navigation("TestType");
                 });
@@ -1300,11 +1415,49 @@ namespace toiec_web.Migrations
 
             modelBuilder.Entity("toeic_web.Models.VocList", b =>
                 {
+                    b.HasOne("toiec_web.Data.RoadMap", "RoadMap")
+                        .WithMany("VocLists")
+                        .HasForeignKey("idRoadMap")
+                        .HasConstraintName("FK_TopicOfRoadMap");
+
                     b.HasOne("toeic_web.Models.Users", "Users")
                         .WithMany("VocTopics")
                         .HasForeignKey("idUser")
                         .IsRequired()
                         .HasConstraintName("FK_TopicOfUser");
+
+                    b.Navigation("RoadMap");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("toiec_web.Data.AccessHistory", b =>
+                {
+                    b.HasOne("toeic_web.Models.Users", "Users")
+                        .WithMany("AccessHistory")
+                        .HasForeignKey("UserId")
+                        .IsRequired();
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("toiec_web.Data.UserRoute", b =>
+                {
+                    b.HasOne("toiec_web.Data.RoadMap", "RoadMap")
+                        .WithMany("UserRoutes")
+                        .HasForeignKey("IdRoadMap")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_UserRouteOfRoadMap");
+
+                    b.HasOne("toeic_web.Models.Users", "Users")
+                        .WithMany("UserRoutes")
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_UserRouteOfUser");
+
+                    b.Navigation("RoadMap");
 
                     b.Navigation("Users");
                 });
@@ -1406,8 +1559,21 @@ namespace toiec_web.Migrations
                     b.Navigation("Vocabularies");
                 });
 
+            modelBuilder.Entity("toiec_web.Data.RoadMap", b =>
+                {
+                    b.Navigation("Courses");
+
+                    b.Navigation("Tests");
+
+                    b.Navigation("UserRoutes");
+
+                    b.Navigation("VocLists");
+                });
+
             modelBuilder.Entity("toeic_web.Models.Users", b =>
                 {
+                    b.Navigation("AccessHistory");
+
                     b.Navigation("Admin")
                         .IsRequired();
 
@@ -1420,6 +1586,8 @@ namespace toiec_web.Migrations
 
                     b.Navigation("Student")
                         .IsRequired();
+
+                    b.Navigation("UserRoutes");
 
                     b.Navigation("VocTopics");
 
