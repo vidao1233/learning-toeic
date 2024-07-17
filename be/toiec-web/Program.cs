@@ -42,15 +42,7 @@ namespace toeic_web
             });
             builder.Services.AddControllers().AddControllersAsServices();
             builder.Services.AddHttpClient();
-            builder.Services.AddMemoryCache();
-            //add Hangfire
-            builder.Services.AddHangfire(configuration =>
-            configuration.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-                          .UseSimpleAssemblyNameTypeSerializer()
-                          .UseRecommendedSerializerSettings()
-                          .UseSqlServerStorage(builder.Configuration.GetConnectionString("CustomConnection")));
-
-            builder.Services.AddHangfireServer();
+            builder.Services.AddMemoryCache();            
             //add DBContext
             builder.Services.AddDbContext<ToeicDbContext>(options =>
             {
@@ -62,6 +54,14 @@ namespace toeic_web
                     errorNumbersToAdd: null));
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
+            //add Hangfire
+            builder.Services.AddHangfire(configuration =>
+            configuration.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                          .UseSimpleAssemblyNameTypeSerializer()
+                          .UseRecommendedSerializerSettings()
+                          .UseSqlServerStorage(builder.Configuration.GetConnectionString("CustomConnection")));
+
+            builder.Services.AddHangfireServer();
             //add Identity
             builder.Services.AddIdentity<Users, IdentityRole>()
                 .AddEntityFrameworkStores<ToeicDbContext>()
