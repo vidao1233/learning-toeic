@@ -64,7 +64,7 @@ namespace toeic_web.Models
                 entity.HasOne(u => u.Users)
                 .WithMany(a => a.AccessHistory)
                 .HasForeignKey(a => a.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.Cascade);
             });
             modelBuilder.Entity<UserChatBot>(entity =>
             {

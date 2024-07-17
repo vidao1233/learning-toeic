@@ -1436,6 +1436,7 @@ namespace toiec_web.Migrations
                     b.HasOne("toeic_web.Models.Users", "Users")
                         .WithMany("AccessHistory")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Users");
