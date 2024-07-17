@@ -83,7 +83,7 @@ function Login() {
       token: token,
     }));
     localStorage.setItem("token", token);
-    fetchVipExpireTime(idUser);
+    if (role[1] === "VipStudent") fetchVipExpireTime(idUser);
   };
   async function handleLogin(login_data) {
     setIsLoading(true);
