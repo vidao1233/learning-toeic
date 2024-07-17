@@ -6,6 +6,7 @@ import { showDeleteWarning } from "../../Common/Alert/Alert";
 import AddCourse from "./AddCourse";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../../Context/UserContext";
+import ReactPaginate from "react-paginate";
 
 function CourseManageIndex() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ function CourseManageIndex() {
   const [isLoading, setIsLoading] = useState(true);
   const [modal, setModal] = useState(false);
   const { user } = useContext(UserContext);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const toggleModal = () => {
     setModal(!modal);
@@ -101,54 +103,75 @@ function CourseManageIndex() {
           <div className="professor-course-grid-wrapper">
             <div className="professor-course-grid">
               {courses &&
-                courses.map((course, index) => {
-                  return (
-                    <div
-                      key={course.index}
-                      className="professor-courses-list-item"
-                    >
-                      {course.isVip ? (
-                        <div style={{ position: "absolute", top: 8, right: 8 }}>
+                courses
+                  .slice(currentPage * 8 - 8, currentPage * 8)
+                  .map((course, index) => {
+                    return (
+                      <div
+                        key={course.index}
+                        className="professor-courses-list-item"
+                      >
+                        {course.isVip ? (
+                          <div
+                            style={{ position: "absolute", top: 8, right: 8 }}
+                          >
+                            <img
+                              width="48"
+                              height="48"
+                              src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-vip-music-festival-flaticons-flat-flat-icons.png"
+                              alt=""
+                            />
+                          </div>
+                        ) : (
+                          <></>
+                        )}
+                        <div className="image">
                           <img
-                            width="48"
-                            height="48"
-                            src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-vip-music-festival-flaticons-flat-flat-icons.png"
+                            src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-online-course-university-flaticons-flat-flat-icons-3.png"
                             alt=""
                           />
                         </div>
-                      ) : (
-                        <></>
-                      )}
-                      <div className="image">
-                        <img
-                          src="https://img.icons8.com/external-flaticons-flat-flat-icons/64/external-online-course-university-flaticons-flat-flat-icons-3.png"
-                          alt=""
-                        />
+                        <h2>{course.name}</h2>
+                        <div className="btn-wrapper">
+                          <button
+                            className="delete-btn"
+                            onClick={() =>
+                              showDeleteWarning(() =>
+                                DeleteCourse(course.idCourse)
+                              )
+                            }
+                          >
+                            Xóa
+                          </button>
+                          <button
+                            className="update-btn"
+                            onClick={() =>
+                              navigate(`/professor/course/${course.idCourse}`)
+                            }
+                          >
+                            Sửa
+                          </button>
+                        </div>
                       </div>
-                      <h2>{course.name}</h2>
-                      <div className="btn-wrapper">
-                        <button
-                          className="delete-btn"
-                          onClick={() =>
-                            showDeleteWarning(() =>
-                              DeleteCourse(course.idCourse)
-                            )
-                          }
-                        >
-                          Xóa
-                        </button>
-                        <button
-                          className="update-btn"
-                          onClick={() =>
-                            navigate(`/professor/course/${course.idCourse}`)
-                          }
-                        >
-                          Sửa
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+            </div>
+            <div className="pagination-wrapper">
+              <ReactPaginate
+                containerClassName={"pagination"}
+                pageClassName={"page-item"}
+                activeClassName={"active"}
+                onPageChange={(event) => {
+                  console.log(event.selected);
+                  setCurrentPage(event.selected + 1);
+                }}
+                pageCount={Math.ceil(courses.length / 8)}
+                breakLabel="..."
+                previousLabel={
+                  <i class="fa-solid fa-chevron-left page-item"></i>
+                }
+                nextLabel={<i class="fa-solid fa-chevron-right page-item"></i>}
+              />
             </div>
           </div>
         </div>

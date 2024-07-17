@@ -34,6 +34,7 @@ function UpdateUnit() {
     () => ({
       toolbarButtonSize: "small",
       readonly: false,
+      height: 600,
     }),
     []
   );
@@ -317,7 +318,9 @@ function UpdateUnit() {
             config={config}
           ></JoditEditor>
           <h3>Kiểm tra lại nội dung</h3>
-          <div>{HTMLReactParser(String(paragraph))}</div>
+          <div style={{ maxHeight: 400, overflowY: "scroll" }}>
+            {HTMLReactParser(String(paragraph))}
+          </div>
           <div>
             <h3>Transcript</h3>
             <textarea
@@ -334,11 +337,13 @@ function UpdateUnit() {
               onChange={(e) => setTranslation(e.target.value)}
             ></textarea>
           </div>
-          <input
-            type="submit"
-            value="Cập nhật Unit"
-            className="professor-add-lesson-btn"
-          />
+          <div
+            style={{ width: "100%", display: "flex", justifyContent: "center" }}
+          >
+            <button type="submit" className="professor-add-lesson-btn">
+              Cập nhật Unit
+            </button>
+          </div>
         </form>
       </div>
       {modal && (

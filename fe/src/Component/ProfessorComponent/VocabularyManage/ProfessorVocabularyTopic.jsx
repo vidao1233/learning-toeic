@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { showDeleteWarning } from "../../Common/Alert/Alert";
 import Loader from "../../Common/Loader/Loader";
-import { useNavigate } from "react-router-dom";
 import "./ProfessorVocabularyTopic.css";
 import AddVocabularyTopic from "./AddVocabularyTopic";
 import { UserContext } from "../../../Context/UserContext";
+import ReactPaginate from "react-paginate";
 
 function ProfessorVocabularyTopic() {
   const { user } = useContext(UserContext);
@@ -13,6 +13,7 @@ function ProfessorVocabularyTopic() {
   const [currentTopic, setCurrentTopic] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [modal, setModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const toggleModal = () => {
     setModal(!modal);
@@ -112,52 +113,54 @@ function ProfessorVocabularyTopic() {
         <div className="vocabulary-grid-wrapper">
           {topics && topics.length > 0 ? (
             <div className="vocabulary-grid">
-              {topics.map((topic, index) => (
-                <a
-                  key={index}
-                  className="vocabulary-item"
-                  href={`/professor/vocabulary/${topic.idVocList}`}
-                >
-                  <div className="vocabulary-title text-truncate">
-                    {topic.title}
-                  </div>
-                  <div className="vocabulary-title-detail-description">
-                    {topic.description}
-                  </div>
-                  <div className="vocabulary-title-detail">
-                    Ngày tạo: {topic.createDate}
-                  </div>
-                  <div className="vocabulary-title-detail text-truncate">
-                    Số lượng từ: {topic.quantity} từ
-                  </div>
-                  <div className="vocabulary-title-detail">
-                    Trạng thái: {topic.isPublic ? "công khai" : "riêng tư"}
-                  </div>
-                  <div className="btn-wrapper">
-                    <button
-                      className="delete-btn"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        showDeleteWarning(() =>
-                          DeleteVocabularyTopic(topic.idVocList)
-                        );
-                      }}
-                    >
-                      Xóa
-                    </button>
-                    <button
-                      className="update-btn"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setCurrentTopic(topic);
-                        toggleModal();
-                      }}
-                    >
-                      Sửa
-                    </button>
-                  </div>
-                </a>
-              ))}
+              {topics
+                ?.slice(currentPage * 8 - 8, currentPage * 8)
+                .map((topic, index) => (
+                  <a
+                    key={index}
+                    className="vocabulary-item"
+                    href={`/professor/vocabulary/${topic.idVocList}`}
+                  >
+                    <div className="vocabulary-title text-truncate">
+                      {topic.title}
+                    </div>
+                    <div className="vocabulary-title-detail-description">
+                      {topic.description}
+                    </div>
+                    <div className="vocabulary-title-detail">
+                      Ngày tạo: {topic.createDate}
+                    </div>
+                    <div className="vocabulary-title-detail text-truncate">
+                      Số lượng từ: {topic.quantity} từ
+                    </div>
+                    <div className="vocabulary-title-detail">
+                      Trạng thái: {topic.isPublic ? "công khai" : "riêng tư"}
+                    </div>
+                    <div className="btn-wrapper">
+                      <button
+                        className="delete-btn"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          showDeleteWarning(() =>
+                            DeleteVocabularyTopic(topic.idVocList)
+                          );
+                        }}
+                      >
+                        Xóa
+                      </button>
+                      <button
+                        className="update-btn"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentTopic(topic);
+                          toggleModal();
+                        }}
+                      >
+                        Sửa
+                      </button>
+                    </div>
+                  </a>
+                ))}
             </div>
           ) : (
             <div
@@ -185,6 +188,21 @@ function ProfessorVocabularyTopic() {
               </div>
             </div>
           )}
+          <div className="pagination-wrapper">
+            <ReactPaginate
+              containerClassName={"pagination"}
+              pageClassName={"page-item"}
+              activeClassName={"active"}
+              onPageChange={(event) => {
+                console.log(event.selected);
+                setCurrentPage(event.selected + 1);
+              }}
+              pageCount={Math.ceil(topics.length / 8)}
+              breakLabel="..."
+              previousLabel={<i class="fa-solid fa-chevron-left page-item"></i>}
+              nextLabel={<i class="fa-solid fa-chevron-right page-item"></i>}
+            />
+          </div>
         </div>
       </div>
     </>

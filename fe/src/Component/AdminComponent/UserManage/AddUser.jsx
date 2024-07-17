@@ -127,11 +127,13 @@ function AddUser() {
               <option value="Admin">Admin</option>
             </select>
           </div>
-          <input
-            type="submit"
-            value="Thêm người dùng"
-            className="professor-add-lesson-btn"
-          />
+          <div
+            style={{ width: "100%", display: "flex", justifyContent: "center" }}
+          >
+            <button type="submit" className="professor-add-lesson-btn">
+              Thêm người dùng
+            </button>
+          </div>
         </form>
       </div>
     </div>

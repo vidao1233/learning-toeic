@@ -17,6 +17,7 @@ function UpdateLesson() {
     () => ({
       toolbarButtonSize: "small",
       readonly: false,
+      height: 600,
     }),
     []
   );
@@ -138,12 +139,16 @@ function UpdateLesson() {
             config={config}
           ></JoditEditor>
           <h3>Kiểm tra lại</h3>
-          <div>{HTMLReactParser(String(formData.content))}</div>
-          <input
-            className="professor-add-lesson-btn"
-            type="submit"
-            value="Cập nhật"
-          />
+          <div style={{ maxHeight: 400, overflowY: "scroll" }}>
+            {HTMLReactParser(String(formData.content))}
+          </div>
+          <div
+            style={{ width: "100%", display: "flex", justifyContent: "center" }}
+          >
+            <button type="submit" className="professor-add-lesson-btn">
+              Cập nhật
+            </button>
+          </div>
         </form>
       </div>
       <QuizManage idLesson={id} />

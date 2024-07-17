@@ -73,11 +73,6 @@ function App() {
               path="/vocabulary-by-topic/:id"
               element={<VocabularyByTopic />}
             />
-            <Route
-              exact
-              path="/vocabulary-by-user/:id"
-              element={<VocabularyUserManager />}
-            />
             <Route exact path="/courses" element={<Courses />} />
             <Route
               exact
@@ -90,6 +85,11 @@ function App() {
             <Route exact path="/forgot-password" element={<ForgotPassword />} />
 
             <Route element={<UserPrivate />}>
+              <Route
+                exact
+                path="/vocabulary-by-user/:id"
+                element={<VocabularyUserManager />}
+              />
               <Route exact path="/user/profile/:id" element={<UserProfile />} />
               <Route
                 exact

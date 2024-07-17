@@ -16,6 +16,7 @@ function AddLesson() {
     () => ({
       toolbarButtonSize: "small",
       readonly: false,
+      height: 600,
     }),
     []
   );
@@ -108,12 +109,16 @@ function AddLesson() {
             config={config}
           ></JoditEditor>
           <h3>Kiểm tra lại</h3>
-          <div>{HTMLReactParser(String(formData.content))}</div>
-          <input
-            type="submit"
-            value="Thêm bài học"
-            className="professor-add-lesson-btn"
-          />
+          <div style={{ maxHeight: 400, overflowY: "scroll" }}>
+            {HTMLReactParser(String(formData.content))}
+          </div>
+          <div
+            style={{ width: "100%", display: "flex", justifyContent: "center" }}
+          >
+            <button type="submit" className="professor-add-lesson-btn">
+              Thêm bài học
+            </button>
+          </div>
         </form>
       </div>
     </div>

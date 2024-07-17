@@ -24,11 +24,13 @@ import { IoAddOutline } from "react-icons/io5";
 import vocDefault from "../../assets/voc-default.png";
 import { base64ToFile } from "../../constant/convertBase64";
 import { getImageFileFromUrl } from "../ProfessorComponent/VocabularyManage/AddVocabulary";
+import Autocomplete from "react-autocomplete";
 
 const cx = classNames.bind(styles);
 
 function VocabularyByTopic() {
   const [words, setWords] = useState([]);
+  const [allWords, setAllWords] = useState([]);
   const [listInfo, setListInfo] = useState("");
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -45,6 +47,7 @@ function VocabularyByTopic() {
   const [errors, setErrors] = useState({});
   const [vocSelected, setVocSelected] = useState("");
   const fileInputRef = useRef(null);
+  // const [val, setVal] = useState("");
 
   const [formData, setFormData] = useState({
     idList: id,
@@ -147,7 +150,6 @@ function VocabularyByTopic() {
       [name]: error,
     }));
   };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -190,7 +192,6 @@ function VocabularyByTopic() {
       setIsLoading(false);
     }
   };
-
   const handleUpdate = async (event) => {
     // Do something with formData, like sending it to an API
     event.preventDefault();
@@ -225,7 +226,6 @@ function VocabularyByTopic() {
     await Promise.all([fetchVocabulary(), handleCloseUpdateModal()]);
     setIsLoading(false);
   };
-
   async function fetchVocabulary() {
     try {
       // setIsLoading(true);
@@ -247,7 +247,27 @@ function VocabularyByTopic() {
       // setIsLoading(false);
     }
   }
-
+  async function fetchAllVocabulary() {
+    try {
+      // setIsLoading(true);
+      const response = await fetch(
+        `${
+          process.env.REACT_APP_API_BASE_URL ?? "/api"
+        }/Vocabulary/GetAllVocabularies`
+      );
+      if (!response.ok) {
+        const errorData = await response?.json();
+        toast.error(`${errorData.message}`);
+      } else {
+        const data = await response?.json();
+        setAllWords(data);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      // setIsLoading(false);
+    }
+  }
   async function fetchVocabularyTopic() {
     try {
       // setIsLoading(true);
@@ -305,7 +325,11 @@ function VocabularyByTopic() {
     const fetchInitData = async () => {
       setIsLoading(true);
       try {
-        await Promise.all([fetchVocabulary(), fetchVocabularyTopic()]);
+        await Promise.all([
+          fetchVocabulary(),
+          fetchVocabularyTopic(),
+          fetchAllVocabulary(),
+        ]);
       } catch (error) {
         console.error(error);
       } finally {
@@ -390,11 +414,11 @@ function VocabularyByTopic() {
             {listInfo.createDate}
           </p>
         </div>
-        <div className="slider">
-          <AiOutlineArrowLeft className="arrow prev" onClick={prevSlide} />
-          <AiOutlineArrowRight className="arrow next" onClick={nextSlide} />
-          {words &&
-            words.map((word, index) => {
+        {words?.length > 0 && (
+          <div className="slider">
+            <AiOutlineArrowLeft className="arrow prev" onClick={prevSlide} />
+            <AiOutlineArrowRight className="arrow next" onClick={nextSlide} />
+            {words.map((word, index) => {
               return (
                 <div
                   key={word.idVoc}
@@ -454,7 +478,7 @@ function VocabularyByTopic() {
                           <div className="back-item">
                             Ý nghĩa: {word.meaning}
                           </div>
-                          <div className="back-item">Ví dụ: {word.example}</div>
+                          <div className="back-item">{word.example}</div>
                         </div>
                         <hr />
                         <p className="flip">Click để lật</p>
@@ -464,7 +488,8 @@ function VocabularyByTopic() {
                 </div>
               );
             })}
-        </div>
+          </div>
+        )}
         <div className="vocabulary-list-wrapper">
           {user.auth && user.idUser == listInfo.idUser ? (
             <button
@@ -482,6 +507,7 @@ function VocabularyByTopic() {
                 marginLeft: "90%",
                 marginBottom: "1rem",
                 display: "flex",
+                whiteSpace: "nowrap",
               }}
               onClick={handleOpenUpdateModal}
             >
@@ -582,6 +608,49 @@ function VocabularyByTopic() {
       <Modal isOpen={isModalAddVocOpen} contentLabel={"Nhập Thông Tin Từ Vựng"}>
         <form className={cx("modal-form")} onSubmit={handleSubmit}>
           <div>
+            <h2 className={cx("description")}>Từ tiếng anh:</h2>
+            <div className="autocomplete-wrapper">
+              <Autocomplete
+                value={formData.engWord}
+                items={allWords}
+                getItemValue={(item) => item.engWord}
+                shouldItemRender={(item) =>
+                  item.engWord
+                    .toLowerCase()
+                    .indexOf(formData.engWord.toLowerCase()) !== -1
+                }
+                renderMenu={(items) => <div className="dropdown">{items}</div>}
+                renderItem={(item, isHighlighted) => (
+                  <div
+                    className={`item ${isHighlighted ? "selected-item" : ""}`}
+                  >
+                    {item.engWord}
+                  </div>
+                )}
+                onChange={(event, val) =>
+                  setFormData({ ...formData, engWord: val })
+                }
+                onSelect={(val) => {
+                  const result = allWords.find((item) => item.engWord === val);
+                  const updatedFormData = {
+                    ...formData,
+                    topic: result.topic ?? "",
+                    engWord: result.engWord ?? "",
+                    pronunciation: result.pronunciation ?? "",
+                    wordType: result.wordType ?? "",
+                    meaning: result.meaning ?? "",
+                    example: result.example ?? "",
+                    status: result.status ?? false,
+                  };
+                  setFormData(updatedFormData);
+                }}
+              />
+            </div>
+            {errors.engWord && (
+              <span className={cx("error")}>{errors.engWord}</span>
+            )}
+          </div>
+          <div>
             <h2 className={cx("description")}>Chủ đề:</h2>
             <input
               type="text"
@@ -594,21 +663,6 @@ function VocabularyByTopic() {
             />
             {errors.topic && (
               <span className={cx("error")}>{errors.topic}</span>
-            )}
-          </div>
-          <div>
-            <h2 className={cx("description")}>Từ tiếng anh:</h2>
-            <input
-              type="text"
-              id="engWord"
-              name="engWord"
-              value={formData.engWord}
-              placeholder="ví dụ: motorbike ..."
-              onChange={handleInputChange}
-              required
-            />
-            {errors.engWord && (
-              <span className={cx("error")}>{errors.engWord}</span>
             )}
           </div>
           <div>
