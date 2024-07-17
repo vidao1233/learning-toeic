@@ -84,24 +84,6 @@ const UserProvider = ({ children }) => {
       return false;
     }
   };
-  const loginContext = (token) => {
-    const token_decode = decodeToken(token);
-    const {
-      "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": username,
-      "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": role,
-      "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier":
-        idUser,
-    } = token_decode;
-    setUser((user) => ({
-      ...user,
-      username: username,
-      role: role,
-      auth: true,
-      idUser: idUser,
-      token: token,
-    }));
-    localStorage.setItem("token", token);
-  };
   const userAuthen = async (username, pwd) => {
     try {
       const response = await fetch(
@@ -166,7 +148,7 @@ const UserProvider = ({ children }) => {
 
   return (
     <UserContext.Provider
-      value={{ user, logout, userAuthen, loginContext, decodeToken, setUser }}
+      value={{ user, logout, userAuthen, decodeToken, setUser }}
     >
       {children}
     </UserContext.Provider>

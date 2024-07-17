@@ -30,7 +30,7 @@ export const showSubmitWarning = (onSubmitCallback) => {
       onSubmitCallback();
     }
   });
-};  
+};
 export const TestCancel = (onDeleteCallback) => {
   Swal.fire({
     title: "Bạn chắc chắn rời khỏi bài thi?",
@@ -40,6 +40,24 @@ export const TestCancel = (onDeleteCallback) => {
     cancelButtonColor: "#3085d6",
     cancelButtonText: "Quay lại",
     confirmButtonText: "Rời khởi",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      onDeleteCallback();
+    }
+  });
+};
+export const vipExpireAlert = (content, onDeleteCallback) => {
+  Swal.fire({
+    title: content,
+    icon: "info",
+    html: `
+    Đi đến trang
+    <a href="/vippackage" autofocus><b style="color: #0080ff; text-decoration: underline">GET PRO</b></a>,
+    để duy trì tài khoản
+  `,
+    showCancelButton: false,
+    confirmButtonColor: "#3085d6",
+    confirmButtonText: "Đã biết",
   }).then((result) => {
     if (result.isConfirmed) {
       onDeleteCallback();

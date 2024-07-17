@@ -9,36 +9,82 @@ import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../../Context/UserContext";
 import Loader from "../Common/Loader/Loader";
 import { toast } from "react-toastify";
+import { jwtDecode } from "jwt-decode";
 
 import { GoogleLogin } from "react-google-login";
+import { vipExpireAlert } from "../Common/Alert/Alert";
 
 function Login() {
   const navigate = useNavigate();
   const [signUpMode, setSignUpMode] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isloading, setIsLoading] = useState(false);
-  const [is2FA, setIs2FA] = useState(false);
-  const ref_otp = useRef([]);
 
-  const { userAuthen, loginContext } = useContext(UserContext);
+  const { userAuthen, setUser } = useContext(UserContext);
   const {
     register: loginData,
     handleSubmit: handleSubmitLogin,
     formState: { errors: error_login },
-    getValues,
   } = useForm();
   const {
     register: SignUpData,
     handleSubmit: handleSubmitSignUp,
     formState: { errors: error_signup },
   } = useForm();
-  useEffect(() => {
-    const loginElement = document.getElementById("login");
-    if (loginElement) {
-      loginElement.scrollIntoView({ behavior: "smooth" });
+  async function fetchVipExpireTime(idUser) {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `${
+          process.env.REACT_APP_API_BASE_URL ?? "/api"
+        }/Payment/GetExpireTimeVipStudent/${idUser}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.ok) {
+        const data = await response?.json();
+        const [month, day, year] = data.vipExpire.split("/").map(Number);
+        const expireDate = new Date(year, month - 1, day);
+        const currentDate = new Date();
+        const timeDifference = expireDate - currentDate;
+        const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+        if (daysDifference < 3)
+          vipExpireAlert(
+            `VIP expires in ${
+              Math.round(daysDifference) === 0
+                ? "within one day"
+                : Math.round(daysDifference) + " days"
+            } `,
+            () => {}
+          );
+      }
+    } catch (error) {
+      console.log(error);
     }
-  }, []);
-
+  }
+  const loginContext = (token) => {
+    const token_decode = jwtDecode(token);
+    const {
+      "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": username,
+      "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": role,
+      "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier":
+        idUser,
+    } = token_decode;
+    setUser((user) => ({
+      ...user,
+      username: username,
+      role: role,
+      auth: true,
+      idUser: idUser,
+      token: token,
+    }));
+    localStorage.setItem("token", token);
+    fetchVipExpireTime(idUser);
+  };
   async function handleLogin(login_data) {
     setIsLoading(true);
     try {
@@ -49,8 +95,7 @@ function Login() {
       setIsLoading(false);
       if (!response.ok) {
         if (response.status === 404) {
-          const errorData = await response?.json();
-          toast.warning(`${errorData.message}`);
+          handleResendEmail(login_data.username);
         } else {
           toast.error("Đăng nhập không thành công", {
             autoClose: false,
@@ -62,22 +107,17 @@ function Login() {
           loginContext(data.token);
           const returnPath = localStorage.getItem("returnPath");
           if (returnPath) {
-            // Chuyển hướng người dùng về trang trước khi đăng nhập
             navigate(returnPath);
-            localStorage.removeItem("returnPath"); // Xóa đường dẫn sau khi đã sử dụng
+            localStorage.removeItem("returnPath");
           } else {
-            // Nếu không có đường dẫn trước đó, chuyển hướng về trang chủ
             navigate("/");
           }
-        } else {
-          // setIs2FA(true);
         }
       }
     } catch (error) {
       console.log(error);
     }
   }
-
   async function handleSignUp(sign_up_data) {
     setIsLoading(true);
     try {
@@ -108,7 +148,6 @@ function Login() {
       toast.error(`${error}`);
     }
   }
-
   const LoginGoogle = async (resp) => {
     try {
       setIsLoading(true);
@@ -142,6 +181,37 @@ function Login() {
       }
     } catch (e) {}
   };
+  async function handleResendEmail(username) {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `${
+          process.env.REACT_APP_API_BASE_URL ?? "/api"
+        }/Authen/ResendConfirmEmail?username=${username}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setIsLoading(false);
+      const data = await response?.json();
+      if (!response.ok) {
+        toast.error(`${data.message}`, {});
+      } else {
+        toast.success(`${data.message}`);
+      }
+    } catch (error) {
+      toast.error(`${error}`);
+    }
+  }
+  useEffect(() => {
+    const loginElement = document.getElementById("login");
+    if (loginElement) {
+      loginElement.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
 
   if (isloading) {
     return <Loader fullLoad={true} />;

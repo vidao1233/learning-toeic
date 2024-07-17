@@ -90,7 +90,6 @@ function SimulateTest({ id }) {
 
     const storedTime = localStorage.getItem(`expirationTime_${id}`);
     if (storedTime) {
-      console.log(storedTime);
       setTime(calculateRemainingTime(storedTime));
     } else {
       fetchTestType();

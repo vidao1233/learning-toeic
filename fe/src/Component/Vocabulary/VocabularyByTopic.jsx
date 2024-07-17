@@ -25,12 +25,13 @@ import vocDefault from "../../assets/voc-default.png";
 import { base64ToFile } from "../../constant/convertBase64";
 import { getImageFileFromUrl } from "../ProfessorComponent/VocabularyManage/AddVocabulary";
 import Autocomplete from "react-autocomplete";
+import { VocabularyContext } from "../../Context/VocabularyContext";
 
 const cx = classNames.bind(styles);
 
 function VocabularyByTopic() {
   const [words, setWords] = useState([]);
-  const [allWords, setAllWords] = useState([]);
+  const { allWords } = useContext(VocabularyContext);
   const [listInfo, setListInfo] = useState("");
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -47,7 +48,6 @@ function VocabularyByTopic() {
   const [errors, setErrors] = useState({});
   const [vocSelected, setVocSelected] = useState("");
   const fileInputRef = useRef(null);
-  // const [val, setVal] = useState("");
 
   const [formData, setFormData] = useState({
     idList: id,
@@ -247,27 +247,6 @@ function VocabularyByTopic() {
       // setIsLoading(false);
     }
   }
-  async function fetchAllVocabulary() {
-    try {
-      // setIsLoading(true);
-      const response = await fetch(
-        `${
-          process.env.REACT_APP_API_BASE_URL ?? "/api"
-        }/Vocabulary/GetAllVocabularies`
-      );
-      if (!response.ok) {
-        const errorData = await response?.json();
-        toast.error(`${errorData.message}`);
-      } else {
-        const data = await response?.json();
-        setAllWords(data);
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      // setIsLoading(false);
-    }
-  }
   async function fetchVocabularyTopic() {
     try {
       // setIsLoading(true);
@@ -325,11 +304,7 @@ function VocabularyByTopic() {
     const fetchInitData = async () => {
       setIsLoading(true);
       try {
-        await Promise.all([
-          fetchVocabulary(),
-          fetchVocabularyTopic(),
-          fetchAllVocabulary(),
-        ]);
+        await Promise.all([fetchVocabulary(), fetchVocabularyTopic()]);
       } catch (error) {
         console.error(error);
       } finally {
@@ -382,9 +357,6 @@ function VocabularyByTopic() {
   useEffect(() => {
     setCurrentSlide(0);
   }, []);
-  useEffect(() => {
-    console.log(isLoading);
-  }, [isLoading]);
   if (isLoading) {
     return <Loader />;
   }

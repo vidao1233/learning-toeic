@@ -162,7 +162,6 @@ function CourseManageIndex() {
                 pageClassName={"page-item"}
                 activeClassName={"active"}
                 onPageChange={(event) => {
-                  console.log(event.selected);
                   setCurrentPage(event.selected + 1);
                 }}
                 pageCount={Math.ceil(courses.length / 8)}
