@@ -42,6 +42,7 @@ namespace toeic_web.Models
         public virtual DbSet<RoadMap> RoadMaps { get; set; }
         public virtual DbSet<UserRoute> UserRoutes { get; set; }
         public virtual DbSet<UserChatBot> UserChatBots { get; set; }
+        public virtual DbSet<AccessHistory> AccessHistories { get; set; }
 
         #endregion
 
@@ -56,6 +57,14 @@ namespace toeic_web.Models
             {
                 entity.HasKey(s => s.idAdmin);
 
+            });
+            modelBuilder.Entity<AccessHistory>(entity =>
+            {
+                entity.HasKey(a => a.Id);
+                entity.HasOne(u => u.Users)
+                .WithMany(a => a.AccessHistory)
+                .HasForeignKey(a => a.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
             });
             modelBuilder.Entity<UserChatBot>(entity =>
             {
@@ -297,8 +306,7 @@ namespace toeic_web.Models
                     .HasConstraintName("FK_VocOfTopic");
 
                 // Create index on idVoc column
-                entity.HasIndex(s => s.idVoc)
-                    .IsUnique(); // Optional: If idVoc is unique, specify it
+                entity.HasIndex(s => s.idVoc);
                 entity.HasIndex(v => v.idList);
             });
             modelBuilder.Entity<VocList>(entity =>
@@ -306,11 +314,11 @@ namespace toeic_web.Models
                 entity.HasKey(s => s.idVocList);
                 entity.HasOne(s => s.Users).WithMany(s => s.VocTopics)
                     .HasForeignKey(s => s.idUser)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_TopicOfUser");
                 entity.HasOne(s => s.RoadMap).WithMany(s => s.VocLists)
                     .HasForeignKey(s => s.idRoadMap)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_TopicOfRoadMap");
             });
             modelBuilder.Entity<ScoreParam>(entity =>

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.SqlServer.Management.Smo;
 using toeic_web.Models;
 using toeic_web.Repository.IRepository;
 using toeic_web.Services.IService;
@@ -9,15 +8,15 @@ using toeic_web.ViewModels.VocTopic;
 
 namespace toeic_web.Services
 {
-    public class VocTopicService : IService.IVocTopicService
+    public class VocTopicService : IVocTopicService
     {
-        private readonly Repository.IRepository.IVocTopicRepository _vocTopicRepository;
+        private readonly IVocTopicRepository _vocTopicRepository;
         private readonly IMapper _mapper;
         private readonly UserManager<Users> _userManager;
         private readonly IConfiguration _configuration;
         private readonly ToeicDbContext _toeicDbContext;
 
-        public VocTopicService(Repository.IRepository.IVocTopicRepository vocTopicRepository, IMapper mapper, UserManager<Users> userManager, 
+        public VocTopicService(IVocTopicRepository vocTopicRepository, IMapper mapper, UserManager<Users> userManager, 
             IConfiguration configuration, ToeicDbContext toeicDbContext)
         {
             _vocTopicRepository = vocTopicRepository;

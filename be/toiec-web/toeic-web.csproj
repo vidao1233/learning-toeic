@@ -16,6 +16,9 @@
     <PackageReference Include="CloudinaryDotNet" Version="1.26.2" />
     <PackageReference Include="Google.Apis" Version="1.68.0" />
     <PackageReference Include="Google.Apis.CustomSearchAPI.v1" Version="1.68.0.3395" />
+    <PackageReference Include="Hangfire" Version="1.8.14" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.14" />
+    <PackageReference Include="Hangfire.SqlServer" Version="1.8.14" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.61" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.28" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.18" />
@@ -45,6 +48,7 @@
     <Folder Include="ExcelData\" />
     <Folder Include="wwwroot\images\" />
     <Folder Include="Properties\" />
+    <Folder Include="wwwroot\templates\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace toiec_web.Migrations
 {
-    public partial class updatevoc : Migration
+    public partial class addaccessHistory : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -81,6 +81,19 @@ namespace toiec_web.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RoadMaps",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoadMaps", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ScoreParams",
                 columns: table => new
                 {
@@ -119,6 +132,19 @@ namespace toiec_web.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserChatBots",
+                columns: table => new
+                {
+                    idUser = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    availableChat = table.Column<int>(type: "int", nullable: false),
+                    lastReset = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserChatBots", x => x.idUser);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -137,6 +163,24 @@ namespace toiec_web.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AccessHistories",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AccessTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccessHistories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AccessHistories_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -280,11 +324,39 @@ namespace toiec_web.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserRoutes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IdRoadMap = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdUser = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Progress = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRoutes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserRouteOfRoadMap",
+                        column: x => x.IdRoadMap,
+                        principalTable: "RoadMaps",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserRouteOfUser",
+                        column: x => x.IdUser,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "VocList",
                 columns: table => new
                 {
                     idVocList = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idUser = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    idRoadMap = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     author = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -296,6 +368,11 @@ namespace toiec_web.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_VocList", x => x.idVocList);
+                    table.ForeignKey(
+                        name: "FK_TopicOfRoadMap",
+                        column: x => x.idRoadMap,
+                        principalTable: "RoadMaps",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TopicOfUser",
                         column: x => x.idUser,
@@ -330,6 +407,7 @@ namespace toiec_web.Migrations
                 {
                     idCourse = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idProfessor = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idRoadMap = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     isVip = table.Column<bool>(type: "bit", nullable: true)
@@ -342,6 +420,11 @@ namespace toiec_web.Migrations
                         column: x => x.idProfessor,
                         principalTable: "Professors",
                         principalColumn: "idProfessor");
+                    table.ForeignKey(
+                        name: "FK_CourseOfRoadMap",
+                        column: x => x.idRoadMap,
+                        principalTable: "RoadMaps",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -351,6 +434,7 @@ namespace toiec_web.Migrations
                     idTest = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idType = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     idProfessor = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    idRoadMap = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     createDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     useDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -364,6 +448,11 @@ namespace toiec_web.Migrations
                         column: x => x.idProfessor,
                         principalTable: "Professors",
                         principalColumn: "idProfessor");
+                    table.ForeignKey(
+                        name: "TestOfRoadMap",
+                        column: x => x.idRoadMap,
+                        principalTable: "RoadMaps",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "TypeTest",
                         column: x => x.idType,
@@ -708,6 +797,11 @@ namespace toiec_web.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AccessHistories_UserId",
+                table: "AccessHistories",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Admins_idUser",
                 table: "Admins",
                 column: "idUser",
@@ -771,6 +865,11 @@ namespace toiec_web.Migrations
                 name: "IX_Courses_idProfessor",
                 table: "Courses",
                 column: "idProfessor");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Courses_idRoadMap",
+                table: "Courses",
+                column: "idRoadMap");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Lessons_idCourse",
@@ -860,6 +959,11 @@ namespace toiec_web.Migrations
                 column: "idProfessor");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Tests_idRoadMap",
+                table: "Tests",
+                column: "idRoadMap");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tests_idType",
                 table: "Tests",
                 column: "idType");
@@ -880,6 +984,16 @@ namespace toiec_web.Migrations
                 column: "idStudent");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserRoutes_IdRoadMap",
+                table: "UserRoutes",
+                column: "IdRoadMap");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRoutes_IdUser",
+                table: "UserRoutes",
+                column: "IdUser");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_VipPackages_idAdmin",
                 table: "VipPackages",
                 column: "idAdmin");
@@ -896,9 +1010,19 @@ namespace toiec_web.Migrations
                 column: "idList");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Vocabularies_idVoc",
+                table: "Vocabularies",
+                column: "idVoc");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Vocabularies_UsersId",
                 table: "Vocabularies",
                 column: "UsersId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VocList_idRoadMap",
+                table: "VocList",
+                column: "idRoadMap");
 
             migrationBuilder.CreateIndex(
                 name: "IX_VocList_idUser",
@@ -908,6 +1032,9 @@ namespace toiec_web.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AccessHistories");
+
             migrationBuilder.DropTable(
                 name: "AnswerQuestions");
 
@@ -940,6 +1067,12 @@ namespace toiec_web.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserAnswers");
+
+            migrationBuilder.DropTable(
+                name: "UserChatBots");
+
+            migrationBuilder.DropTable(
+                name: "UserRoutes");
 
             migrationBuilder.DropTable(
                 name: "VipStudents");
@@ -997,6 +1130,9 @@ namespace toiec_web.Migrations
 
             migrationBuilder.DropTable(
                 name: "Professors");
+
+            migrationBuilder.DropTable(
+                name: "RoadMaps");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

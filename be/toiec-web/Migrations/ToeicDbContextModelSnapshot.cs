@@ -883,8 +883,7 @@ namespace toiec_web.Migrations
 
                     b.HasIndex("idList");
 
-                    b.HasIndex("idVoc")
-                        .IsUnique();
+                    b.HasIndex("idVoc");
 
                     b.ToTable("Vocabularies");
                 });
@@ -934,6 +933,26 @@ namespace toiec_web.Migrations
                     b.HasIndex("idUser");
 
                     b.ToTable("VocList");
+                });
+
+            modelBuilder.Entity("toiec_web.Data.AccessHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("AccessTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AccessHistories");
                 });
 
             modelBuilder.Entity("toiec_web.Data.RoadMap", b =>
@@ -1397,15 +1416,27 @@ namespace toiec_web.Migrations
                     b.HasOne("toiec_web.Data.RoadMap", "RoadMap")
                         .WithMany("VocLists")
                         .HasForeignKey("idRoadMap")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_TopicOfRoadMap");
 
                     b.HasOne("toeic_web.Models.Users", "Users")
                         .WithMany("VocTopics")
                         .HasForeignKey("idUser")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_TopicOfUser");
 
                     b.Navigation("RoadMap");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("toiec_web.Data.AccessHistory", b =>
+                {
+                    b.HasOne("toeic_web.Models.Users", "Users")
+                        .WithMany("AccessHistory")
+                        .HasForeignKey("UserId")
+                        .IsRequired();
 
                     b.Navigation("Users");
                 });
@@ -1541,6 +1572,8 @@ namespace toiec_web.Migrations
 
             modelBuilder.Entity("toeic_web.Models.Users", b =>
                 {
+                    b.Navigation("AccessHistory");
+
                     b.Navigation("Admin")
                         .IsRequired();
 

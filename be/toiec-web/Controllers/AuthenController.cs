@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Globalization;
+using Microsoft.SqlServer.Management.Smo;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -14,7 +14,7 @@ using toeic_web.Services.IService;
 using toeic_web.ViewModels.Authentication;
 using toeic_web.ViewModels.User;
 using toiec_web.ViewModels.Authentication;
-using static System.Net.WebRequestMethods;
+
 
 namespace toeic_web.Controllers
 {
@@ -30,11 +30,12 @@ namespace toeic_web.Controllers
         private readonly IAuthenticationService _authenticationService;
         private readonly IUploadFileService _uploadFileService;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _env;
 
         public AuthenController(UserManager<Users> userManager, RoleManager<IdentityRole> roleManager,
             SignInManager<Users> signManager, ToeicDbContext dbContext, IEmailService emailService,
              IConfiguration configuration, IStudentService studentService, IAuthenticationService authenticationService,
-            IUploadFileService uploadFileService, IMapper mapper)
+            IUploadFileService uploadFileService, IMapper mapper, IWebHostEnvironment env)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -46,6 +47,7 @@ namespace toeic_web.Controllers
             _authenticationService = authenticationService;
             _uploadFileService = uploadFileService;
             _mapper = mapper;
+            _env = env;
         }
 
         [HttpPost]
@@ -115,7 +117,25 @@ namespace toeic_web.Controllers
                 {
                     confirmationLink = confirmationLink.Replace("http://backend", "https://toeic.workon.space");
                 }
-                var message = new Message(new string[] { user.Email! }, "Confirmation email link", confirmationLink!);
+                var webRootPath = _env.WebRootPath;
+
+                if (string.IsNullOrEmpty(webRootPath))
+                {
+                    throw new Exception("Không tìm thấy thư mục gốc.");
+                }
+
+                var templatePath = Path.Combine(webRootPath, "templates", "welcome.html");
+                var paramValues = new Dictionary<string, string>
+                {
+                    { "confirmationLink", confirmationLink! }, // Đường dẫn xác nhận email
+                    { "User", user.UserName }
+                };
+                var message = new Message(
+                    new string[] { user.Email! },
+                    "Confirmation email link",
+                    "",
+                    templatePath,
+                    paramValues);
                 _emailService.SendEmail(message);
 
                 //create Student into database
@@ -366,13 +386,6 @@ namespace toeic_web.Controllers
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(userExist);
 
                 // send email confirm
-                //var confirmationLink = Url.Action(nameof(ConfirmEmail), "Authen", new { token, email }, Request.Scheme);
-                //if (confirmationLink != null && confirmationLink.Contains("http://backend"))
-                //{
-                //    confirmationLink = confirmationLink.Replace("http://backend", "https://toeic.workon.space");
-                //}
-                //var message = new Message(new string[] { email! }, "Confirmation email link", confirmationLink!);
-                //_emailService.SendEmail(message);
 
                 var confirmationLink = Url.Action(nameof(ConfirmEmail), "Authen", new { token, userExist.Email }, Request.Scheme);
                 if (confirmationLink != null && confirmationLink.Contains("http://backend"))
@@ -381,50 +394,25 @@ namespace toeic_web.Controllers
                 }
 
                 //Tạo nội dung email dưới dạng HTML
-               var htmlContent = $@"
-                <!DOCTYPE html>
-                <html lang=""en"">
-                <head>
-                    <meta charset=""UTF-8"">
-                    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
-                    <title>Xác nhận Email</title>
-                    <style>
-                        body {{
-                            font-family: Arial, sans-serif;
-                            background-color: #f4f4f4;
-                            padding: 20px;
-                            margin: 0;
-                        }}
-                        .container {{
-                            max-width: 600px;
-                            margin: auto;
-                            background: #fff;
-                            padding: 20px;
-                            border-radius: 10px;
-                            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                        }}
-                        .button {{
-                            display: inline-block;
-                            padding: 10px 20px;
-                            background-color: #aaaaaa;
-                            color: #fff;
-                            text-decoration: none;
-                            border-radius: 5px;
-                        }}
-                    </style>
-                </head>
-                <body>
-                    <div class=""container"">
-                        <h2>Xác nhận email của bạn</h2>
-                        <p>Vui lòng xác nhận email của bạn bằng cách nhấn vào đường link dưới đây:</p>
-                        <a class=""button"" href=""{confirmationLink}"">Xác nhận Email</a>
-                        <p>Nếu bạn không thể nhấn vào liên kết trên, hãy sao chép và dán đường link sau vào trình duyệt của bạn:</p>
-                        <p>{confirmationLink}</p>
-                    </div>
-                </body>
-                </html>";
+                var webRootPath = _env.WebRootPath;
 
-                var message = new Message(new string[] { userExist.Email! }, "Confirm Email", htmlContent);
+                if (string.IsNullOrEmpty(webRootPath))
+                {
+                    throw new Exception("Không tìm thấy thư mục gốc.");
+                }
+                var templatePath = Path.Combine(webRootPath, "templates", "resend-confirm.html");
+                var paramValues = new Dictionary<string, string>
+                {
+                    { "confirmationLink", confirmationLink! }, // Đường dẫn xác nhận email
+                    { "User", userExist.UserName }
+                };
+
+                var message = new Message(
+                    new string[] { userExist.Email! }, 
+                    "Confirm Email", 
+                    "",
+                    templatePath,
+                    paramValues);
                 //Đảm bảo rằng bạn đã cấu hình EmailService để chấp nhận nội dung HTML
                 _emailService.SendEmail(message);
 

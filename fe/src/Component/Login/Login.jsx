@@ -45,14 +45,14 @@ function Login() {
           },
         }
       );
-      if (response.ok) {
+      if (response.status === 200) {
         const data = await response?.json();
         const [month, day, year] = data.vipExpire.split("/").map(Number);
         const expireDate = new Date(year, month - 1, day);
         const currentDate = new Date();
         const timeDifference = expireDate - currentDate;
         const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
-        if (daysDifference < 3)
+        if (daysDifference < 3 && daysDifference > 0)
           vipExpireAlert(
             `VIP expires in ${
               Math.round(daysDifference) === 0
